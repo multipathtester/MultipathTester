@@ -1,0 +1,8 @@
+framework module "Client" {
+	header "ref.h"
+    header "Client.objc.h"
+    header "Universe.objc.h"
+    header "Client.h"
+
+    export *
+}
