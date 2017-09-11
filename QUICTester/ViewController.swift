@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import Client
+import Bulkclient
 
 class ViewController: UIViewController {
     // MARK: Properties
@@ -29,7 +29,7 @@ class ViewController: UIViewController {
         sender.isEnabled = false
         
         print("Starting")
-        let res = ClientRun(true, true, "", "https://ns387496.ip-176-31-249.eu:6121/random")
+        let res = BulkclientRun(true, true, "", "https://ns387496.ip-176-31-249.eu:6121/random")
         print("End with time \(String(describing: res))")
         
         // Show the result to the user

@@ -1,0 +1,8 @@
+framework module "Bulkclient" {
+	header "ref.h"
+    header "Bulkclient.objc.h"
+    header "Universe.objc.h"
+    header "Bulkclient.h"
+
+    export *
+}
