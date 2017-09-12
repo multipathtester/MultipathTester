@@ -18,7 +18,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="SHt-Aq-ZwZ">
-                                <rect key="frame" x="0.0" y="64" width="375" height="50.5"/>
+                                <rect key="frame" x="0.0" y="64" width="375" height="266.5"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Result will be here" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FQv-qb-4wP">
                                         <rect key="frame" x="118" y="0.0" width="139" height="20.5"/>
@@ -26,8 +26,11 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="b7M-Ze-iLI">
+                                        <rect key="frame" x="27.5" y="20.5" width="320" height="216"/>
+                                    </pickerView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="V4R-oN-uEu">
-                                        <rect key="frame" x="154" y="20.5" width="67" height="30"/>
+                                        <rect key="frame" x="154" y="236.5" width="67" height="30"/>
                                         <state key="normal" title="Start Test"/>
                                         <connections>
                                             <action selector="startTestButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="W0o-Ot-1yi"/>
@@ -46,6 +49,7 @@
                     </view>
                     <navigationItem key="navigationItem" title="QUIC Test" id="XDR-j4-Mc1"/>
                     <connections>
+                        <outlet property="protocolPicker" destination="b7M-Ze-iLI" id="Vp1-f1-fWj"/>
                         <outlet property="resultLabel" destination="FQv-qb-4wP" id="OMY-O4-INT"/>
                     </connections>
                 </viewController>

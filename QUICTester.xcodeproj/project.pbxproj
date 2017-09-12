@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CE21D4201F66948200056940 /* Bulkclient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE21D41F1F66947300056940 /* Bulkclient.framework */; };
-		CE21D4211F66948200056940 /* Bulkclient.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE21D41F1F66947300056940 /* Bulkclient.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CE21D4291F66B14400056940 /* Quictraffic.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE21D4281F66B13D00056940 /* Quictraffic.framework */; };
+		CE21D42A1F66B14400056940 /* Quictraffic.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE21D4281F66B13D00056940 /* Quictraffic.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		CEDAF24F1F5FE8E000310153 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDAF24E1F5FE8E000310153 /* AppDelegate.swift */; };
 		CEDAF2511F5FE8E000310153 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDAF2501F5FE8E000310153 /* ViewController.swift */; };
 		CEDAF2541F5FE8E000310153 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CEDAF2521F5FE8E000310153 /* Main.storyboard */; };
@@ -42,7 +42,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				CE21D4211F66948200056940 /* Bulkclient.framework in Embed Frameworks */,
+				CE21D42A1F66B14400056940 /* Quictraffic.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 1;
@@ -50,7 +50,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		CE21D41F1F66947300056940 /* Bulkclient.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bulkclient.framework; path = frameworks/Bulkclient.framework; sourceTree = "<group>"; };
+		CE21D4281F66B13D00056940 /* Quictraffic.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quictraffic.framework; path = frameworks/Quictraffic.framework; sourceTree = "<group>"; };
 		CEDAF24B1F5FE8E000310153 /* QUICTester.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QUICTester.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEDAF24E1F5FE8E000310153 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CEDAF2501F5FE8E000310153 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -71,7 +71,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CE21D4201F66948200056940 /* Bulkclient.framework in Frameworks */,
+				CE21D4291F66B14400056940 /* Quictraffic.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -99,7 +99,7 @@
 				CEDAF2621F5FE8E100310153 /* QUICTesterTests */,
 				CEDAF26D1F5FE8E100310153 /* QUICTesterUITests */,
 				CEDAF24C1F5FE8E000310153 /* Products */,
-				CE21D41F1F66947300056940 /* Bulkclient.framework */,
+				CE21D4281F66B13D00056940 /* Quictraffic.framework */,
 			);
 			sourceTree = "<group>";
 		};
