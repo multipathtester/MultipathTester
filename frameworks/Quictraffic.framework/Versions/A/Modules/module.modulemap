@@ -1,0 +1,8 @@
+framework module "Quictraffic" {
+	header "ref.h"
+    header "Quictraffic.objc.h"
+    header "Universe.objc.h"
+    header "Quictraffic.h"
+
+    export *
+}
