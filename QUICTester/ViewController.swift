@@ -9,11 +9,15 @@
 import UIKit
 import Quictraffic
 
+import os.log
+
 class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
     
     // MARK: Properties
     @IBOutlet weak var resultLabel: UILabel!
     @IBOutlet weak var protocolPicker: UIPickerView!
+    
+    var bulkResults = [BulkResult]()
     
     var pickerDataSource = [["Bulk", "Req/Res", "Siri"], ["SinglePath", "MultiPath"], ["TCP", "QUIC"]];
     var selectedProtocol: String = "TCP"
@@ -25,6 +29,10 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         
         self.protocolPicker.dataSource = self;
         self.protocolPicker.delegate = self;
+        
+        if let savedBulkResults = loadBulkResults() {
+            bulkResults += savedBulkResults
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -108,8 +116,18 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     
     // MARK: Others
     func TCPTest() -> String {
+        let startTime = DispatchTime.now()
+        let multipath = self.multipath
         switch traffic {
-        case "bulk": return TCPClientBulk(multipath: multipath, url: "http://5.196.169.232/testing_handover_20MB").Run()
+        case "bulk":
+            let durationString = TCPClientBulk(multipath: multipath, url: "http://5.196.169.232/testing_handover_20MB").Run()
+            // FIXME only cope with seconds...
+            let durationArray = durationString.components(separatedBy: "s")
+            let durationSecond = Float(durationArray[0])
+            let bulkResult = BulkResult(startTime: startTime, networkProtocol: "TCP", multipath: multipath, durationNs: UInt64(durationSecond! * 1_000_000_000))
+            bulkResults += [bulkResult]
+            saveBulkResults()
+            return durationString
         case "reqres":
             let (missed, delays) = TCPClientReqRes(multipath: multipath, url: "http://5.196.169.232:8008/").Run()
             return "\(missed) " + delays.map({"\($0)"}).joined(separator: ",")
@@ -128,6 +146,20 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
             }
         }()
         return QuictrafficRun(traffic, true, multipath, "", url)
+    }
+    
+    // MARK: Private
+    private func loadBulkResults() -> [BulkResult]? {
+        return NSKeyedUnarchiver.unarchiveObject(withFile: BulkResult.ArchiveURL.path) as? [BulkResult]
+    }
+    
+    private func saveBulkResults() {
+        let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(bulkResults, toFile: BulkResult.ArchiveURL.path)
+        if isSuccessfulSave {
+            os_log("BulkResults successfully saved.", log: OSLog.default, type: .debug)
+        } else {
+            os_log("Failed to save bulk results...", log: OSLog.default, type: .error)
+        }
     }
 }
 
