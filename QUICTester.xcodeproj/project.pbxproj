@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		CE21D4291F66B14400056940 /* Quictraffic.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE21D4281F66B13D00056940 /* Quictraffic.framework */; };
 		CE21D42A1F66B14400056940 /* Quictraffic.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE21D4281F66B13D00056940 /* Quictraffic.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CE8E284B1F695450004F1558 /* TCPClientReqRes.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8E284A1F695450004F1558 /* TCPClientReqRes.swift */; };
+		CE8E284D1F696334004F1558 /* TCPClientBulk.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8E284C1F696334004F1558 /* TCPClientBulk.swift */; };
+		CE8E284F1F6966FC004F1558 /* TCPClientSiri.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8E284E1F6966FC004F1558 /* TCPClientSiri.swift */; };
 		CEDAF24F1F5FE8E000310153 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDAF24E1F5FE8E000310153 /* AppDelegate.swift */; };
 		CEDAF2511F5FE8E000310153 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDAF2501F5FE8E000310153 /* ViewController.swift */; };
 		CEDAF2541F5FE8E000310153 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CEDAF2521F5FE8E000310153 /* Main.storyboard */; };
@@ -51,6 +54,10 @@
 
 /* Begin PBXFileReference section */
 		CE21D4281F66B13D00056940 /* Quictraffic.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quictraffic.framework; path = frameworks/Quictraffic.framework; sourceTree = "<group>"; };
+		CE21D42B1F67ECF300056940 /* QUICTester.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = QUICTester.entitlements; sourceTree = "<group>"; };
+		CE8E284A1F695450004F1558 /* TCPClientReqRes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClientReqRes.swift; sourceTree = "<group>"; };
+		CE8E284C1F696334004F1558 /* TCPClientBulk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClientBulk.swift; sourceTree = "<group>"; };
+		CE8E284E1F6966FC004F1558 /* TCPClientSiri.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClientSiri.swift; sourceTree = "<group>"; };
 		CEDAF24B1F5FE8E000310153 /* QUICTester.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QUICTester.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEDAF24E1F5FE8E000310153 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CEDAF2501F5FE8E000310153 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -116,12 +123,16 @@
 		CEDAF24D1F5FE8E000310153 /* QUICTester */ = {
 			isa = PBXGroup;
 			children = (
+				CE21D42B1F67ECF300056940 /* QUICTester.entitlements */,
 				CEDAF24E1F5FE8E000310153 /* AppDelegate.swift */,
 				CEDAF2501F5FE8E000310153 /* ViewController.swift */,
 				CEDAF2521F5FE8E000310153 /* Main.storyboard */,
 				CEDAF2551F5FE8E000310153 /* Assets.xcassets */,
 				CEDAF2571F5FE8E000310153 /* LaunchScreen.storyboard */,
 				CEDAF25A1F5FE8E000310153 /* Info.plist */,
+				CE8E284C1F696334004F1558 /* TCPClientBulk.swift */,
+				CE8E284A1F695450004F1558 /* TCPClientReqRes.swift */,
+				CE8E284E1F6966FC004F1558 /* TCPClientSiri.swift */,
 			);
 			path = QUICTester;
 			sourceTree = "<group>";
@@ -214,6 +225,11 @@
 					CEDAF24A1F5FE8E000310153 = {
 						CreatedOnToolsVersion = 9.0;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.Multipath = {
+								enabled = 1;
+							};
+						};
 					};
 					CEDAF25E1F5FE8E100310153 = {
 						CreatedOnToolsVersion = 9.0;
@@ -280,6 +296,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				CEDAF2511F5FE8E000310153 /* ViewController.swift in Sources */,
+				CE8E284B1F695450004F1558 /* TCPClientReqRes.swift in Sources */,
+				CE8E284F1F6966FC004F1558 /* TCPClientSiri.swift in Sources */,
+				CE8E284D1F696334004F1558 /* TCPClientBulk.swift in Sources */,
 				CEDAF24F1F5FE8E000310153 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -448,6 +467,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = QUICTester/QUICTester.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = VJZ2VP5AH7;
 				ENABLE_BITCODE = NO;
@@ -468,6 +488,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = QUICTester/QUICTester.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = VJZ2VP5AH7;
 				ENABLE_BITCODE = NO;
