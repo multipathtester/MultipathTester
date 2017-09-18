@@ -17,8 +17,8 @@ class TCPClientBulk {
         self.url = (URL(string: url))!
     }
     
-    func Run() -> String {
-        var ret: String?
+    func Run() -> Double {
+        var ret: Double = -1.0
         
         let config = URLSessionConfiguration.ephemeral
         if multipath {
@@ -33,12 +33,14 @@ class TCPClientBulk {
             let start = DispatchTime.now()
             let task = session.dataTask(with: self.url) { (data, resp, error) in
                 guard error == nil && data != nil else {
-                    ret = "\(String(describing: error))"
+                    print("\(String(describing: error))")
+                    ret = -2.0
                     group.leave()
                     return
                 }
                 guard resp != nil else {
-                    ret = "received no response"
+                    print("received no response")
+                    ret = -1.0
                     group.leave()
                     return
                 }
@@ -46,7 +48,8 @@ class TCPClientBulk {
                 let elapsed = DispatchTime.now().uptimeNanoseconds - start.uptimeNanoseconds
                 let timeInterval = Double(elapsed) / 1_000_000_000
                 
-                ret = "\(timeInterval)s for \(length) MB"
+                print("\(timeInterval)s for \(length) MB")
+                ret = timeInterval
                 group.leave()
             }
             task.resume()
@@ -55,6 +58,6 @@ class TCPClientBulk {
         group.wait()
         session.finishTasksAndInvalidate()
         
-        return ret!
+        return ret
     }
 }

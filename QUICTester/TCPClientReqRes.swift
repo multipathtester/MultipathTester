@@ -33,7 +33,7 @@ class TCPClientReqRes {
         self.url = (URL(string: url))!
     }
     
-    func Run() -> (Int, [UInt64]) {
+    func Run() -> (Double, Int, [UInt64]) {
         let config = URLSessionConfiguration.default
         config.httpShouldUsePipelining = true
         if multipath {
@@ -49,7 +49,7 @@ class TCPClientReqRes {
         } while ((DispatchTime.now().uptimeNanoseconds - startTime.uptimeNanoseconds) / 1_000_000 < (runTimeMs))
         
         session.finishTasksAndInvalidate()
-        return (missed, delays)
+        return (Double(runTimeMs) / 1000, missed, delays)
     }
     
     // MARK: Private methods

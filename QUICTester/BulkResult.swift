@@ -11,10 +11,10 @@ import os.log
 
 class BulkResult: NSObject, NSCoding {
     // MARK: Properties
-    var startTime: DispatchTime
+    var startTime: Double
     var networkProtocol: String
     var multipath: Bool
-    var durationNs: UInt64
+    var durationNs: Int64
     
     // MARK: Archiving Paths
     static let DocumentsDirectory = FileManager().urls(for: .documentDirectory, in: .userDomainMask).first!
@@ -29,7 +29,7 @@ class BulkResult: NSObject, NSCoding {
     }
     
     // MARK: Initializer
-    init(startTime: DispatchTime, networkProtocol: String, multipath: Bool, durationNs: UInt64) {
+    init(startTime: Double, networkProtocol: String, multipath: Bool, durationNs: Int64) {
         self.startTime = startTime
         self.networkProtocol = networkProtocol
         self.multipath = multipath
@@ -46,14 +46,11 @@ class BulkResult: NSObject, NSCoding {
     
     required convenience init?(coder aDecoder: NSCoder) {
         // The startTime is required. If we cannot decode it, the initializer should fail.
-        guard let startTime = aDecoder.decodeObject(forKey: PropertyKey.startTime) as? DispatchTime else {
-            os_log("Unable to decode the startTime for a BulkResult object.", log: OSLog.default, type: .debug)
-            return nil
-        }
+        let startTime = aDecoder.decodeDouble(forKey: PropertyKey.startTime)
         // Assume the remaining will work
         let networkProtocol = aDecoder.decodeObject(forKey: PropertyKey.networkProtocol) as! String
         let multipath = aDecoder.decodeBool(forKey: PropertyKey.multipath)
-        let durationNs = UInt64(aDecoder.decodeInt64(forKey: PropertyKey.durationNs))
+        let durationNs = aDecoder.decodeInt64(forKey: PropertyKey.durationNs)
         
         // Must call designated initializer.
         self.init(startTime: startTime, networkProtocol: networkProtocol, multipath: multipath, durationNs: durationNs)

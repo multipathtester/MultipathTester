@@ -31,7 +31,8 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         self.protocolPicker.delegate = self;
         
         if let savedBulkResults = loadBulkResults() {
-            bulkResults += savedBulkResults
+            dump(savedBulkResults)
+            bulkResults = savedBulkResults
         }
     }
 
@@ -82,17 +83,57 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         // Avoid launching multiples tests in parallel
         sender.isEnabled = false
         
+        let selectedProtocol = self.selectedProtocol
+        let traffic = self.traffic
+        let multipath = self.multipath
+        let startTime = Date().timeIntervalSince1970
+        
         print("Starting with \(selectedProtocol) with traffic \(traffic) and multipath \(multipath)")
         
         switch self.selectedProtocol {
         case "TCP":
             DispatchQueue.global(qos: .background).async {
-                let res = self.TCPTest()
-                print("Result is \(String(describing: res))")
+                let (bench, result) = self.TCPTest()
+                print("Result is \(String(describing: result))")
+                
+                // FIXME: no need now because hardcoded, but might be needed later
+                // self.resolveURL()
+                let json: [String: Any] = [
+                    "bench": bench,
+                    "config_name": multipath ? "MPTCP": "SPTCP",
+                    "device_id": UIDevice.current.identifierForVendor!.uuidString,
+                    "result": result,
+                    "server_ip": "5.196.169.232",
+                    "smartphone": true,
+                    "start_time": startTime,
+                ]
+                print(json)
+                let jsonData = try? JSONSerialization.data(withJSONObject: json)
+                
+                // Create POST request
+                let url = URL(string: "https://ns387496.ip-176-31-249.eu/collect/save_test/")!
+                var request = URLRequest(url: url)
+                request.httpMethod = "POST"
+                
+                // Insert JSON data to the request
+                request.httpBody = jsonData
+                
+                let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                    guard let data = data, error == nil else {
+                        print(error?.localizedDescription ?? "No data")
+                        return
+                    }
+                    let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
+                    if let responseJSON = responseJSON as? [String: Any] {
+                        print(responseJSON)
+                    }
+                }
+                
+                task.resume()
                 
                 DispatchQueue.main.async {
                     // Show the result to the user
-                    self.resultLabel.text = "TCP: " + res
+                    self.resultLabel.text = "TCP: Done"
                     // Then reactivate the button
                     sender.isEnabled = true
                 }
@@ -115,23 +156,65 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     }
     
     // MARK: Others
-    func TCPTest() -> String {
-        let startTime = DispatchTime.now()
+    func resolveURL(url: String) {
+        let host = CFHostCreateWithName(nil, url as CFString).takeRetainedValue()
+        CFHostStartInfoResolution(host, .addresses, nil)
+        var success: DarwinBoolean = false
+        if let addresses = CFHostGetAddressing(host, &success)?.takeUnretainedValue() as NSArray?,
+            let theAddress = addresses.firstObject as? NSData {
+            var hostname = [CChar](repeating:0, count: Int(NI_MAXHOST))
+            if getnameinfo(theAddress.bytes.assumingMemoryBound(to: sockaddr.self), socklen_t(theAddress.length), &hostname, socklen_t(hostname.count), nil, 0, NI_NUMERICHOST) == 0 {
+                let numAddress = String(cString: hostname)
+                print(numAddress)
+            }
+        }
+    }
+    
+    func TCPTest() -> ([String: Any], [String: Any]) {
+        let startTime = Date().timeIntervalSince1970
         let multipath = self.multipath
         switch traffic {
         case "bulk":
-            let durationString = TCPClientBulk(multipath: multipath, url: "http://5.196.169.232/testing_handover_20MB").Run()
-            // FIXME only cope with seconds...
-            let durationArray = durationString.components(separatedBy: "s")
-            let durationSecond = Float(durationArray[0])
-            let bulkResult = BulkResult(startTime: startTime, networkProtocol: "TCP", multipath: multipath, durationNs: UInt64(durationSecond! * 1_000_000_000))
-            bulkResults += [bulkResult]
+            let durationSecond = TCPClientBulk(multipath: multipath, url: "http://5.196.169.232/testing_handover_20MB").Run()
+            let bulkResult = BulkResult(startTime: startTime, networkProtocol: "TCP", multipath: multipath, durationNs: Int64(durationSecond * 1_000_000_000))
+            bulkResults.append(bulkResult)
             saveBulkResults()
-            return durationString
+            let bench: [String: Any] = [
+                "name": "simple_http_get",
+                "config": [
+                    "file_name": "testing_handover_20MB",
+                    "server_url": "http://5.196.169.232/testing_handover_20MB",
+                ],
+            ]
+            let result: [String: Any] = [
+                "netcfgs": [],
+                "run_time": String(format: "%.9f", durationSecond),
+            ]
+            return (bench, result)
         case "reqres":
-            let (missed, delays) = TCPClientReqRes(multipath: multipath, url: "http://5.196.169.232:8008/").Run()
-            return "\(missed) " + delays.map({"\($0)"}).joined(separator: ",")
-        case "siri": return TCPClientSiri(multipath: multipath, addr: "5.196.169.232:8080").Run()
+            let (runTime, missed, delays) = TCPClientReqRes(multipath: multipath, url: "http://5.196.169.232:8008/").Run()
+            print("\(missed) " + delays.map({"\($0)"}).joined(separator: ","))
+            let bench: [String: Any] = [
+                "name": "msg",
+                "config": [
+                    "server_port": "8008",
+                    "query_size": "750",
+                    "response_size": "750",
+                    "start_delay_query_response": "0",
+                    "nb_msgs": "60",
+                    "timeout_sec": "30",
+                ],
+            ]
+            let result: [String: Any] = [
+                "delays": delays,
+                "missed": missed,
+                "netcfgs": [],
+                "run_time": String(format: "%.9f", runTime),
+            ]
+            return (bench, result)
+        case "siri":
+            print(TCPClientSiri(multipath: multipath, addr: "5.196.169.232:8080").Run())
+            return ([:], [:])
         default: fatalError("WTF is \(traffic)")
         }
     }
@@ -154,6 +237,7 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     }
     
     private func saveBulkResults() {
+        dump(bulkResults)
         let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(bulkResults, toFile: BulkResult.ArchiveURL.path)
         if isSuccessfulSave {
             os_log("BulkResults successfully saved.", log: OSLog.default, type: .debug)
