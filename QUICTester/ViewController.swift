@@ -96,46 +96,12 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         
         print("Starting with \(selectedProtocol) with traffic \(traffic) and multipath \(multipath)")
         
-        switch self.selectedProtocol {
+        switch selectedProtocol {
         case "TCP":
             DispatchQueue.global(qos: .background).async {
-                let (bench, result) = self.TCPTest()
-                print("Result is \(String(describing: result))")
-                
-                // FIXME: no need now because hardcoded, but might be needed later
-                // self.resolveURL()
-                let json: [String: Any] = [
-                    "bench": bench,
-                    "config_name": multipath ? "MPTCP": "SPTCP",
-                    "device_id": UIDevice.current.identifierForVendor!.uuidString,
-                    "result": result,
-                    "server_ip": "5.196.169.232",
-                    "smartphone": true,
-                    "start_time": startTime,
-                ]
-                print(json)
-                let jsonData = try? JSONSerialization.data(withJSONObject: json)
-                
-                // Create POST request
-                let url = URL(string: "https://ns387496.ip-176-31-249.eu/collect/save_test/")!
-                var request = URLRequest(url: url)
-                request.httpMethod = "POST"
-                
-                // Insert JSON data to the request
-                request.httpBody = jsonData
-                
-                let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                    guard let data = data, error == nil else {
-                        print(error?.localizedDescription ?? "No data")
-                        return
-                    }
-                    let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
-                    if let responseJSON = responseJSON as? [String: Any] {
-                        print(responseJSON)
-                    }
-                }
-                
-                task.resume()
+                let (bench, result) = self.TCPTest(traffic: traffic, multipath: multipath, startTime: startTime)
+                // FIXME: Hardcoded serverIP
+                self.sendTestToCollectServer(config: multipath ? "MPTCP": "SPTCP", startTime: startTime, serverIP: "5.196.169.232", bench: bench, result: result)
                 
                 DispatchQueue.main.async {
                     // Show the result to the user
@@ -147,12 +113,13 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         case "QUIC":
             // Run the network test in background, then do the UI changes on main thread
             DispatchQueue.global(qos: .background).async {
-                let res = self.QUICTest()
-                print("Result is \(String(describing: res))")
+                let (bench, result) = self.QUICTest(traffic: traffic, multipath: multipath, startTime: startTime)
+                // FIXME: Hardcoded serverIP
+                self.sendTestToCollectServer(config: multipath ? "MPQUIC": "SPQUIC", startTime: startTime, serverIP: "176.31.249.161", bench: bench, result: result)
                 
                 DispatchQueue.main.async {
                     // Show the result to the user
-                    self.resultLabel.text = "QUIC: " + res!
+                    self.resultLabel.text = "QUIC: Done"
                     // Then reactivate the button
                     sender.isEnabled = true
                 }
@@ -176,51 +143,15 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         }
     }
     
-    func TCPTest() -> ([String: Any], [String: Any]) {
-        let startTime = Date().timeIntervalSince1970
-        let multipath = self.multipath
+    func TCPTest(traffic: String, multipath: Bool, startTime: Double) -> ([String: Any], [String: Any]) {
         switch traffic {
         case "bulk":
             let durationSecond = TCPClientBulk(multipath: multipath, url: "http://5.196.169.232/testing_handover_20MB").Run()
-            let bulkResult = BulkResult(startTime: startTime, networkProtocol: "TCP", multipath: multipath, durationNs: Int64(durationSecond * 1_000_000_000))
-            bulkResults.append(bulkResult)
-            saveBulkResults()
-            let bench: [String: Any] = [
-                "name": "simple_http_get",
-                "config": [
-                    "file_name": "testing_handover_20MB",
-                    "server_url": "http://5.196.169.232/testing_handover_20MB",
-                ],
-            ]
-            let result: [String: Any] = [
-                "netcfgs": [],
-                "run_time": String(format: "%.9f", durationSecond),
-            ]
-            return (bench, result)
+            return saveBulkAndGetJsons(startTime: startTime, networkProtocol: "TCP", multipath: multipath, fileName: "testing_handover_20MB",
+                                  serverURL: "http://5.196.169.232/testing_handover_20MB", durationSecond: durationSecond)
         case "reqres":
             let (runTime, missed, delays) = TCPClientReqRes(multipath: multipath, url: "http://5.196.169.232:8008/").Run()
-            let reqresResult = ReqResResult(startTime: startTime, networkProtocol: "TCP", multipath: multipath, durationNs: Int64(runTime * 1_000_000_000),
-                                            missed: missed, delays: delays)
-            reqresResults.append(reqresResult)
-            saveReqResResults()
-            let bench: [String: Any] = [
-                "name": "msg",
-                "config": [
-                    "server_port": "8008",
-                    "query_size": "750",
-                    "response_size": "750",
-                    "start_delay_query_response": "0",
-                    "nb_msgs": "60",
-                    "timeout_sec": "30",
-                ],
-            ]
-            let result: [String: Any] = [
-                "delays": delays,
-                "missed": missed,
-                "netcfgs": [],
-                "run_time": String(format: "%.9f", runTime),
-            ]
-            return (bench, result)
+            return saveReqResAndGetJsons(startTime: startTime, networkProtocol: "TCP", multipath: multipath, runTime: runTime, missed: missed, delays: delays)
         case "siri":
             print(TCPClientSiri(multipath: multipath, addr: "5.196.169.232:8080").Run())
             return ([:], [:])
@@ -228,16 +159,45 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         }
     }
     
-    func QUICTest() -> String? {
-        let url: String = {
-            switch self.traffic {
-            case "bulk": return "https://ns387496.ip-176-31-249.eu:6121/random"
-            case "reqres": return "ns387496.ip-176-31-249.eu:8775"
-            case "siri": return "ns387496.ip-176-31-249.eu:8776"
-            default: fatalError("WTF is traffic \(self.traffic)")
+    func QUICTest(traffic: String, multipath: Bool, startTime: Double) -> ([String: Any], [String: Any]) {
+        switch traffic {
+        case "bulk":
+            let durationString = QuictrafficRun(traffic, true, multipath, "", "https://ns387496.ip-176-31-249.eu:6121/random")
+            var duration: Double
+            // Be cautious about the formatting of the durationString
+            if durationString?.range(of: "ms") != nil {
+                duration = Double(durationString!.components(separatedBy: "ms")[0])! / 1000
+            } else if durationString?.range(of: "m") != nil {
+                let splitted = durationString!.components(separatedBy: "m")
+                duration = Double(splitted[0])! * 60 + Double(splitted[1].components(separatedBy: "s")[0])!
+            } else {
+                duration = Double(durationString!.components(separatedBy: "s")[0])!
             }
-        }()
-        return QuictrafficRun(traffic, true, multipath, "", url)
+            return saveBulkAndGetJsons(startTime: startTime, networkProtocol: "QUIC", multipath: multipath, fileName: "random",
+                                       serverURL: "https://ns387496.ip-176-31-249.eu:6121/random", durationSecond: duration)
+        case "reqres":
+            let resultString = QuictrafficRun(traffic, true, multipath, "", "ns387496.ip-176-31-249.eu:8775")
+            var sawFirstLine = false
+            let runTime: Double = 30.0
+            var missed: Int = -1
+            var delays = [Int]()
+            resultString?.enumerateLines { line, _ in
+                if sawFirstLine {
+                    if line.range(of: "Missed:") != nil {
+                        missed = Int(line.components(separatedBy: " ")[1])!
+                    } else {
+                        delays.append(Int(line)!)
+                    }
+                }
+                sawFirstLine = true
+            }
+            return saveReqResAndGetJsons(startTime: startTime, networkProtocol: "QUIC", multipath: multipath, runTime: runTime, missed: missed, delays: delays)
+        case "siri":
+            // TODO
+            print(QuictrafficRun(traffic, true, multipath, "", "ns387496.ip-176-31-249.eu:8776"))
+            return ([:], [:])
+        default: fatalError("")
+        }
     }
     
     // MARK: Private
@@ -254,6 +214,24 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         }
     }
     
+    private func saveBulkAndGetJsons(startTime: Double, networkProtocol: String, multipath: Bool, fileName: String, serverURL: String, durationSecond: Double) -> ([String: Any], [String: Any]) {
+        let bulkResult = BulkResult(startTime: startTime, networkProtocol: networkProtocol, multipath: multipath, durationNs: Int64(durationSecond * 1_000_000_000))
+        bulkResults.append(bulkResult)
+        saveBulkResults()
+        let bench: [String: Any] = [
+            "name": "simple_http_get",
+            "config": [
+                "file_name": fileName,
+                "server_url": serverURL,
+            ],
+        ]
+        let result: [String: Any] = [
+            "netcfgs": [],
+            "run_time": String(format: "%.9f", durationSecond),
+        ]
+        return (bench, result)
+    }
+    
     private func loadReqResResults() -> [ReqResResult]? {
         return NSKeyedUnarchiver.unarchiveObject(withFile: ReqResResult.ArchiveURL.path) as? [ReqResResult]
     }
@@ -265,6 +243,68 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         } else {
             os_log("Failed to save reqres results...", log: OSLog.default, type: .error)
         }
+    }
+    
+    private func saveReqResAndGetJsons(startTime: Double, networkProtocol: String, multipath: Bool, runTime: Double, missed: Int, delays: [Int]) -> ([String: Any], [String: Any]) {
+        let reqresResult = ReqResResult(startTime: startTime, networkProtocol: networkProtocol, multipath: multipath, durationNs: Int64(runTime * 1_000_000_000),
+                                        missed: missed, delays: delays)
+        reqresResults.append(reqresResult)
+        saveReqResResults()
+        let bench: [String: Any] = [
+            "name": "msg",
+            "config": [
+                "server_port": "8008",
+                "query_size": "750",
+                "response_size": "750",
+                "start_delay_query_response": "0",
+                "nb_msgs": "60",
+                "timeout_sec": "30",
+            ],
+            ]
+        let result: [String: Any] = [
+            "delays": delays,
+            "missed": missed,
+            "netcfgs": [],
+            "run_time": String(format: "%.9f", runTime),
+            ]
+        return (bench, result)
+    }
+    
+    private func sendTestToCollectServer(config: String, startTime: Double, serverIP: String, bench: [String: Any], result: [String: Any]) {
+        // FIXME: no need now because hardcoded, but might be needed later
+        // self.resolveURL()
+        let json: [String: Any] = [
+            "bench": bench,
+            "config_name": config,
+            "device_id": UIDevice.current.identifierForVendor!.uuidString,
+            "result": result,
+            "server_ip": serverIP,
+            "smartphone": true,
+            "start_time": startTime,
+            ]
+        print(json)
+        let jsonData = try? JSONSerialization.data(withJSONObject: json)
+        
+        // Create POST request
+        let url = URL(string: "https://ns387496.ip-176-31-249.eu/collect/save_test/")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        
+        // Insert JSON data to the request
+        request.httpBody = jsonData
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data, error == nil else {
+                print(error?.localizedDescription ?? "No data")
+                return
+            }
+            let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
+            if let responseJSON = responseJSON as? [String: Any] {
+                print(responseJSON)
+            }
+        }
+        
+        task.resume()
     }
 }
 
