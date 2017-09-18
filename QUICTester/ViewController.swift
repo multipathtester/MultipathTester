@@ -18,6 +18,7 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     @IBOutlet weak var protocolPicker: UIPickerView!
     
     var bulkResults = [BulkResult]()
+    var reqresResults = [ReqResResult]()
     
     var pickerDataSource = [["Bulk", "Req/Res", "Siri"], ["SinglePath", "MultiPath"], ["TCP", "QUIC"]];
     var selectedProtocol: String = "TCP"
@@ -33,6 +34,11 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         if let savedBulkResults = loadBulkResults() {
             dump(savedBulkResults)
             bulkResults = savedBulkResults
+        }
+        
+        if let savedReqResResults = loadReqResResults() {
+            dump(savedReqResResults)
+            reqresResults = savedReqResResults
         }
     }
 
@@ -193,7 +199,10 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
             return (bench, result)
         case "reqres":
             let (runTime, missed, delays) = TCPClientReqRes(multipath: multipath, url: "http://5.196.169.232:8008/").Run()
-            print("\(missed) " + delays.map({"\($0)"}).joined(separator: ","))
+            let reqresResult = ReqResResult(startTime: startTime, networkProtocol: "TCP", multipath: multipath, durationNs: Int64(runTime * 1_000_000_000),
+                                            missed: missed, delays: delays)
+            reqresResults.append(reqresResult)
+            saveReqResResults()
             let bench: [String: Any] = [
                 "name": "msg",
                 "config": [
@@ -237,12 +246,24 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     }
     
     private func saveBulkResults() {
-        dump(bulkResults)
         let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(bulkResults, toFile: BulkResult.ArchiveURL.path)
         if isSuccessfulSave {
             os_log("BulkResults successfully saved.", log: OSLog.default, type: .debug)
         } else {
             os_log("Failed to save bulk results...", log: OSLog.default, type: .error)
+        }
+    }
+    
+    private func loadReqResResults() -> [ReqResResult]? {
+        return NSKeyedUnarchiver.unarchiveObject(withFile: ReqResResult.ArchiveURL.path) as? [ReqResResult]
+    }
+    
+    private func saveReqResResults() {
+        let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(reqresResults, toFile: ReqResResult.ArchiveURL.path)
+        if isSuccessfulSave {
+            os_log("ReqResResults successfully saved.", log: OSLog.default, type: .debug)
+        } else {
+            os_log("Failed to save reqres results...", log: OSLog.default, type: .error)
         }
     }
 }

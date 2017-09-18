@@ -15,7 +15,7 @@ class TCPClientReqRes {
     let resSize = 750
     let runTimeMs = 30000
     
-    var delays: [UInt64]
+    var delays: [Int]
     var messageID: Int
     var missed: Int
     var multipath: Bool
@@ -33,7 +33,7 @@ class TCPClientReqRes {
         self.url = (URL(string: url))!
     }
     
-    func Run() -> (Double, Int, [UInt64]) {
+    func Run() -> (Double, Int, [Int]) {
         let config = URLSessionConfiguration.default
         config.httpShouldUsePipelining = true
         if multipath {
@@ -83,7 +83,7 @@ class TCPClientReqRes {
             self.sentTime[rcvMessageID] = nil
             
             let elapsedTimeMs = (responseTime.uptimeNanoseconds - requestTime!.uptimeNanoseconds) / 1_000_000
-            self.delays.append(elapsedTimeMs)
+            self.delays.append(Int(elapsedTimeMs))
             print("rcvMessageID = \(rcvMessageID) elapsedTimeMs = \(elapsedTimeMs)")
         }
         task.resume()
