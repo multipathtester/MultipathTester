@@ -25,6 +25,8 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     var multipath: Bool = false
     var traffic: String = "bulk"
     
+    var logFileURL: URL = URL(fileURLWithPath: "dummy")
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -39,6 +41,10 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         if let savedReqResResults = loadReqResResults() {
             dump(savedReqResResults)
             reqresResults = savedReqResResults
+        }
+        
+        if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+            logFileURL = dir.appendingPathComponent("quictraffic.log")
         }
     }
 
@@ -101,7 +107,7 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
             DispatchQueue.global(qos: .background).async {
                 let (bench, result) = self.TCPTest(traffic: traffic, multipath: multipath, startTime: startTime)
                 // FIXME: Hardcoded serverIP
-                self.sendTestToCollectServer(config: multipath ? "MPTCP": "SPTCP", startTime: startTime, serverIP: "5.196.169.232", bench: bench, result: result)
+                self.sendTestToCollectServer(config: multipath ? "MPTCP": "SPTCP", startTime: startTime, serverIP: "5.196.169.232", info: [], bench: bench, result: result)
                 
                 DispatchQueue.main.async {
                     // Show the result to the user
@@ -114,8 +120,9 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
             // Run the network test in background, then do the UI changes on main thread
             DispatchQueue.global(qos: .background).async {
                 let (bench, result) = self.QUICTest(traffic: traffic, multipath: multipath, startTime: startTime)
+                let quicInfo = self.collectQUICInfoAndDeleteLogFile()
                 // FIXME: Hardcoded serverIP
-                self.sendTestToCollectServer(config: multipath ? "MPQUIC": "SPQUIC", startTime: startTime, serverIP: "176.31.249.161", bench: bench, result: result)
+                self.sendTestToCollectServer(config: multipath ? "MPQUIC": "SPQUIC", startTime: startTime, serverIP: "176.31.249.161", info: quicInfo, bench: bench, result: result)
                 
                 DispatchQueue.main.async {
                     // Show the result to the user
@@ -160,9 +167,10 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     }
     
     func QUICTest(traffic: String, multipath: Bool, startTime: Double) -> ([String: Any], [String: Any]) {
+        createLogFile()
         switch traffic {
         case "bulk":
-            let durationString = QuictrafficRun(traffic, true, multipath, "", "https://ns387496.ip-176-31-249.eu:6121/random")
+            let durationString = QuictrafficRun(traffic, true, multipath, logFileURL.absoluteString, "", "https://ns387496.ip-176-31-249.eu:6121/random")
             var duration: Double
             // Be cautious about the formatting of the durationString
             if durationString?.range(of: "ms") != nil {
@@ -176,7 +184,7 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
             return saveBulkAndGetJsons(startTime: startTime, networkProtocol: "QUIC", multipath: multipath, fileName: "random",
                                        serverURL: "https://ns387496.ip-176-31-249.eu:6121/random", durationSecond: duration)
         case "reqres":
-            let resultString = QuictrafficRun(traffic, true, multipath, "", "ns387496.ip-176-31-249.eu:8775")
+            let resultString = QuictrafficRun(traffic, true, multipath, logFileURL.absoluteString, "", "ns387496.ip-176-31-249.eu:8775")
             var sawFirstLine = false
             let runTime: Double = 30.0
             var missed: Int = -1
@@ -194,13 +202,20 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
             return saveReqResAndGetJsons(startTime: startTime, networkProtocol: "QUIC", multipath: multipath, runTime: runTime, missed: missed, delays: delays)
         case "siri":
             // TODO
-            print(QuictrafficRun(traffic, true, multipath, "", "ns387496.ip-176-31-249.eu:8776"))
+            print(QuictrafficRun(traffic, true, multipath, logFileURL.absoluteString, "", "ns387496.ip-176-31-249.eu:8776"))
             return ([:], [:])
         default: fatalError("")
         }
     }
     
     // MARK: Private
+    private func createLogFile() {
+        do {
+            try "".write(to: logFileURL, atomically: false, encoding: .utf8)
+        }
+        catch {}
+    }
+    
     private func loadBulkResults() -> [BulkResult]? {
         return NSKeyedUnarchiver.unarchiveObject(withFile: BulkResult.ArchiveURL.path) as? [BulkResult]
     }
@@ -270,13 +285,32 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         return (bench, result)
     }
     
-    private func sendTestToCollectServer(config: String, startTime: Double, serverIP: String, bench: [String: Any], result: [String: Any]) {
+    private func collectQUICInfoAndDeleteLogFile() -> [Any] {
+        var array = [Any]()
+        do {
+            let text = try String(contentsOf: logFileURL, encoding: .utf8)
+            let lines = text.components(separatedBy: .newlines)
+            for line in lines {
+                print(line)
+                let data = line.data(using: .utf8)
+                let json = try? JSONSerialization.jsonObject(with: data!, options: [])
+                if (json != nil) {
+                    array.append(json!)
+                }
+            }
+            try FileManager.default.removeItem(at: logFileURL)
+        } catch { print("Nope...")}
+        return array
+    }
+    
+    private func sendTestToCollectServer(config: String, startTime: Double, serverIP: String, info: [Any], bench: [String: Any], result: [String: Any]) {
         // FIXME: no need now because hardcoded, but might be needed later
         // self.resolveURL()
         let json: [String: Any] = [
             "bench": bench,
             "config_name": config,
             "device_id": UIDevice.current.identifierForVendor!.uuidString,
+            "proto_info": info,
             "result": result,
             "server_ip": serverIP,
             "smartphone": true,

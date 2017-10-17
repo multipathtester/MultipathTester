@@ -10,6 +10,6 @@
 #include "Universe.objc.h"
 
 
-FOUNDATION_EXPORT NSString* QuictrafficRun(NSString* traffic, BOOL cache, BOOL multipath, NSString* output, NSString* url);
+FOUNDATION_EXPORT NSString* QuictrafficRun(NSString* traffic, BOOL cache, BOOL multipath, NSString* logFile, NSString* output, NSString* url);
 
 #endif
