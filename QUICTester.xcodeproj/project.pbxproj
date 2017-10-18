@@ -14,6 +14,7 @@
 		CE8E284F1F6966FC004F1558 /* TCPClientSiri.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8E284E1F6966FC004F1558 /* TCPClientSiri.swift */; };
 		CE8E28511F6ACA9A004F1558 /* BulkResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8E28501F6ACA9A004F1558 /* BulkResult.swift */; };
 		CE8E28531F6ACABB004F1558 /* ReqResResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8E28521F6ACABB004F1558 /* ReqResResult.swift */; };
+		CED4B5201F97972500E6F86E /* TCPFileDescriptorFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED4B51F1F97972500E6F86E /* TCPFileDescriptorFinder.swift */; };
 		CEDAF24F1F5FE8E000310153 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDAF24E1F5FE8E000310153 /* AppDelegate.swift */; };
 		CEDAF2511F5FE8E000310153 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDAF2501F5FE8E000310153 /* ViewController.swift */; };
 		CEDAF2541F5FE8E000310153 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CEDAF2521F5FE8E000310153 /* Main.storyboard */; };
@@ -62,6 +63,7 @@
 		CE8E284E1F6966FC004F1558 /* TCPClientSiri.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClientSiri.swift; sourceTree = "<group>"; };
 		CE8E28501F6ACA9A004F1558 /* BulkResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BulkResult.swift; sourceTree = "<group>"; };
 		CE8E28521F6ACABB004F1558 /* ReqResResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReqResResult.swift; sourceTree = "<group>"; };
+		CED4B51F1F97972500E6F86E /* TCPFileDescriptorFinder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPFileDescriptorFinder.swift; sourceTree = "<group>"; };
 		CEDAF24B1F5FE8E000310153 /* QUICTester.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QUICTester.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEDAF24E1F5FE8E000310153 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CEDAF2501F5FE8E000310153 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -139,6 +141,7 @@
 				CE8E284C1F696334004F1558 /* TCPClientBulk.swift */,
 				CE8E284A1F695450004F1558 /* TCPClientReqRes.swift */,
 				CE8E284E1F6966FC004F1558 /* TCPClientSiri.swift */,
+				CED4B51F1F97972500E6F86E /* TCPFileDescriptorFinder.swift */,
 			);
 			path = QUICTester;
 			sourceTree = "<group>";
@@ -307,6 +310,7 @@
 				CE8E284B1F695450004F1558 /* TCPClientReqRes.swift in Sources */,
 				CE8E284F1F6966FC004F1558 /* TCPClientSiri.swift in Sources */,
 				CE8E284D1F696334004F1558 /* TCPClientBulk.swift in Sources */,
+				CED4B5201F97972500E6F86E /* TCPFileDescriptorFinder.swift in Sources */,
 				CEDAF24F1F5FE8E000310153 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

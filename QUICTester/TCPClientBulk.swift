@@ -27,10 +27,13 @@ class TCPClientBulk {
         let session = URLSession(configuration: config)
         
         let group = DispatchGroup()
+        let group2 = DispatchGroup()
         group.enter()
+        group2.enter()
         
         DispatchQueue.global(qos: .background).async {
             let start = DispatchTime.now()
+            group2.leave()
             let task = session.dataTask(with: self.url) { (data, resp, error) in
                 guard error == nil && data != nil else {
                     print("\(String(describing: error))")
@@ -55,29 +58,29 @@ class TCPClientBulk {
             task.resume()
         }
         
+        // To be completely sure connection started
+        group2.wait()
         usleep(10000)
         
-        // This is quite ugly, but Apple does not provide an easy way to collect this information...
-        var saddr = sockaddr()
-        var slen: socklen_t = socklen_t(MemoryLayout<sockaddr>.size)
-        var tlen: socklen_t = socklen_t(MemoryLayout<tcp_connection_info>.size)
+        var slen: socklen_t = socklen_t(MemoryLayout<tcp_connection_info>.size)
         var tcpi = tcp_connection_info()
-        var theFd: Int32 = 0
-        // FIXME consider changing this later to adapt to changing fd
-        for fd in 0...100 {
-            let err = getpeername(Int32(fd), &saddr, &slen)
-            if err == -1 {
-                //print("Error occurred with fd \(fd): errno is \(errno)")
-            } else {
-                // FIXME check if the addr is the right one
-                print(err, fd, saddr.sa_data, slen, saddr, saddr.sa_len)
-                theFd = Int32(fd)
+        var res: DispatchTimeoutResult = .timedOut
+        // TODO fix hardcoded address
+        var fd = findTCPFileDescriptor(expectedIP: "5.196.169.232", expectedPort: 80)
+        if (fd < 0) {
+            
+            while (res == .timedOut && fd < 0) {
+                res = group.wait(timeout: DispatchTime.now() + 0.01)
+                print("We missed it once, try again...")
+                // Retry, we might have missed the good one thinking it's and old one
+                fd = findTCPFileDescriptor(expectedIP: "5.196.169.232", expectedPort: 80)
             }
         }
+        print("FD is \(fd)")
         
-        var res = group.wait(timeout: DispatchTime.now() + 0.01)
         while (res == .timedOut) {
-            let err2 = getsockopt(theFd, IPPROTO_TCP, TCP_CONNECTION_INFO, &tcpi, &tlen)
+            res = group.wait(timeout: DispatchTime.now() + 0.01)
+            let err2 = getsockopt(fd, IPPROTO_TCP, TCP_CONNECTION_INFO, &tcpi, &slen)
             if err2 != 0 {
                 print(err2, errno, ENOPROTOOPT)
             } else {
