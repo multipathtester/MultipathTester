@@ -10,6 +10,14 @@
 #include "Universe.objc.h"
 
 
-FOUNDATION_EXPORT NSString* QuictrafficRun(NSString* traffic, BOOL cache, BOOL multipath, NSString* logFile, NSString* output, NSString* url);
+/**
+ * NotifyReachability change for the notifyID
+ */
+FOUNDATION_EXPORT void QuictrafficNotifyReachability(NSString* notifyID);
+
+/**
+ * Run the QUIC traffic experiment
+ */
+FOUNDATION_EXPORT NSString* QuictrafficRun(NSString* traffic, BOOL cache, long maxPathID, NSString* logFile, NSString* output, NSString* url, NSString* notifyID);
 
 #endif

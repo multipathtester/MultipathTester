@@ -11,6 +11,7 @@ import Quictraffic
 
 import os.log
 
+
 class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
     
     // MARK: Properties
@@ -26,6 +27,15 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     var traffic: String = "bulk"
     
     var logFileURL: URL = URL(fileURLWithPath: "dummy")
+    
+    var internetReachability: Reachability = Reachability.forInternetConnection()
+    var notifyID: String = ""
+    
+    @objc
+    func reachabilityChanged(note: Notification) {
+        print("Coucou")
+        QuictrafficNotifyReachability(notifyID)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,6 +56,9 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
             logFileURL = dir.appendingPathComponent("quictraffic.log")
         }
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(ViewController.reachabilityChanged(note:)), name: .reachabilityChanged, object: nil)
+        internetReachability.startNotifier()
     }
 
     override func didReceiveMemoryWarning() {
@@ -153,9 +166,9 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     func TCPTest(traffic: String, multipath: Bool, startTime: Double) -> ([String: Any], [String: Any]) {
         switch traffic {
         case "bulk":
-            let durationSecond = TCPClientBulk(multipath: multipath, url: "http://5.196.169.232/testing_handover_20MB").Run()
+            let res = TCPClientBulk(multipath: multipath, url: "http://5.196.169.232/testing_handover_20MB").Run()
             return saveBulkAndGetJsons(startTime: startTime, networkProtocol: "TCP", multipath: multipath, fileName: "testing_handover_20MB",
-                                  serverURL: "http://5.196.169.232/testing_handover_20MB", durationSecond: durationSecond)
+                                  serverURL: "http://5.196.169.232/testing_handover_20MB", durationSecond: res["time"] as! Double)
         case "reqres":
             let (runTime, missed, delays) = TCPClientReqRes(multipath: multipath, url: "http://5.196.169.232:8008/").Run()
             return saveReqResAndGetJsons(startTime: startTime, networkProtocol: "TCP", multipath: multipath, runTime: runTime, missed: missed, delays: delays)
@@ -168,9 +181,14 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     
     func QUICTest(traffic: String, multipath: Bool, startTime: Double) -> ([String: Any], [String: Any]) {
         createLogFile()
+        let dateFormatter : DateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        let date = Date()
+        notifyID = dateFormatter.string(from: date)
+        print(notifyID)
         switch traffic {
         case "bulk":
-            let durationString = QuictrafficRun(traffic, true, multipath, logFileURL.absoluteString, "", "https://ns387496.ip-176-31-249.eu:6121/random")
+            let durationString = QuictrafficRun(traffic, true, multipath ? 2 : 0, logFileURL.absoluteString, "", "https://ns387496.ip-176-31-249.eu:6121/random3", notifyID)
             var duration: Double
             // Be cautious about the formatting of the durationString
             if durationString?.range(of: "ms") != nil {
@@ -184,7 +202,7 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
             return saveBulkAndGetJsons(startTime: startTime, networkProtocol: "QUIC", multipath: multipath, fileName: "random",
                                        serverURL: "https://ns387496.ip-176-31-249.eu:6121/random", durationSecond: duration)
         case "reqres":
-            let resultString = QuictrafficRun(traffic, true, multipath, logFileURL.absoluteString, "", "ns387496.ip-176-31-249.eu:8775")
+            let resultString = QuictrafficRun(traffic, true, multipath ? 2 : 0, logFileURL.absoluteString, "", "ns387496.ip-176-31-249.eu:8775", notifyID)
             var sawFirstLine = false
             let runTime: Double = 30.0
             var missed: Int = -1
@@ -202,7 +220,7 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
             return saveReqResAndGetJsons(startTime: startTime, networkProtocol: "QUIC", multipath: multipath, runTime: runTime, missed: missed, delays: delays)
         case "siri":
             // TODO
-            print(QuictrafficRun(traffic, true, multipath, logFileURL.absoluteString, "", "ns387496.ip-176-31-249.eu:8776"))
+            print(QuictrafficRun(traffic, true, multipath ? 2 : 0, logFileURL.absoluteString, "", "ns387496.ip-176-31-249.eu:8776", notifyID))
             return ([:], [:])
         default: fatalError("")
         }

@@ -17,7 +17,7 @@ class TCPClientBulk {
         self.url = (URL(string: url))!
     }
     
-    func Run() -> Double {
+    func Run() -> [String: Any] {
         var ret: Double = -1.0
         
         let config = URLSessionConfiguration.ephemeral
@@ -68,7 +68,6 @@ class TCPClientBulk {
         // TODO fix hardcoded address
         var fd = findTCPFileDescriptor(expectedIP: "5.196.169.232", expectedPort: 80)
         if (fd < 0) {
-            
             while (res == .timedOut && fd < 0) {
                 res = group.wait(timeout: DispatchTime.now() + 0.01)
                 print("We missed it once, try again...")
@@ -78,20 +77,35 @@ class TCPClientBulk {
         }
         print("FD is \(fd)")
         
+        var tcpInfos = [Any]()
+        
         while (res == .timedOut) {
             res = group.wait(timeout: DispatchTime.now() + 0.01)
+            let timeInfo = Date().timeIntervalSince1970
             let err2 = getsockopt(fd, IPPROTO_TCP, TCP_CONNECTION_INFO, &tcpi, &slen)
             if err2 != 0 {
                 print(err2, errno, ENOPROTOOPT)
             } else {
-                print(tcpi)
+                tcpInfos.append(tcpInfoToDict(time: timeInfo, tcpi: tcpi))
             }
             res = group.wait(timeout: DispatchTime.now() + 0.01)
+        }
+        
+        // Go for a last TCP info before closing
+        let timeInfo = Date().timeIntervalSince1970
+        let err2 = getsockopt(fd, IPPROTO_TCP, TCP_CONNECTION_INFO, &tcpi, &slen)
+        if err2 != 0 {
+            print(err2, errno, ENOPROTOOPT)
+        } else {
+            tcpInfos.append(tcpInfoToDict(time: timeInfo, tcpi: tcpi))
         }
         
         // group.wait()
         session.finishTasksAndInvalidate()
         
-        return ret
+        return [
+            "time": ret,
+            "tcpInfo": tcpInfos,
+        ]
     }
 }
