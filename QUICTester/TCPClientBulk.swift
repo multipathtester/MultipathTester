@@ -85,6 +85,8 @@ class TCPClientBulk {
             let err2 = getsockopt(fd, IPPROTO_TCP, TCP_CONNECTION_INFO, &tcpi, &slen)
             if err2 != 0 {
                 print(err2, errno, ENOPROTOOPT)
+                fd = findTCPFileDescriptor(expectedIP: "5.196.169.232", expectedPort: 80)
+                print(fd)
             } else {
                 tcpInfos.append(tcpInfoToDict(time: timeInfo, tcpi: tcpi))
             }

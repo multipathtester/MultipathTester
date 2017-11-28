@@ -15,6 +15,7 @@ import os.log
 class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
     
     // MARK: Properties
+    @IBOutlet weak var sendingLabel: UILabel!
     @IBOutlet weak var resultLabel: UILabel!
     @IBOutlet weak var protocolPicker: UIPickerView!
     
@@ -324,6 +325,9 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     private func sendTestToCollectServer(config: String, startTime: Double, serverIP: String, info: [Any], bench: [String: Any], result: [String: Any]) {
         // FIXME: no need now because hardcoded, but might be needed later
         // self.resolveURL()
+        DispatchQueue.main.async {
+            self.sendingLabel.text = "Trying to send..."
+        }
         let json: [String: Any] = [
             "bench": bench,
             "config_name": config,
@@ -334,7 +338,6 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
             "smartphone": true,
             "start_time": startTime,
             ]
-        print(json)
         let jsonData = try? JSONSerialization.data(withJSONObject: json)
         
         // Create POST request
@@ -347,12 +350,18 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             guard let data = data, error == nil else {
+                DispatchQueue.main.async {
+                    self.sendingLabel.text = error?.localizedDescription ?? "No data"
+                }
                 print(error?.localizedDescription ?? "No data")
                 return
             }
             let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
             if let responseJSON = responseJSON as? [String: Any] {
                 print(responseJSON)
+                DispatchQueue.main.async {
+                    self.sendingLabel.text = responseJSON.debugDescription
+                }
             }
         }
         
