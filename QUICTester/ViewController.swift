@@ -189,7 +189,12 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         print(notifyID)
         switch traffic {
         case "bulk":
-            let durationString = QuictrafficRun(traffic, true, multipath ? 2 : 0, logFileURL.absoluteString, "", "https://ns387496.ip-176-31-249.eu:6121/random3", notifyID)
+            let runCfg = RunConfig(traffic: traffic, url: "https://ns387496.ip-176-31-249.eu:6121/random3")
+            runCfg.cacheVar = true
+            runCfg.maxPathIDVar = multipath ? 2 : 0
+            runCfg.logFileVar = logFileURL.absoluteString
+            runCfg.notifyIDVar = notifyID
+            let durationString = QuictrafficRun(runCfg)
             var duration: Double
             // Be cautious about the formatting of the durationString
             if durationString?.range(of: "ms") != nil {
@@ -203,7 +208,12 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
             return saveBulkAndGetJsons(startTime: startTime, networkProtocol: "QUIC", multipath: multipath, fileName: "random",
                                        serverURL: "https://ns387496.ip-176-31-249.eu:6121/random", durationSecond: duration)
         case "reqres":
-            let resultString = QuictrafficRun(traffic, true, multipath ? 2 : 0, logFileURL.absoluteString, "", "ns387496.ip-176-31-249.eu:8775", notifyID)
+            let runCfg = RunConfig(traffic: traffic, url: "ns387496.ip-176-31-249.eu:8775")
+            runCfg.cacheVar = true
+            runCfg.maxPathIDVar = multipath ? 2 : 0
+            runCfg.logFileVar = logFileURL.absoluteString
+            runCfg.notifyIDVar = notifyID
+            let resultString = QuictrafficRun(runCfg)
             var sawFirstLine = false
             let runTime: Double = 30.0
             var missed: Int = -1
@@ -221,7 +231,12 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
             return saveReqResAndGetJsons(startTime: startTime, networkProtocol: "QUIC", multipath: multipath, runTime: runTime, missed: missed, delays: delays)
         case "siri":
             // TODO
-            print(QuictrafficRun(traffic, true, multipath ? 2 : 0, logFileURL.absoluteString, "", "ns387496.ip-176-31-249.eu:8776", notifyID))
+            let runCfg = RunConfig(traffic: traffic, url: "ns387496.ip-176-31-249.eu:8776")
+            runCfg.cacheVar = true
+            runCfg.maxPathIDVar = multipath ? 2 : 0
+            runCfg.logFileVar = logFileURL.absoluteString
+            runCfg.notifyIDVar = notifyID
+            print(QuictrafficRun(runCfg))
             return ([:], [:])
         default: fatalError("")
         }

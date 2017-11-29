@@ -10,6 +10,19 @@
 #include "Universe.objc.h"
 
 
+@protocol QuictrafficRunConfig;
+@class QuictrafficRunConfig;
+
+@protocol QuictrafficRunConfig <NSObject>
+- (BOOL)cache;
+- (NSString*)logFile;
+- (long)maxPathID;
+- (NSString*)notifyID;
+- (NSString*)output;
+- (NSString*)traffic;
+- (NSString*)url;
+@end
+
 /**
  * NotifyReachability change for the notifyID
  */
@@ -18,6 +31,25 @@ FOUNDATION_EXPORT void QuictrafficNotifyReachability(NSString* notifyID);
 /**
  * Run the QUIC traffic experiment
  */
-FOUNDATION_EXPORT NSString* QuictrafficRun(NSString* traffic, BOOL cache, long maxPathID, NSString* logFile, NSString* output, NSString* url, NSString* notifyID);
+FOUNDATION_EXPORT NSString* QuictrafficRun(id<QuictrafficRunConfig> runcfg);
+
+@class QuictrafficRunConfig;
+
+/**
+ * RunConfig provides needed configuration
+ */
+@interface QuictrafficRunConfig : NSObject <goSeqRefInterface, QuictrafficRunConfig> {
+}
+@property(strong, readonly) id _ref;
+
+- (instancetype)initWithRef:(id)ref;
+- (BOOL)cache;
+- (NSString*)logFile;
+- (long)maxPathID;
+- (NSString*)notifyID;
+- (NSString*)output;
+- (NSString*)traffic;
+- (NSString*)url;
+@end
 
 #endif
