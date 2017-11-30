@@ -10,5 +10,7 @@ import Foundation
 
 protocol Test {
     func getDescription() -> String
-    func run() -> Bool
+    func getBenchDict() -> [String: Any]
+    func getStartTime() -> Double
+    func run() -> [String:Any]
 }

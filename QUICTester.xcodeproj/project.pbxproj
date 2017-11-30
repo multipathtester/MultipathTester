@@ -19,6 +19,7 @@
 		CE58F4801FCEA594009EA08F /* QUICConnectivityTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE58F47F1FCEA594009EA08F /* QUICConnectivityTest.swift */; };
 		CE58F4821FCEB03E009EA08F /* Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE58F4811FCEB03E009EA08F /* Test.swift */; };
 		CE58F4871FCEBCD3009EA08F /* RunConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE58F4861FCEBCD3009EA08F /* RunConfig.swift */; };
+		CE58F48A1FCF1114009EA08F /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE58F4891FCF1114009EA08F /* Utils.swift */; };
 		CE8E284B1F695450004F1558 /* TCPClientReqRes.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8E284A1F695450004F1558 /* TCPClientReqRes.swift */; };
 		CE8E284D1F696334004F1558 /* TCPClientBulk.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8E284C1F696334004F1558 /* TCPClientBulk.swift */; };
 		CE8E284F1F6966FC004F1558 /* TCPClientSiri.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8E284E1F6966FC004F1558 /* TCPClientSiri.swift */; };
@@ -81,6 +82,7 @@
 		CE58F47F1FCEA594009EA08F /* QUICConnectivityTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QUICConnectivityTest.swift; sourceTree = "<group>"; };
 		CE58F4811FCEB03E009EA08F /* Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Test.swift; sourceTree = "<group>"; };
 		CE58F4861FCEBCD3009EA08F /* RunConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunConfig.swift; sourceTree = "<group>"; };
+		CE58F4891FCF1114009EA08F /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		CE8E284A1F695450004F1558 /* TCPClientReqRes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClientReqRes.swift; sourceTree = "<group>"; };
 		CE8E284C1F696334004F1558 /* TCPClientBulk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClientBulk.swift; sourceTree = "<group>"; };
 		CE8E284E1F6966FC004F1558 /* TCPClientSiri.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClientSiri.swift; sourceTree = "<group>"; };
@@ -163,6 +165,14 @@
 			path = RunConfig;
 			sourceTree = "<group>";
 		};
+		CE58F4881FCF1100009EA08F /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				CE58F4891FCF1114009EA08F /* Utils.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
 		CEDAF2421F5FE8E000310153 = {
 			isa = PBXGroup;
 			children = (
@@ -188,6 +198,7 @@
 		CEDAF24D1F5FE8E000310153 /* QUICTester */ = {
 			isa = PBXGroup;
 			children = (
+				CE58F4881FCF1100009EA08F /* Utils */,
 				CE58F4831FCEBBDB009EA08F /* RunConfig */,
 				CE58F47C1FCEA4EE009EA08F /* Tests */,
 				CE58F4761FC41BAE009EA08F /* Reachability.m */,
@@ -376,6 +387,7 @@
 				CEDAF2511F5FE8E000310153 /* ViewController.swift in Sources */,
 				CE8E284B1F695450004F1558 /* TCPClientReqRes.swift in Sources */,
 				CE58F4871FCEBCD3009EA08F /* RunConfig.swift in Sources */,
+				CE58F48A1FCF1114009EA08F /* Utils.swift in Sources */,
 				CE58F4771FC41BAF009EA08F /* Reachability.m in Sources */,
 				CE58F47B1FCDB693009EA08F /* TesterViewController.swift in Sources */,
 				CE58F4821FCEB03E009EA08F /* Test.swift in Sources */,

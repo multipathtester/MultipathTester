@@ -25,6 +25,7 @@ class TesterViewController: UIViewController {
 
         // Do any additional setup after loading the view.
         tests = [
+            // TODO add tests to check gQUIC vs. IETF QUIC
             QUICConnectivityTest(port: 443),
             QUICConnectivityTest(port: 6121),
         ]
@@ -42,6 +43,7 @@ class TesterViewController: UIViewController {
         
         DispatchQueue.global(qos: .background).async {
             let nbTests = self.tests.count
+            var results = [[String:Any]]()
             for i in 0..<nbTests {
                 let test = self.tests[i]
                 DispatchQueue.main.async {
@@ -50,7 +52,14 @@ class TesterViewController: UIViewController {
                     self.testLabel.text = test.getDescription()
                     self.progressBar.progress = Float(i) / Float(nbTests)
                 }
-                test.run()
+                results.append(test.run())
+            }
+            print("send the following to the collect server", results)
+            for i in 0..<nbTests {
+                let test = self.tests[i]
+                let result = results[i]
+                // TODO update config, serverIP and info
+                Utils.sendTestToCollectServer(test: test, config: "QUIC", result: result, serverIP: "176.31.249.161", info: nil)
             }
             print("Tests done")
             DispatchQueue.main.async {

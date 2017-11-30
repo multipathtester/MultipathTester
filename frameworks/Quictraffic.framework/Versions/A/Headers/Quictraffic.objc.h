@@ -19,6 +19,7 @@
 - (long)maxPathID;
 - (NSString*)notifyID;
 - (NSString*)output;
+- (BOOL)printBody;
 - (NSString*)traffic;
 - (NSString*)url;
 @end
@@ -48,6 +49,7 @@ FOUNDATION_EXPORT NSString* QuictrafficRun(id<QuictrafficRunConfig> runcfg);
 - (long)maxPathID;
 - (NSString*)notifyID;
 - (NSString*)output;
+- (BOOL)printBody;
 - (NSString*)traffic;
 - (NSString*)url;
 @end

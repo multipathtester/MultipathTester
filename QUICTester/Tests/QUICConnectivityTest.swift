@@ -14,6 +14,8 @@ class QUICConnectivityTest: Test {
     var notifyID: String
     var outFileURL: URL = URL(fileURLWithPath: "dummy")
     var runCfg: RunConfig
+    var startTime: Double = 0.0
+    var url: String
     
     init(port: Int16) {
         self.port = port
@@ -33,29 +35,49 @@ class QUICConnectivityTest: Test {
         }
         catch {}
         
+        url = "https://ns387496.ip-176-31-249.eu:" + String(self.port) + "/connectivityTest"
+        
         // Prepare the run configuration
-        runCfg = RunConfig(traffic: "bulk", url: "https://ns387496.ip-176-31-249.eu:" + String(self.port) + "/connectivityTest")
+        runCfg = RunConfig(traffic: "bulk", url: url)
         runCfg.outputVar = outFileURL.absoluteString
         runCfg.notifyIDVar = notifyID
+        runCfg.printBodyVar = true
     }
     
     func getDescription() -> String {
         return "QUIC Connectivity on port " + String(self.port)
     }
     
-    func run() -> Bool {
+    func getBenchDict() -> [String : Any] {
+        return [
+            "name": "quic_connectivity",
+            "config": [
+                "port": self.port,
+                "url": self.url,
+            ],
+        ]
+    }
+    
+    func getStartTime() -> Double {
+        return startTime
+    }
+    
+    func run() -> [String:Any] {
+        startTime = Date().timeIntervalSince1970
+        var success = false
         let durationString = QuictrafficRun(runCfg)
-        print(durationString as Any)
         do {
             let text = try String(contentsOf: outFileURL, encoding: .utf8)
             let lines = text.components(separatedBy: .newlines)
             for line in lines {
-                print(line)
                 if line.contains("It works!") {
-                    return true
+                    success = true
                 }
             }
         } catch { print("Nope...") }
-        return false
+        return [
+            "run_time": String(format: "%.9f", Utils.parse(durationString: durationString!)),
+            "success": success,
+        ]
     }
 }

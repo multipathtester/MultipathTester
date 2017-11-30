@@ -10,12 +10,15 @@ import Foundation
 import Quictraffic
 
 class RunConfig: NSObject, QuictrafficRunConfigProtocol {
+
+    // MARK: Properties
     var trafficVar: String
     var cacheVar: Bool = false
     var logFileVar: String = ""
     var maxPathIDVar: Int = 0
     var notifyIDVar: String = ""
     var outputVar: String = ""
+    var printBodyVar: Bool = false
     var urlVar: String
     
     init(traffic: String, url: String) {
@@ -45,6 +48,10 @@ class RunConfig: NSObject, QuictrafficRunConfigProtocol {
     
     func output() -> String! {
         return outputVar
+    }
+    
+    func printBody() -> Bool {
+        return printBodyVar
     }
     
     func url() -> String! {
