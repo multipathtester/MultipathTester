@@ -212,7 +212,7 @@
                                 </tableViewCellContentView>
                                 <connections>
                                     <outlet property="startTimeLabel" destination="fHk-be-1ao" id="azM-dJ-zGm"/>
-                                    <segue destination="BVT-65-RP7" kind="show" id="cuV-2d-Dkr"/>
+                                    <segue destination="WmF-Kh-pGc" kind="show" identifier="ShowTestResults" id="fFd-0b-Hng"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -224,7 +224,56 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zfO-z7-ovu" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-194.40000000000001" y="921.58920539730138"/>
+            <point key="canvasLocation" x="-217" y="925"/>
+        </scene>
+        <!--Test Result Table View Controller-->
+        <scene sceneID="A80-6r-50i">
+            <objects>
+                <tableViewController id="WmF-Kh-pGc" customClass="TestResultTableViewController" customModule="QUICTester" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="90" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="4Lk-nA-HuX">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TestResultTableViewCell" rowHeight="90" id="Bu1-Ti-zqf" customClass="TestResultTableViewCell" customModule="QUICTester" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="28" width="375" height="90"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Bu1-Ti-zqf" id="YgR-l8-WBs">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="89.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Test Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VJ2-di-G2D">
+                                            <rect key="frame" x="16" y="11" width="343" height="21"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Result" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="r1q-uc-oen">
+                                            <rect key="frame" x="16" y="39" width="343" height="50"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="nameLabel" destination="VJ2-di-G2D" id="6DE-Cm-m5Y"/>
+                                    <outlet property="resultLabel" destination="r1q-uc-oen" id="IAb-zW-uL5"/>
+                                    <segue destination="BVT-65-RP7" kind="show" id="fpS-m2-4Ku"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="WmF-Kh-pGc" id="1EE-Fv-xNw"/>
+                            <outlet property="delegate" destination="WmF-Kh-pGc" id="T9H-bR-UvJ"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="E2Z-EQ-jBa" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="888.79999999999995" y="924.28785607196414"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="9Jm-RT-Vvt">
@@ -253,7 +302,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6a2-uu-jLJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="644" y="921.58920539730138"/>
+            <point key="canvasLocation" x="1879" y="925"/>
         </scene>
     </scenes>
     <resources>

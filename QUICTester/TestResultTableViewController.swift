@@ -1,5 +1,5 @@
 //
-//  BenchmarkResultTableViewController.swift
+//  TestResultTableViewController.swift
 //  QUICTester
 //
 //  Created by Quentin De Coninck on 12/1/17.
@@ -8,9 +8,12 @@
 
 import UIKit
 
-class BenchmarkResultTableViewController: UITableViewController {
+class TestResultTableViewController: UITableViewController {
     // MARK: Properties
-    var results = [BenchmarkResult]()
+    /*
+     This value is passed by `MealTableViewController` in `prepare(for:sender:)`
+     */
+    var testResults: [TestResult]?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,10 +23,6 @@ class BenchmarkResultTableViewController: UITableViewController {
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
-        
-        if let savedBenchmarkResults = loadBenchmarkResults() {
-            results += savedBenchmarkResults
-        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -38,24 +37,27 @@ class BenchmarkResultTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return results.count
+        guard let testResultsOk = testResults else {
+            return 0
+        }
+        return testResultsOk.count
     }
 
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cellIdentifier = "BenchmarkResultTableViewCell"
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? BenchmarkResultTableViewCell else {
-            fatalError("The dequeued cell is not an instance of BenchmarkResultTableViewCell.")
+        let cellIdentifier = "TestResultTableViewCell"
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? TestResultTableViewCell else {
+            fatalError("The dequeued cell is not an instance of TestResultTableViewCell.")
         }
-
-        // Fetches the appropriate benchmarkResult for the data source layout
-        let benchmarkResult = results[indexPath.row]
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd MMM yyyy HH:mm:ss"
-        dateFormatter.locale = .current
-        cell.startTimeLabel.text = dateFormatter.string(from: Date(timeIntervalSince1970: benchmarkResult.startTime))
+        
+        // Fetches the appropriate testResult for the data source layout
+        let testResult = testResults![indexPath.row]
+        cell.nameLabel.text = testResult.getDescription()
+        cell.resultLabel.text = testResult.getResult()
         
         return cell
     }
+    
 
     /*
     // Override to support conditional editing of the table view.
@@ -92,38 +94,14 @@ class BenchmarkResultTableViewController: UITableViewController {
     }
     */
 
+    /*
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
-        
-        super.prepare(for: segue, sender: sender)
-        switch(segue.identifier ?? "") {
-        case "ShowTestResults":
-            guard let testResultsDetailViewController = segue.destination as? TestResultTableViewController else {
-                fatalError("Unexpected destination: \(segue.destination)")
-            }
-            
-            guard let selectedMealCell = sender as? BenchmarkResultTableViewCell else {
-                fatalError("Unexpected sender: \(String(describing: sender))")
-            }
-            
-            guard let indexPath = tableView.indexPath(for: selectedMealCell) else {
-                fatalError("The selected cell is not being displayed by the table")
-            }
-            
-            let selectedBenchmarkResult = results[indexPath.row]
-            testResultsDetailViewController.testResults = selectedBenchmarkResult.testResults
-        default:
-            fatalError("Unexpected Segue Identifier; \(String(describing: segue.identifier))")
-        }
     }
-    
-    // MARK: Private
-    private func loadBenchmarkResults() -> [BenchmarkResult]? {
-        return NSKeyedUnarchiver.unarchiveObject(withFile: BenchmarkResult.ArchiveURL.path) as? [BenchmarkResult]
-    }
+    */
 
 }

@@ -8,7 +8,7 @@
 
 import Foundation
 
-class ConnectivityResult: NSObject, NSCoding, TestResult {
+class QUICConnectivityResult: NSObject, NSCoding, TestResult {
     // MARK: Properties
     var target: String
     var runTime: Double
@@ -16,7 +16,7 @@ class ConnectivityResult: NSObject, NSCoding, TestResult {
     
     // MARK: Archiving Paths
     static let DocumentsDirectory = FileManager().urls(for: .documentDirectory, in: .userDomainMask).first!
-    static let ArchiveURL = DocumentsDirectory.appendingPathComponent("connectivityResults")
+    static let ArchiveURL = DocumentsDirectory.appendingPathComponent("quicConnectivityResults")
     
     // MARK: Types
     struct PropertyKey {
@@ -47,7 +47,14 @@ class ConnectivityResult: NSObject, NSCoding, TestResult {
         self.init(target: target, runTime: runTime, success: success)
     }
     
-    func getText() -> String {
-        return "Connect to " + target + ": " + String(success)
+    func getDescription() -> String {
+        return target
+    }
+    
+    func getResult() -> String {
+        if success {
+            return "Succeeded in " + String(runTime) + " s"
+        }
+        return "Failed"
     }
 }

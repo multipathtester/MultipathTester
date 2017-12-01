@@ -16,7 +16,7 @@ class QUICConnectivityTest: BaseTest, Test {
     
     init(port: Int16) {
         self.port = port
-        url = "https://ns387496.ip-176-31-249.eu:" + String(self.port) + "/connectivityTest"
+        url = "https://traffic.multipath-quic.org:" + String(self.port) + "/connectivityTest"
         super.init(traffic: "bulk", url: url)
         
         // Out file
@@ -49,7 +49,7 @@ class QUICConnectivityTest: BaseTest, Test {
     
     func getTestResult() -> TestResult {
         // FIXME should check if result is ready
-        return ConnectivityResult(target: "Connectivity port " + String(port), runTime: Double(result["run_time"] as! String)!, success: result["success"] as! Bool)!
+        return QUICConnectivityResult(target: "QUIC Connectivity port " + String(port), runTime: Double(result["run_time"] as! String)!, success: result["success"] as! Bool)!
     }
     
     func run() -> [String:Any] {

@@ -8,5 +8,6 @@
 
 import Foundation
 protocol TestResult {
-    func getText() -> String
+    func getDescription() -> String
+    func getResult() -> String
 }
