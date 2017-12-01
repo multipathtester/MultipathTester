@@ -168,7 +168,7 @@
                         <viewLayoutGuide key="safeArea" id="r10-vq-eo5"/>
                     </view>
                     <navigationItem key="navigationItem" title="QUICTester" id="kLQ-0W-v1H">
-                        <barButtonItem key="rightBarButtonItem" title="Previous Runs" id="u6f-HK-t05">
+                        <barButtonItem key="rightBarButtonItem" title="Results" id="u6f-HK-t05">
                             <connections>
                                 <segue destination="XOS-Pk-oxk" kind="show" id="ycl-xp-Kwf"/>
                             </connections>
@@ -185,23 +185,33 @@
             </objects>
             <point key="canvasLocation" x="-1212" y="925.18740629685169"/>
         </scene>
-        <!--Table View Controller-->
+        <!--Benchmark Result Table View Controller-->
         <scene sceneID="aO2-wA-yZk">
             <objects>
-                <tableViewController id="XOS-Pk-oxk" sceneMemberID="viewController">
+                <tableViewController id="XOS-Pk-oxk" customClass="BenchmarkResultTableViewController" customModule="QUICTester" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="4pT-vR-22B">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="GX8-oH-oW1">
-                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="BenchmarkResultTableViewCell" rowHeight="38" id="GX8-oH-oW1" customClass="BenchmarkResultTableViewCell" customModule="QUICTester" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="28" width="375" height="38"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="GX8-oH-oW1" id="8jV-GH-K1l">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="37.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="BenchMarkTime" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fHk-be-1ao">
+                                            <rect key="frame" x="16" y="11" width="343" height="21"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
                                 </tableViewCellContentView>
                                 <connections>
+                                    <outlet property="startTimeLabel" destination="fHk-be-1ao" id="azM-dJ-zGm"/>
                                     <segue destination="BVT-65-RP7" kind="show" id="cuV-2d-Dkr"/>
                                 </connections>
                             </tableViewCell>
@@ -214,7 +224,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zfO-z7-ovu" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-193" y="922"/>
+            <point key="canvasLocation" x="-194.40000000000001" y="921.58920539730138"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="9Jm-RT-Vvt">

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import os.log
 
 class TesterViewController: UIViewController {
 
@@ -25,7 +26,7 @@ class TesterViewController: UIViewController {
 
         // Do any additional setup after loading the view.
         tests = [
-            // TODO add tests to check gQUIC vs. IETF QUIC
+            // TODO add tests to check gQUIC vs. IETF QUIC, v4 vs. v6,...
             QUICConnectivityTest(port: 443),
             QUICConnectivityTest(port: 6121),
         ]
@@ -38,12 +39,14 @@ class TesterViewController: UIViewController {
     
     // MARK: Actions
     @IBAction func startTests(_ sender: UIButton) {
+        let startTime = Date().timeIntervalSince1970
         sender.isEnabled = false
         print("We start the tests")
         
         DispatchQueue.global(qos: .background).async {
             let nbTests = self.tests.count
             var results = [[String:Any]]()
+            var testResults = [TestResult]()
             for i in 0..<nbTests {
                 let test = self.tests[i]
                 DispatchQueue.main.async {
@@ -57,10 +60,13 @@ class TesterViewController: UIViewController {
             print("send the following to the collect server", results)
             for i in 0..<nbTests {
                 let test = self.tests[i]
+                testResults.append(test.getTestResult())
                 let result = results[i]
                 // TODO update config, serverIP and info
                 Utils.sendTestToCollectServer(test: test, config: "QUIC", result: result, serverIP: "176.31.249.161", info: nil)
             }
+            let benchmarkResult = BenchmarkResult(startTime: startTime, testResults: testResults)
+            self.saveBenchmarkTest(result: benchmarkResult!)
             print("Tests done")
             DispatchQueue.main.async {
                 self.progressBar.progress = 1.0
@@ -81,4 +87,20 @@ class TesterViewController: UIViewController {
     }
     */
 
+    // MARK: Private
+    private func saveBenchmarkTest(result: BenchmarkResult) {
+        var results: [BenchmarkResult] = [BenchmarkResult]()
+        if let resultsOk = NSKeyedUnarchiver.unarchiveObject(withFile: BenchmarkResult.ArchiveURL.path) as? [BenchmarkResult] {
+            results = resultsOk
+        }
+        // Add the new result at the top of the list
+        results = [result] + results
+        // And save the results
+        let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(results, toFile: BenchmarkResult.ArchiveURL.path)
+        if isSuccessfulSave {
+            os_log("Results successfully saved.", log: OSLog.default, type: .debug)
+        } else {
+            os_log("Failed to save results...", log: OSLog.default, type: .error)
+        }
+    }
 }

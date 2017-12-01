@@ -10,12 +10,14 @@ import UIKit
 import Quictraffic
 
 class QUICConnectivityTest: Test {
+    // MARK: Properties
     var port: Int16
     var notifyID: String
     var outFileURL: URL = URL(fileURLWithPath: "dummy")
     var runCfg: RunConfig
     var startTime: Double = 0.0
     var url: String
+    var result: [String:Any] = [String:Any]()
     
     init(port: Int16) {
         self.port = port
@@ -62,6 +64,11 @@ class QUICConnectivityTest: Test {
         return startTime
     }
     
+    func getTestResult() -> TestResult {
+        // FIXME should check if result is ready
+        return ConnectivityResult(target: "Connectivity port " + String(port), runTime: Double(result["run_time"] as! String)!, success: result["success"] as! Bool)!
+    }
+    
     func run() -> [String:Any] {
         startTime = Date().timeIntervalSince1970
         var success = false
@@ -75,9 +82,10 @@ class QUICConnectivityTest: Test {
                 }
             }
         } catch { print("Nope...") }
-        return [
+        result = [
             "run_time": String(format: "%.9f", Utils.parse(durationString: durationString!)),
             "success": success,
         ]
+        return result
     }
 }

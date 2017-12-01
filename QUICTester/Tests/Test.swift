@@ -12,5 +12,6 @@ protocol Test {
     func getDescription() -> String
     func getBenchDict() -> [String: Any]
     func getStartTime() -> Double
+    func getTestResult() -> TestResult
     func run() -> [String:Any]
 }
