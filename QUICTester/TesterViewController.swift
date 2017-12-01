@@ -9,6 +9,8 @@
 import UIKit
 import os.log
 
+import Quictraffic
+
 class TesterViewController: UIViewController {
 
     // MARK: Properties
@@ -18,6 +20,8 @@ class TesterViewController: UIViewController {
     @IBOutlet weak var progressBar: UIProgressView!
     
     var tests: [Test] = [Test]()
+    
+    var internetReachability: Reachability = Reachability.forInternetConnection()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,6 +34,17 @@ class TesterViewController: UIViewController {
             QUICConnectivityTest(port: 443),
             QUICConnectivityTest(port: 6121),
         ]
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(ViewController.reachabilityChanged(note:)), name: .reachabilityChanged, object: nil)
+        internetReachability.startNotifier()
+    }
+    
+    @objc
+    func reachabilityChanged(note: Notification) {
+        print("Reachability changed!")
+        for i in 0..<tests.count {
+            QuictrafficNotifyReachability(tests[i].getNotifyID())
+        }
     }
 
     override func didReceiveMemoryWarning() {

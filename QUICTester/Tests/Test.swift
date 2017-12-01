@@ -11,6 +11,7 @@ import Foundation
 protocol Test {
     func getDescription() -> String
     func getBenchDict() -> [String: Any]
+    func getNotifyID() -> String
     func getStartTime() -> Double
     func getTestResult() -> TestResult
     func run() -> [String:Any]

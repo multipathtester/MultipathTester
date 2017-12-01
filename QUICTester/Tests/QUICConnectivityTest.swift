@@ -9,24 +9,15 @@
 import UIKit
 import Quictraffic
 
-class QUICConnectivityTest: Test {
+class QUICConnectivityTest: BaseTest, Test {
     // MARK: Properties
     var port: Int16
-    var notifyID: String
-    var outFileURL: URL = URL(fileURLWithPath: "dummy")
-    var runCfg: RunConfig
-    var startTime: Double = 0.0
     var url: String
-    var result: [String:Any] = [String:Any]()
     
     init(port: Int16) {
         self.port = port
-        
-        // Notify ID
-        let dateFormatter : DateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        let date = Date()
-        notifyID = dateFormatter.string(from: date)
+        url = "https://ns387496.ip-176-31-249.eu:" + String(self.port) + "/connectivityTest"
+        super.init(traffic: "bulk", url: url)
         
         // Out file
         if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
@@ -37,12 +28,8 @@ class QUICConnectivityTest: Test {
         }
         catch {}
         
-        url = "https://ns387496.ip-176-31-249.eu:" + String(self.port) + "/connectivityTest"
-        
         // Prepare the run configuration
-        runCfg = RunConfig(traffic: "bulk", url: url)
         runCfg.outputVar = outFileURL.absoluteString
-        runCfg.notifyIDVar = notifyID
         runCfg.printBodyVar = true
     }
     
@@ -58,10 +45,6 @@ class QUICConnectivityTest: Test {
                 "url": self.url,
             ],
         ]
-    }
-    
-    func getStartTime() -> Double {
-        return startTime
     }
     
     func getTestResult() -> TestResult {
