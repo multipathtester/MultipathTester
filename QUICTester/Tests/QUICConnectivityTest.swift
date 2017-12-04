@@ -56,6 +56,10 @@ class QUICConnectivityTest: BaseTest, Test {
         ]
     }
     
+    func getConfig() -> String {
+        return "QUIC"
+    }
+    
     func getTestResult() -> TestResult {
         // FIXME should check if result is ready
         let target: String

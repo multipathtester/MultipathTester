@@ -17,6 +17,7 @@ enum IPVersion {
 protocol Test {
     func getDescription() -> String
     func getBenchDict() -> [String: Any]
+    func getConfig() -> String
     func getNotifyID() -> String
     func getQUICInfo() -> [[String: Any]]
     func getStartTime() -> Double

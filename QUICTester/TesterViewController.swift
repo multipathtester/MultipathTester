@@ -64,7 +64,6 @@ class TesterViewController: UIViewController {
             let nbTests = self.tests.count
             var results = [[String:Any]]()
             var testResults = [TestResult]()
-            var quicInfos = [[[String: Any]]]()
             for i in 0..<nbTests {
                 let test = self.tests[i]
                 DispatchQueue.main.async {
@@ -74,16 +73,14 @@ class TesterViewController: UIViewController {
                     self.progressBar.progress = Float(i) / Float(nbTests)
                 }
                 results.append(test.run())
-                quicInfos.append(test.getQUICInfo())
             }
             print("send the following to the collect server", results)
             for i in 0..<nbTests {
                 let test = self.tests[i]
                 testResults.append(test.getTestResult())
                 let result = results[i]
-                let quicInfo = quicInfos[i]
-                // TODO update config, serverIP and info
-                Utils.sendTestToCollectServer(test: test, config: "QUIC", result: result, serverIP: "176.31.249.161", info: quicInfo)
+                // TODO update serverIP
+                Utils.sendTestToCollectServer(test: test, result: result, serverIP: "176.31.249.161")
             }
             let benchmarkResult = BenchmarkResult(startTime: startTime, testResults: testResults)
             self.saveBenchmarkTest(result: benchmarkResult!)

@@ -38,19 +38,17 @@ class Utils {
         return array
     }
     
-    static func sendTestToCollectServer(test: Test, config: String, result: [String:Any], serverIP: String, info: [[String:Any]]?) {
-        var json: [String: Any] = [
+    static func sendTestToCollectServer(test: Test, result: [String:Any], serverIP: String) {
+        let json: [String: Any] = [
             "bench": test.getBenchDict(),
-            "config_name": config,
+            "config_name": test.getConfig(),
             "device_id": UIDevice.current.identifierForVendor!.uuidString,
+            "proto_info": test.getQUICInfo(),
             "result": result,
             "server_ip": serverIP,
             "smartphone": true,
             "start_time": test.getStartTime(),
         ]
-        if info != nil {
-            json["proto_info"] = info!
-        }
         let jsonData = try? JSONSerialization.data(withJSONObject: json)
         
         // Create POST request
