@@ -27,7 +27,6 @@ class Utils {
             let text = try String(contentsOf: logFileURL, encoding: .utf8)
             let lines = text.components(separatedBy: .newlines)
             for line in lines {
-                print(line)
                 let data = line.data(using: .utf8)
                 let json = try? JSONSerialization.jsonObject(with: data!, options: [])
                 if (json != nil) {

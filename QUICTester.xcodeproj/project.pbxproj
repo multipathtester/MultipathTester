@@ -28,6 +28,8 @@
 		CE58F49B1FD193AD009EA08F /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = CE58F4991FD19351009EA08F /* Reachability.m */; };
 		CE58F49D1FD195ED009EA08F /* TestResultTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE58F49C1FD195ED009EA08F /* TestResultTableViewController.swift */; };
 		CE58F49F1FD19A15009EA08F /* TestResultTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE58F49E1FD19A15009EA08F /* TestResultTableViewCell.swift */; };
+		CE58F4A11FD57C58009EA08F /* QUICBulkDownloadTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE58F4A01FD57C58009EA08F /* QUICBulkDownloadTest.swift */; };
+		CE58F4A31FD57FD7009EA08F /* QUICBulkDownloadResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE58F4A21FD57FD7009EA08F /* QUICBulkDownloadResult.swift */; };
 		CE8E284B1F695450004F1558 /* TCPClientReqRes.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8E284A1F695450004F1558 /* TCPClientReqRes.swift */; };
 		CE8E284D1F696334004F1558 /* TCPClientBulk.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8E284C1F696334004F1558 /* TCPClientBulk.swift */; };
 		CE8E284F1F6966FC004F1558 /* TCPClientSiri.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8E284E1F6966FC004F1558 /* TCPClientSiri.swift */; };
@@ -99,6 +101,8 @@
 		CE58F49A1FD19351009EA08F /* Reachability.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Reachability.h; path = Reachability/Reachability.h; sourceTree = "<group>"; };
 		CE58F49C1FD195ED009EA08F /* TestResultTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestResultTableViewController.swift; sourceTree = "<group>"; };
 		CE58F49E1FD19A15009EA08F /* TestResultTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestResultTableViewCell.swift; sourceTree = "<group>"; };
+		CE58F4A01FD57C58009EA08F /* QUICBulkDownloadTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QUICBulkDownloadTest.swift; sourceTree = "<group>"; };
+		CE58F4A21FD57FD7009EA08F /* QUICBulkDownloadResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QUICBulkDownloadResult.swift; sourceTree = "<group>"; };
 		CE8E284A1F695450004F1558 /* TCPClientReqRes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClientReqRes.swift; sourceTree = "<group>"; };
 		CE8E284C1F696334004F1558 /* TCPClientBulk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClientBulk.swift; sourceTree = "<group>"; };
 		CE8E284E1F6966FC004F1558 /* TCPClientSiri.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClientSiri.swift; sourceTree = "<group>"; };
@@ -169,6 +173,7 @@
 			children = (
 				CE58F4961FD18E63009EA08F /* BaseTest.swift */,
 				CE58F4811FCEB03E009EA08F /* Test.swift */,
+				CE58F4A01FD57C58009EA08F /* QUICBulkDownloadTest.swift */,
 				CE58F47F1FCEA594009EA08F /* QUICConnectivityTest.swift */,
 			);
 			path = Tests;
@@ -195,6 +200,7 @@
 			children = (
 				CE58F48E1FD1640F009EA08F /* BenchmarkResult.swift */,
 				CE58F4901FD168D8009EA08F /* TestResult.swift */,
+				CE58F4A21FD57FD7009EA08F /* QUICBulkDownloadResult.swift */,
 				CE58F4921FD16A97009EA08F /* QUICConnectivityResult.swift */,
 			);
 			path = Results;
@@ -425,12 +431,14 @@
 				CE58F49F1FD19A15009EA08F /* TestResultTableViewCell.swift in Sources */,
 				CE58F4911FD168D8009EA08F /* TestResult.swift in Sources */,
 				CE58F4871FCEBCD3009EA08F /* RunConfig.swift in Sources */,
+				CE58F4A31FD57FD7009EA08F /* QUICBulkDownloadResult.swift in Sources */,
 				CE58F48A1FCF1114009EA08F /* Utils.swift in Sources */,
 				CE58F49B1FD193AD009EA08F /* Reachability.m in Sources */,
 				CE58F47B1FCDB693009EA08F /* TesterViewController.swift in Sources */,
 				CE58F4821FCEB03E009EA08F /* Test.swift in Sources */,
 				CE8E284F1F6966FC004F1558 /* TCPClientSiri.swift in Sources */,
 				CE8E284D1F696334004F1558 /* TCPClientBulk.swift in Sources */,
+				CE58F4A11FD57C58009EA08F /* QUICBulkDownloadTest.swift in Sources */,
 				CED4B5201F97972500E6F86E /* TCPFileDescriptorFinder.swift in Sources */,
 				CED4B5221F9F7FE300E6F86E /* TCPInfoConverter.swift in Sources */,
 				CE58F4801FCEA594009EA08F /* QUICConnectivityTest.swift in Sources */,

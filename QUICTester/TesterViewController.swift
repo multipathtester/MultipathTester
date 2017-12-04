@@ -35,6 +35,9 @@ class TesterViewController: UIViewController {
             QUICConnectivityTest(port: 6121, ipVer: .any),
             QUICConnectivityTest(port: 443, ipVer: .v4),
             QUICConnectivityTest(port: 443, ipVer: .v6),
+            QUICBulkDownloadTest(urlPath: "10MB", maxPathID: 0, ipVer: .v4),
+            QUICBulkDownloadTest(urlPath: "10MB", maxPathID: 0, ipVer: .v6),
+            QUICBulkDownloadTest(urlPath: "10MB", maxPathID: 255, ipVer: .any),
         ]
         
         NotificationCenter.default.addObserver(self, selector: #selector(ViewController.reachabilityChanged(note:)), name: .reachabilityChanged, object: nil)

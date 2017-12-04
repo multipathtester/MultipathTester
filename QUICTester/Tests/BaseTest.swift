@@ -46,6 +46,10 @@ class BaseTest {
             try "".write(to: outFileURL, atomically: false, encoding: .utf8)
         }
         catch {print(outFileURL, "oups out")}
+        
+        // Prepare the run configuration
+        runCfg.logFileVar = logFileURL.absoluteString
+        runCfg.outputVar = outFileURL.absoluteString
     }
     
     func getNotifyID() -> String {

@@ -1,23 +1,25 @@
 //
-//  QUICConnectivityTest.swift
+//  QUICBulkDownload.swift
 //  QUICTester
 //
-//  Created by Quentin De Coninck on 11/29/17.
+//  Created by Quentin De Coninck on 12/4/17.
 //  Copyright © 2017 Universite Catholique de Louvain. All rights reserved.
 //
 
 import UIKit
 import Quictraffic
 
-class QUICConnectivityTest: BaseTest, Test {
+class QUICBulkDownloadTest: BaseTest, Test {
     // MARK: Properties
     var ipVer: IPVersion
-    var port: Int16
+    var maxPathID: UInt8
     var url: String
+    var urlPath: String
     
-    init(port: Int16, ipVer: IPVersion) {
-        self.port = port
+    init(urlPath: String, maxPathID: UInt8, ipVer: IPVersion) {
         self.ipVer = ipVer
+        self.maxPathID = maxPathID
+        self.urlPath = urlPath
         var baseURL: String = "traffic.multipath-quic.org"
         var suffix: String
         switch ipVer {
@@ -32,61 +34,63 @@ class QUICConnectivityTest: BaseTest, Test {
             suffix = "any"
         }
         
-        url = "https://" + baseURL + ":" + String(self.port) + "/connectivityTest"
-        let filePrefix = "quictraffic_connectivity_" + String(self.port) + "_" + suffix
+        url = "https://" + baseURL + ":443/" + urlPath
+        let filePrefix = "quictraffic_bulk_" + urlPath + "_" + suffix
+        
         super.init(traffic: "bulk", url: url, filePrefix: filePrefix)
         
         // Prepare the run configuration
-        runCfg.printBodyVar = true
+        runCfg.maxPathIDVar = Int(maxPathID)
     }
     
     func getDescription() -> String {
         switch ipVer {
         case .v4:
-            return "QUIC IPv4 Connectivity"
+            return getConfig() + " IPv4 Bulk Download of " + urlPath
         case .v6:
-            return "QUIC IPv6 Connectivity"
+            return getConfig() + " IPv6 Bulk Download of " + urlPath
         default:
-            return "QUIC Connectivity port " + String(port)
+            return getConfig() + " Bulk Download of " + urlPath
         }
     }
     
     func getBenchDict() -> [String : Any] {
         return [
-            "name": "quic_connectivity",
+            "name": "simple_http_get",
             "config": [
-                "port": self.port,
-                "url": self.url,
+                "file_name": urlPath,
+                "server_url": url,
             ],
         ]
     }
     
     func getConfig() -> String {
-        return "QUIC"
+        if maxPathID > 0 {
+            return "MPQUIC"
+        } else {
+            return "QUIC"
+        }
     }
     
     func getTestResult() -> TestResult {
-        // FIXME should check if result is ready
-        return QUICConnectivityResult(name: getDescription(), runTime: Double(result["run_time"] as! String)!, success: result["success"] as! Bool)!
+        return QUICBulkDownloadResult(name: getDescription(), runTime: Double(result["run_time"] as! String)!)!
     }
     
-    func run() -> [String:Any] {
+    func run() -> [String : Any] {
         startTime = Date().timeIntervalSince1970
-        var success = false
         let durationString = QuictrafficRun(runCfg)
         do {
             let text = try String(contentsOf: outFileURL, encoding: .utf8)
             let lines = text.components(separatedBy: .newlines)
             for line in lines {
-                if line.contains("It works!") {
-                    success = true
-                }
+                print(line)
             }
         } catch { print("Nope...") }
         result = [
             "run_time": String(format: "%.9f", Utils.parse(durationString: durationString!)),
-            "success": success,
         ]
         return result
     }
+    
+    
 }
