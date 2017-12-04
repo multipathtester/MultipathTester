@@ -11,24 +11,33 @@ import Quictraffic
 
 class QUICConnectivityTest: BaseTest, Test {
     // MARK: Properties
+    var ipVer: IPVersion
     var port: Int16
     var url: String
     
-    init(port: Int16) {
+    init(port: Int16, ipVer: IPVersion) {
         self.port = port
-        url = "https://traffic.multipath-quic.org:" + String(self.port) + "/connectivityTest"
-        super.init(traffic: "bulk", url: url)
+        self.ipVer = ipVer
+        var baseURL: String = "traffic.multipath-quic.org"
+        var suffix: String
+        switch ipVer {
+        case .v4:
+            baseURL = "v4.traffic.multipath-quic.org"
+            suffix = "4"
+        case .v6:
+            baseURL = "v6.traffic.multipath-quic.org"
+            suffix = "6"
+        default:
+            baseURL = "traffic.multipath-quic.org"
+            suffix = "any"
+        }
         
-        // Out file
-        if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
-            outFileURL = dir.appendingPathComponent("quictraffic_connectivity_" + String(self.port) + ".out")
-        }
-        do {
-            try "".write(to: outFileURL, atomically: false, encoding: .utf8)
-        }
-        catch {}
+        url = "https://" + baseURL + ":" + String(self.port) + "/connectivityTest"
+        let filePrefix = "quictraffic_connectivity_" + String(self.port) + "_" + suffix
+        super.init(traffic: "bulk", url: url, filePrefix: filePrefix)
         
         // Prepare the run configuration
+        runCfg.logFileVar = logFileURL.absoluteString
         runCfg.outputVar = outFileURL.absoluteString
         runCfg.printBodyVar = true
     }
@@ -49,7 +58,17 @@ class QUICConnectivityTest: BaseTest, Test {
     
     func getTestResult() -> TestResult {
         // FIXME should check if result is ready
-        return QUICConnectivityResult(target: "QUIC Connectivity port " + String(port), runTime: Double(result["run_time"] as! String)!, success: result["success"] as! Bool)!
+        let target: String
+        switch ipVer {
+            case .v4:
+                target = "QUIC IPv4 Connectivity"
+            case .v6:
+                target = "QUIC IPv6 Connectivity"
+            default:
+                target = "QUIC Connectivity port " + String(port)
+        }
+        
+        return QUICConnectivityResult(target: target, runTime: Double(result["run_time"] as! String)!, success: result["success"] as! Bool)!
     }
     
     func run() -> [String:Any] {

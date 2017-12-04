@@ -8,10 +8,17 @@
 
 import Foundation
 
+enum IPVersion {
+    case v4
+    case v6
+    case any
+}
+
 protocol Test {
     func getDescription() -> String
     func getBenchDict() -> [String: Any]
     func getNotifyID() -> String
+    func getQUICInfo() -> [[String: Any]]
     func getStartTime() -> Double
     func getTestResult() -> TestResult
     func run() -> [String:Any]

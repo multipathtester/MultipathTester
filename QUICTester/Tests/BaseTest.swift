@@ -15,13 +15,37 @@ class BaseTest {
     var startTime: Double = 0.0
     var result: [String:Any] = [String:Any]()
     
-    init(traffic: String, url: String) {
+    init(traffic: String, url: String, filePrefix: String) {
         runCfg = RunConfig(traffic: traffic, url: url)
         // Notify ID
         let now = Date().timeIntervalSince1970
         notifyID = String(now)
         
         runCfg.notifyIDVar = notifyID
+        
+        // Log file
+        if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+            logFileURL = dir.appendingPathComponent(filePrefix + ".log")
+        }
+        do {
+            try FileManager.default.removeItem(at: logFileURL)
+        } catch {print(logFileURL, "does not exist")}
+        do {
+            try "".write(to: logFileURL, atomically: false, encoding: .utf8)
+        }
+        catch {print(logFileURL, "oups log")}
+        
+        // Out file
+        if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+            outFileURL = dir.appendingPathComponent(filePrefix + ".out")
+        }
+        do {
+            try FileManager.default.removeItem(at: outFileURL)
+        } catch {print(outFileURL, "does not exist")}
+        do {
+            try "".write(to: outFileURL, atomically: false, encoding: .utf8)
+        }
+        catch {print(outFileURL, "oups out")}
     }
     
     func getNotifyID() -> String {
@@ -30,5 +54,9 @@ class BaseTest {
     
     func getStartTime() -> Double {
         return startTime
+    }
+    
+    func getQUICInfo() -> [[String: Any]] {
+        return Utils.collectQUICInfo(logFileURL: logFileURL)
     }
 }
