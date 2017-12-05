@@ -11,6 +11,7 @@ import Foundation
 class QUICBulkDownloadResult: NSObject, NSCoding, TestResult {
     // MARK: Properties
     var name: String
+    var rcvBytesDatas: [RcvBytesData]
     var runTime: Double
     
     // MARK: Archiving Paths
@@ -20,25 +21,29 @@ class QUICBulkDownloadResult: NSObject, NSCoding, TestResult {
     // MARK: Types
     struct PropertyKey {
         static let name = "name"
+        static let rcvBytesDatas = "rcvBytesDatas"
         static let runTime = "runTime"
     }
     
     // MARK: Initializers
-    init?(name: String, runTime: Double) {
+    init?(name: String, rcvBytesDatas: [RcvBytesData], runTime: Double) {
         self.name = name
+        self.rcvBytesDatas = rcvBytesDatas
         self.runTime = runTime
     }
     
     func encode(with aCoder: NSCoder) {
         aCoder.encode(name, forKey: PropertyKey.name)
+        aCoder.encode(rcvBytesDatas, forKey: PropertyKey.rcvBytesDatas)
         aCoder.encode(runTime, forKey: PropertyKey.runTime)
     }
     
     required convenience init?(coder aDecoder: NSCoder) {
         let name = aDecoder.decodeObject(forKey: PropertyKey.name) as! String
+        let rcvBytesDatas = aDecoder.decodeObject(forKey: PropertyKey.rcvBytesDatas) as! [RcvBytesData]
         let runTime = aDecoder.decodeDouble(forKey: PropertyKey.runTime)
         
-        self.init(name: name, runTime: runTime)
+        self.init(name: name, rcvBytesDatas: rcvBytesDatas, runTime: runTime)
     }
     
     // MARK: TestResult
@@ -47,6 +52,10 @@ class QUICBulkDownloadResult: NSObject, NSCoding, TestResult {
     }
     
     func getResult() -> String {
-        return String(describing: runTime)
+        var arrayString = "["
+        for rbd in rcvBytesDatas {
+            arrayString += String(rbd.time) + " " + String(rbd.rcvBytes) + " "
+        }
+        return String(describing: runTime) + " " + arrayString + "]"
     }
 }

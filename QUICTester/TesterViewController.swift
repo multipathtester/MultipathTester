@@ -19,6 +19,9 @@ class TesterViewController: UIViewController {
     @IBOutlet weak var testLabel: UILabel!
     @IBOutlet weak var progressBar: UIProgressView!
     
+    var timer: Timer?
+    var startTime: Double = Date().timeIntervalSince1970
+    
     var tests: [Test] = [Test]()
     
     var internetReachability: Reachability = Reachability.forInternetConnection()
@@ -59,9 +62,12 @@ class TesterViewController: UIViewController {
     
     // MARK: Actions
     @IBAction func startTests(_ sender: UIButton) {
-        let startTime = Date().timeIntervalSince1970
+        startTime = Date().timeIntervalSince1970
         sender.isEnabled = false
         print("We start the tests")
+        self.timeLabel.text = "0:00"
+        timer = Timer(timeInterval: 1.0, target: self, selector: #selector(TesterViewController.getTime), userInfo: nil, repeats: true)
+        RunLoop.current.add(timer!, forMode: RunLoopMode.commonModes)
         
         DispatchQueue.global(qos: .background).async {
             let nbTests = self.tests.count
@@ -71,7 +77,6 @@ class TesterViewController: UIViewController {
                 let test = self.tests[i]
                 DispatchQueue.main.async {
                     self.countLabel.text = String(i + 1) + "/" + String(nbTests)
-                    self.timeLabel.text = "0:00"
                     self.testLabel.text = test.getDescription()
                     self.progressBar.progress = Float(i) / Float(nbTests)
                 }
@@ -85,9 +90,11 @@ class TesterViewController: UIViewController {
                 // TODO update serverIP
                 Utils.sendTestToCollectServer(test: test, result: result, serverIP: "176.31.249.161")
             }
-            let benchmarkResult = BenchmarkResult(startTime: startTime, testResults: testResults)
+            let benchmarkResult = BenchmarkResult(startTime: self.startTime, testResults: testResults)
             self.saveBenchmarkTest(result: benchmarkResult!)
             print("Tests done")
+            self.timer?.invalidate()
+            self.timer = nil
             DispatchQueue.main.async {
                 self.progressBar.progress = 1.0
                 self.testLabel.text = "Done"
@@ -122,5 +129,14 @@ class TesterViewController: UIViewController {
         } else {
             os_log("Failed to save results...", log: OSLog.default, type: .error)
         }
+    }
+    
+    // MARK: Timer function
+    @objc func getTime() {
+        let curTime = Date().timeIntervalSince1970
+        let timeDiff = curTime - startTime
+        let timeDiffInt = Int(timeDiff)
+        
+        timeLabel.text = String(format: "%d:%02d", timeDiffInt / 60, timeDiffInt % 60)
     }
 }

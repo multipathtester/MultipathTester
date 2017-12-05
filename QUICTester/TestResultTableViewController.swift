@@ -94,14 +94,33 @@ class TestResultTableViewController: UITableViewController {
     }
     */
 
-    /*
     // MARK: - Navigation
-
+    
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
+        
+        super.prepare(for: segue, sender: sender)
+        switch(segue.identifier ?? "") {
+        case "ShowTestResultDetails":
+            guard let testResultViewController = segue.destination as? TestResultViewController else {
+                fatalError("Unexpected destination: \(segue.destination)")
+            }
+            
+            guard let selectedTestResultCell = sender as? TestResultTableViewCell else {
+                fatalError("Unexpected sender: \(String(describing: sender))")
+            }
+            
+            guard let indexPath = tableView.indexPath(for: selectedTestResultCell) else {
+                fatalError("The selected cell is not being displayed by the table")
+            }
+            
+            let selectedTestResult = testResults![indexPath.row]
+            testResultViewController.testResult = selectedTestResult
+        default:
+            fatalError("Unexpected Segue Identifier; \(String(describing: segue.identifier))")
+        }
     }
-    */
 
 }

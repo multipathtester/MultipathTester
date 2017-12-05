@@ -102,20 +102,20 @@ class BenchmarkResultTableViewController: UITableViewController {
         super.prepare(for: segue, sender: sender)
         switch(segue.identifier ?? "") {
         case "ShowTestResults":
-            guard let testResultsDetailViewController = segue.destination as? TestResultTableViewController else {
+            guard let testResultsViewController = segue.destination as? TestResultTableViewController else {
                 fatalError("Unexpected destination: \(segue.destination)")
             }
             
-            guard let selectedMealCell = sender as? BenchmarkResultTableViewCell else {
+            guard let selectedBenchmarkResultCell = sender as? BenchmarkResultTableViewCell else {
                 fatalError("Unexpected sender: \(String(describing: sender))")
             }
             
-            guard let indexPath = tableView.indexPath(for: selectedMealCell) else {
+            guard let indexPath = tableView.indexPath(for: selectedBenchmarkResultCell) else {
                 fatalError("The selected cell is not being displayed by the table")
             }
             
             let selectedBenchmarkResult = results[indexPath.row]
-            testResultsDetailViewController.testResults = selectedBenchmarkResult.testResults
+            testResultsViewController.testResults = selectedBenchmarkResult.testResults
         default:
             fatalError("Unexpected Segue Identifier; \(String(describing: segue.identifier))")
         }

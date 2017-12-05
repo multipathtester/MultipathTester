@@ -73,7 +73,27 @@ class QUICBulkDownloadTest: BaseTest, Test {
     }
     
     func getTestResult() -> TestResult {
-        return QUICBulkDownloadResult(name: getDescription(), runTime: Double(result["run_time"] as! String)!)!
+        let quicInfos = getQUICInfo()
+        var rcvBytesDatas = [RcvBytesData]()
+        var cid: String = ""
+        let df = DateFormatter()
+        df.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSZ"
+        for qi in quicInfos {
+            let cidsDict = qi["Connections"] as! [String: Any]
+            if cid == "" {
+                cid = Array(cidsDict.keys)[0]
+            }
+            let cidDict = cidsDict[cid] as! [String: Any]
+            let streamsDict = cidDict["Streams"] as! [String: Any]
+            if streamsDict["3"] != nil {
+                let streamDict = streamsDict["3"] as! [String: Any]
+                let rcvbytes = UInt64(streamDict["BytesRead"] as! Int)
+                let timeDate = df.date(from: qi["Time"] as! String)!
+                let time = timeDate.timeIntervalSince1970
+                rcvBytesDatas.append(RcvBytesData(time: time, rcvBytes: rcvbytes)!)
+            }
+        }
+        return QUICBulkDownloadResult(name: getDescription(), rcvBytesDatas: rcvBytesDatas, runTime: Double(result["run_time"] as! String)!)!
     }
     
     func run() -> [String : Any] {
