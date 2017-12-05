@@ -53,7 +53,7 @@ class QUICConnectivityTest: BaseTest, Test {
     
     func getBenchDict() -> [String : Any] {
         return [
-            "name": "quic_connectivity",
+            "name": "connectivity",
             "config": [
                 "port": self.port,
                 "url": self.url,
