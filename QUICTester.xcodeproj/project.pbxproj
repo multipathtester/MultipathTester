@@ -10,6 +10,8 @@
 		CE21D4291F66B14400056940 /* Quictraffic.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE21D4281F66B13D00056940 /* Quictraffic.framework */; };
 		CE21D42A1F66B14400056940 /* Quictraffic.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CE21D4281F66B13D00056940 /* Quictraffic.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		CE29B9E11FD6AE2F0049A105 /* QUICPerfResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE29B9E01FD6AE2F0049A105 /* QUICPerfResult.swift */; };
+		CE29B9E31FD6FD660049A105 /* IntervalData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE29B9E21FD6FD660049A105 /* IntervalData.swift */; };
+		CE29B9E51FD802FD0049A105 /* CWinData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE29B9E41FD802FD0049A105 /* CWinData.swift */; };
 		CE58F46B1FC3463F009EA08F /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = CE58F46A1FC34631009EA08F /* libxml2.tbd */; };
 		CE58F46D1FC34651009EA08F /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE58F46C1FC3464A009EA08F /* CFNetwork.framework */; };
 		CE58F46F1FC34660009EA08F /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE58F46E1FC34659009EA08F /* MobileCoreServices.framework */; };
@@ -85,6 +87,8 @@
 		CE21D4281F66B13D00056940 /* Quictraffic.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quictraffic.framework; path = frameworks/Quictraffic.framework; sourceTree = "<group>"; };
 		CE21D42B1F67ECF300056940 /* QUICTester.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = QUICTester.entitlements; sourceTree = "<group>"; };
 		CE29B9E01FD6AE2F0049A105 /* QUICPerfResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QUICPerfResult.swift; sourceTree = "<group>"; };
+		CE29B9E21FD6FD660049A105 /* IntervalData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntervalData.swift; sourceTree = "<group>"; };
+		CE29B9E41FD802FD0049A105 /* CWinData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CWinData.swift; sourceTree = "<group>"; };
 		CE58F46A1FC34631009EA08F /* libxml2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.tbd; path = usr/lib/libxml2.tbd; sourceTree = SDKROOT; };
 		CE58F46C1FC3464A009EA08F /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		CE58F46E1FC34659009EA08F /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
@@ -219,6 +223,8 @@
 		CE58F4A61FD68D0E009EA08F /* HelperObject */ = {
 			isa = PBXGroup;
 			children = (
+				CE29B9E41FD802FD0049A105 /* CWinData.swift */,
+				CE29B9E21FD6FD660049A105 /* IntervalData.swift */,
 				CE58F4A71FD68D36009EA08F /* RcvBytesData.swift */,
 			);
 			path = HelperObject;
@@ -442,7 +448,9 @@
 			files = (
 				CE58F49D1FD195ED009EA08F /* TestResultTableViewController.swift in Sources */,
 				CE8E28531F6ACABB004F1558 /* ReqResResult.swift in Sources */,
+				CE29B9E31FD6FD660049A105 /* IntervalData.swift in Sources */,
 				CE58F48F1FD1640F009EA08F /* BenchmarkResult.swift in Sources */,
+				CE29B9E51FD802FD0049A105 /* CWinData.swift in Sources */,
 				CE58F4AA1FD6907F009EA08F /* TestResultViewController.swift in Sources */,
 				CE58F4931FD16A97009EA08F /* QUICConnectivityResult.swift in Sources */,
 				CE8E28511F6ACA9A004F1558 /* BulkResult.swift in Sources */,

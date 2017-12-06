@@ -72,7 +72,7 @@ class QUICPerfTest: BaseTest, Test {
     
     func getTestResult() -> TestResult {
         let quicInfos = getQUICInfo()
-        var cwinData = [String: [(time: Double, cwin: UInt64)]]()
+        var cwinData = [String: [CWinData]]()
         var cid: String = ""
         var paths: [String] = [String]()
         let df = DateFormatter()
@@ -91,13 +91,22 @@ class QUICPerfTest: BaseTest, Test {
                 let timeDate = df.date(from: qi["Time"] as! String)!
                 let time = timeDate.timeIntervalSince1970
                 if cwinData[pth] == nil {
-                    cwinData[pth] = [(time: Double, cwin: UInt64)]()
+                    cwinData[pth] = [CWinData]()
                 }
-                cwinData[pth]!.append((time: time, cwin: cwin))
+                cwinData[pth]!.append(CWinData(time: time, cwin: cwin)!)
             }
         }
-        print(cwinData)
-        return QUICPerfResult(name: getDescription(), runTime: Double(result["run_time"] as! String)!, totalRetrans: UInt64(result["total_retrans"] as! String)!, totalSent: UInt64(result["total_sent"] as! String)!)!
+        let intervalsRaw = result["intervals"] as! [[String: Any]]
+        var intervals = [IntervalData]()
+        if intervalsRaw.count > 0 {
+            for i in 0..<intervalsRaw.count {
+                let intervalRaw = intervalsRaw[i]
+                let interval = IntervalData(interval: intervalRaw["intervalInSec"] as! String, transferredLastSecond: UInt64(intervalRaw["transferredLastSecond"] as! Int), globalBandwidth: UInt64(intervalRaw["globalBandwidth"] as! Int), retransmittedLastSecond: UInt64(intervalRaw["retransmittedLastSecond"] as! Int))!
+                intervals.append(interval)
+            }
+        }
+        // TODO intervals
+        return QUICPerfResult(name: getDescription(), runTime: Double(result["run_time"] as! String)!, totalRetrans: UInt64(result["total_retrans"] as! String)!, totalSent: UInt64(result["total_sent"] as! String)!, intervals: intervals, cwins: cwinData)!
     }
     
     func run() -> [String : Any] {
@@ -117,7 +126,6 @@ class QUICPerfTest: BaseTest, Test {
         var intervals = [[String: Any]]()
         for i in 1...10 {
             let splitted_line = lines[i].components(separatedBy: " ")
-            print(splitted_line)
             intervals.append([
                 "intervalInSec": splitted_line[0],
                 "transferredLastSecond": Int(splitted_line[1])!,
