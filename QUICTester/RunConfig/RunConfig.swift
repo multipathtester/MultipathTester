@@ -15,6 +15,7 @@ class RunConfig: NSObject, QuictrafficRunConfigProtocol {
     var trafficVar: String
     var cacheVar: Bool = false
     var logFileVar: String = ""
+    var logPeriodMsVar: Int = 1000
     var maxPathIDVar: Int = 0
     var notifyIDVar: String = ""
     var outputVar: String = ""
@@ -36,6 +37,10 @@ class RunConfig: NSObject, QuictrafficRunConfigProtocol {
     
     func logFile() -> String! {
         return logFileVar
+    }
+    
+    func logPeriodMs() -> Int {
+        return logPeriodMsVar
     }
     
     func maxPathID() -> Int {

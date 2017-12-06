@@ -12,6 +12,8 @@
 		CE29B9E11FD6AE2F0049A105 /* QUICPerfResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE29B9E01FD6AE2F0049A105 /* QUICPerfResult.swift */; };
 		CE29B9E31FD6FD660049A105 /* IntervalData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE29B9E21FD6FD660049A105 /* IntervalData.swift */; };
 		CE29B9E51FD802FD0049A105 /* CWinData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE29B9E41FD802FD0049A105 /* CWinData.swift */; };
+		CE29B9E91FD833610049A105 /* QUICReqResTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE29B9E81FD833610049A105 /* QUICReqResTest.swift */; };
+		CE29B9EB1FD838340049A105 /* QUICReqResResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE29B9EA1FD838340049A105 /* QUICReqResResult.swift */; };
 		CE58F46B1FC3463F009EA08F /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = CE58F46A1FC34631009EA08F /* libxml2.tbd */; };
 		CE58F46D1FC34651009EA08F /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE58F46C1FC3464A009EA08F /* CFNetwork.framework */; };
 		CE58F46F1FC34660009EA08F /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE58F46E1FC34659009EA08F /* MobileCoreServices.framework */; };
@@ -89,6 +91,8 @@
 		CE29B9E01FD6AE2F0049A105 /* QUICPerfResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QUICPerfResult.swift; sourceTree = "<group>"; };
 		CE29B9E21FD6FD660049A105 /* IntervalData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntervalData.swift; sourceTree = "<group>"; };
 		CE29B9E41FD802FD0049A105 /* CWinData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CWinData.swift; sourceTree = "<group>"; };
+		CE29B9E81FD833610049A105 /* QUICReqResTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QUICReqResTest.swift; sourceTree = "<group>"; };
+		CE29B9EA1FD838340049A105 /* QUICReqResResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QUICReqResResult.swift; sourceTree = "<group>"; };
 		CE58F46A1FC34631009EA08F /* libxml2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.tbd; path = usr/lib/libxml2.tbd; sourceTree = SDKROOT; };
 		CE58F46C1FC3464A009EA08F /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		CE58F46E1FC34659009EA08F /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
@@ -188,6 +192,7 @@
 				CE58F4A01FD57C58009EA08F /* QUICBulkDownloadTest.swift */,
 				CE58F47F1FCEA594009EA08F /* QUICConnectivityTest.swift */,
 				CE58F4A41FD6895D009EA08F /* QUICPerfTest.swift */,
+				CE29B9E81FD833610049A105 /* QUICReqResTest.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -216,6 +221,7 @@
 				CE58F4A21FD57FD7009EA08F /* QUICBulkDownloadResult.swift */,
 				CE58F4921FD16A97009EA08F /* QUICConnectivityResult.swift */,
 				CE29B9E01FD6AE2F0049A105 /* QUICPerfResult.swift */,
+				CE29B9EA1FD838340049A105 /* QUICReqResResult.swift */,
 			);
 			path = Results;
 			sourceTree = "<group>";
@@ -452,6 +458,7 @@
 				CE58F48F1FD1640F009EA08F /* BenchmarkResult.swift in Sources */,
 				CE29B9E51FD802FD0049A105 /* CWinData.swift in Sources */,
 				CE58F4AA1FD6907F009EA08F /* TestResultViewController.swift in Sources */,
+				CE29B9EB1FD838340049A105 /* QUICReqResResult.swift in Sources */,
 				CE58F4931FD16A97009EA08F /* QUICConnectivityResult.swift in Sources */,
 				CE8E28511F6ACA9A004F1558 /* BulkResult.swift in Sources */,
 				CEDAF2511F5FE8E000310153 /* ViewController.swift in Sources */,
@@ -465,6 +472,7 @@
 				CE58F48A1FCF1114009EA08F /* Utils.swift in Sources */,
 				CE58F49B1FD193AD009EA08F /* Reachability.m in Sources */,
 				CE29B9E11FD6AE2F0049A105 /* QUICPerfResult.swift in Sources */,
+				CE29B9E91FD833610049A105 /* QUICReqResTest.swift in Sources */,
 				CE58F4A81FD68D36009EA08F /* RcvBytesData.swift in Sources */,
 				CE58F47B1FCDB693009EA08F /* TesterViewController.swift in Sources */,
 				CE58F4821FCEB03E009EA08F /* Test.swift in Sources */,

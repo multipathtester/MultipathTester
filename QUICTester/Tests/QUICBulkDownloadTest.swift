@@ -41,6 +41,7 @@ class QUICBulkDownloadTest: BaseTest, Test {
         
         // Prepare the run configuration
         runCfg.maxPathIDVar = Int(maxPathID)
+        runCfg.logPeriodMsVar = 100
     }
     
     func getDescription() -> String {

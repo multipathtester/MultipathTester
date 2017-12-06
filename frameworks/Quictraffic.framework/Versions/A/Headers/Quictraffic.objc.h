@@ -16,6 +16,7 @@
 @protocol QuictrafficRunConfig <NSObject>
 - (BOOL)cache;
 - (NSString*)logFile;
+- (long)logPeriodMs;
 - (long)maxPathID;
 - (NSString*)notifyID;
 - (NSString*)output;
@@ -46,6 +47,7 @@ FOUNDATION_EXPORT NSString* QuictrafficRun(id<QuictrafficRunConfig> runcfg);
 - (instancetype)initWithRef:(id)ref;
 - (BOOL)cache;
 - (NSString*)logFile;
+- (long)logPeriodMs;
 - (long)maxPathID;
 - (NSString*)notifyID;
 - (NSString*)output;

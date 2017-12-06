@@ -33,12 +33,13 @@ class QUICPerfTest: BaseTest, Test {
         }
         
         url = baseURL + ":5201"
-        let filePrefix = "quictraffic_bulk_qperf_" + suffix
+        let filePrefix = "quictraffic_qperf_" + suffix
         
         super.init(traffic: "qperf", url: url, filePrefix: filePrefix)
         
         // Prepare the run configuration
         runCfg.maxPathIDVar = Int(maxPathID)
+        runCfg.logPeriodMsVar = 25
     }
     
     func getDescription() -> String {

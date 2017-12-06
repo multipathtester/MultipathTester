@@ -68,6 +68,9 @@ class QUICPerfResult: NSObject, NSCoding, TestResult {
     }
     
     func getResult() -> String {
+        if runTime < 0.0 {
+            return "Failed"
+        }
         return "Tranfered " + String(totalSent) + " in " + String(runTime) + "s"
     }
 }

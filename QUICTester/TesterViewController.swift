@@ -33,7 +33,7 @@ class TesterViewController: UIViewController {
 
         // Do any additional setup after loading the view.
         tests = [
-            // TODO add tests to check gQUIC vs. IETF QUIC, v4 vs. v6,...
+            // TODO add tests to check gQUIC vs. IETF QUIC,...
             QUICConnectivityTest(port: 443, ipVer: .any),
             QUICConnectivityTest(port: 6121, ipVer: .any),
             QUICConnectivityTest(port: 443, ipVer: .v4),
@@ -41,6 +41,9 @@ class TesterViewController: UIViewController {
             QUICBulkDownloadTest(urlPath: "10MB", maxPathID: 0, ipVer: .v4),
             QUICBulkDownloadTest(urlPath: "10MB", maxPathID: 0, ipVer: .v6),
             QUICBulkDownloadTest(urlPath: "10MB", maxPathID: 255, ipVer: .any),
+            QUICReqResTest(maxPathID: 0, ipVer: .v4),
+            QUICReqResTest(maxPathID: 0, ipVer: .v6),
+            QUICReqResTest(maxPathID: 255, ipVer: .any),
             QUICPerfTest(maxPathID: 0, ipVer: .v4),
             QUICPerfTest(maxPathID: 0, ipVer: .v6),
             QUICPerfTest(maxPathID: 255, ipVer: .any),
@@ -100,7 +103,7 @@ class TesterViewController: UIViewController {
             self.timer = nil
             DispatchQueue.main.async {
                 self.progressBar.progress = 1.0
-                self.testLabel.text = "Done"
+                self.testLabel.text = "Done, results are available"
                 sender.isEnabled = true
             }
         }
