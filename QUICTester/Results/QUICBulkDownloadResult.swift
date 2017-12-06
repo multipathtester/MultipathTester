@@ -55,10 +55,6 @@ class QUICBulkDownloadResult: NSObject, NSCoding, TestResult {
         if runTime < 0.0 {
             return "Failed"
         }
-        var arrayString = "["
-        for rbd in rcvBytesDatas {
-            arrayString += String(rbd.time) + " " + String(rbd.rcvBytes) + " "
-        }
-        return String(describing: runTime) + " " + arrayString + "]"
+        return "Completed in " + String(describing: runTime) + " s"
     }
 }

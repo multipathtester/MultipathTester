@@ -79,12 +79,12 @@ class QUICPerfTest: BaseTest, Test {
         let df = DateFormatter()
         df.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSZ"
         for qi in quicInfos {
-            let cidsDict = qi["Connections"] as! [String: Any]
+            guard let cidsDict = qi["Connections"] as? [String: Any] else {continue}
             if cid == "" {
                 cid = Array(cidsDict.keys)[0]
             }
-            let cidDict = cidsDict[cid] as! [String: Any]
-            let pathsDict = cidDict["Paths"] as! [String: Any]
+            guard let cidDict = cidsDict[cid] as? [String: Any] else {continue}
+            guard let pathsDict = cidDict["Paths"] as? [String: Any] else {continue}
             paths = Array(pathsDict.keys)
             for pth in paths {
                 let pthDict = pathsDict[pth] as! [String: Any]

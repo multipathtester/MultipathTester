@@ -71,6 +71,6 @@ class QUICPerfResult: NSObject, NSCoding, TestResult {
         if runTime < 0.0 {
             return "Failed"
         }
-        return "Tranfered " + String(totalSent) + " in " + String(runTime) + "s"
+        return "Transferred " + String(totalSent) + " in " + String(runTime) + "s"
     }
 }

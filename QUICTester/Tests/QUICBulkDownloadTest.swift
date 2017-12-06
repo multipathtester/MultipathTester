@@ -80,12 +80,12 @@ class QUICBulkDownloadTest: BaseTest, Test {
         let df = DateFormatter()
         df.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSZ"
         for qi in quicInfos {
-            let cidsDict = qi["Connections"] as! [String: Any]
+            guard let cidsDict = qi["Connections"] as? [String: Any] else {continue}
             if cid == "" {
                 cid = Array(cidsDict.keys)[0]
             }
-            let cidDict = cidsDict[cid] as! [String: Any]
-            let streamsDict = cidDict["Streams"] as! [String: Any]
+            guard let cidDict = cidsDict[cid] as? [String: Any] else {continue}
+            guard let streamsDict = cidDict["Streams"] as? [String: Any] else {continue}
             if streamsDict["3"] != nil {
                 let streamDict = streamsDict["3"] as! [String: Any]
                 let rcvbytes = UInt64(streamDict["BytesRead"] as! Int)

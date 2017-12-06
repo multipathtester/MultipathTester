@@ -651,7 +651,7 @@
 		CEDAF2741F5FE8E100310153 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-1";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = QUICTester/QUICTester.entitlements;
 				CODE_SIGN_STYLE = Automatic;
@@ -676,7 +676,7 @@
 		CEDAF2751F5FE8E100310153 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-1";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = QUICTester/QUICTester.entitlements;
 				CODE_SIGN_STYLE = Automatic;

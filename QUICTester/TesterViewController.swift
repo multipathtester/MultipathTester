@@ -94,7 +94,7 @@ class TesterViewController: UIViewController {
                 testResults.append(test.getTestResult())
                 let result = results[i]
                 // TODO update serverIP
-                Utils.sendTestToCollectServer(test: test, result: result, serverIP: "176.31.249.161")
+                Utils.sendTestToCollectServer(test: test, result: result, serverIP: "176.31.249.161", benchStartTime: self.startTime)
             }
             let benchmarkResult = BenchmarkResult(startTime: self.startTime, testResults: testResults)
             self.saveBenchmarkTest(result: benchmarkResult!)
