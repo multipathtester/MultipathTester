@@ -168,6 +168,11 @@
                         <viewLayoutGuide key="safeArea" id="r10-vq-eo5"/>
                     </view>
                     <navigationItem key="navigationItem" title="QUICTester" id="kLQ-0W-v1H">
+                        <barButtonItem key="leftBarButtonItem" title="About" id="VWD-5E-Kpd">
+                            <connections>
+                                <segue destination="6Ox-tg-1Ol" kind="show" id="y7N-8e-Mon"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Results" id="u6f-HK-t05">
                             <connections>
                                 <segue destination="XOS-Pk-oxk" kind="show" id="ycl-xp-Kwf"/>
@@ -184,6 +189,58 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="c8A-kp-NI5" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-1212" y="925.18740629685169"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="jxs-k4-8Sg">
+            <objects>
+                <viewController id="6Ox-tg-1Ol" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="mYV-Ab-M0s">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="25" translatesAutoresizingMaskIntoConstraints="NO" id="Io8-th-c3d">
+                                <rect key="frame" x="0.0" y="74" width="0.0" height="104"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="QUICTester" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" highlighted="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="U2r-uc-z3s">
+                                        <rect key="frame" x="0.0" y="0.0" width="120" height="29"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="justified" lineBreakMode="wordWrap" numberOfLines="9" baselineAdjustment="alignBaselines" highlighted="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kQg-9u-t8w">
+                                        <rect key="frame" x="0.0" y="54" width="0.0" height="0.0"/>
+                                        <string key="text">This application performs various network tests with the QUIC protocol. The results of those tests (download completion time, bandwith and possibly graphes) can then be visible in the "Results" section of the application.</string>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="By using this application, you agree to share metadata only for research purposes." textAlignment="justified" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2Fz-jU-ufC">
+                                        <rect key="frame" x="0.0" y="79" width="0.0" height="0.0"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Developped by Quentin De Coninck, working at Universite Catholique de Louvain. Contact:  &lt;quentin.deconinck@uclouvain.be&gt;" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VEV-vh-gcK">
+                                        <rect key="frame" x="0.0" y="104" width="0.0" height="0.0"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="Io8-th-c3d" firstAttribute="top" secondItem="gk1-jK-GjZ" secondAttribute="top" constant="10" id="7ty-Zh-Hbw"/>
+                            <constraint firstItem="Io8-th-c3d" firstAttribute="leading" secondItem="gk1-jK-GjZ" secondAttribute="leading" constant="10" id="dns-xQ-T7E"/>
+                            <constraint firstItem="gk1-jK-GjZ" firstAttribute="trailing" secondItem="Io8-th-c3d" secondAttribute="trailing" constant="10" id="kpa-fF-JTh"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="gk1-jK-GjZ"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="yf6-wy-JSa" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1212" y="1643.9280359820091"/>
         </scene>
         <!--Benchmark Result Table View Controller-->
         <scene sceneID="aO2-wA-yZk">
@@ -283,18 +340,17 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="Tva-3g-tiC">
-                                <rect key="frame" x="23.200248756184465" y="64.000000000000227" width="326" height="41"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Tva-3g-tiC">
+                                <rect key="frame" x="0.0" y="84" width="375" height="49"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="This will contains details about a QUIC test" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MXU-dV-ci8">
-                                        <rect key="frame" x="0.0" y="0.0" width="326" height="20.5"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="This will contains details about a QUIC test" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MXU-dV-ci8">
+                                        <rect key="frame" x="24.5" y="0.0" width="326" height="20.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Iz5-BF-29U">
-                                        <rect key="frame" x="0.0" y="20.5" width="326" height="20.5"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Iz5-BF-29U">
+                                        <rect key="frame" x="166.5" y="28.5" width="42" height="20.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -303,6 +359,11 @@
                             </stackView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="Tva-3g-tiC" firstAttribute="leading" secondItem="V06-u2-uqi" secondAttribute="leading" id="OvQ-gk-jT0"/>
+                            <constraint firstItem="V06-u2-uqi" firstAttribute="trailing" secondItem="Tva-3g-tiC" secondAttribute="trailing" id="c2j-nb-5vp"/>
+                            <constraint firstItem="Tva-3g-tiC" firstAttribute="top" secondItem="V06-u2-uqi" secondAttribute="top" constant="20" id="qHy-Hh-dGu"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="V06-u2-uqi"/>
                     </view>
                     <connections>
