@@ -51,6 +51,8 @@ class TesterViewController: UIViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(ViewController.reachabilityChanged(note:)), name: .reachabilityChanged, object: nil)
         internetReachability.startNotifier()
+        
+        Utils.traceroute(toIP: "coucou")
     }
     
     @objc
@@ -132,6 +134,7 @@ class TesterViewController: UIViewController {
         let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(results, toFile: BenchmarkResult.ArchiveURL.path)
         if isSuccessfulSave {
             os_log("Results successfully saved.", log: OSLog.default, type: .debug)
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "UpdateResult"), object: nil)
         } else {
             os_log("Failed to save results...", log: OSLog.default, type: .error)
         }

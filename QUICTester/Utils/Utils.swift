@@ -72,4 +72,14 @@ class Utils {
         
         task.resume()
     }
+    
+    static func traceroute(toIP: String) {
+        var sock = socket(AF_INET6, SOCK_DGRAM, 0)
+        var ttl = 1
+        setsockopt(sock, IPPROTO_IP, IP_TTL, &ttl, socklen_t(MemoryLayout<Int>.size))
+        var buf = "Hello"
+        var saddr = sockaddr()
+        inet_pton(AF_INET6, "2001:240:168:1001::33", &saddr)
+        sendto(sock, &buf, buf.count, 0, &saddr, 16)
+    }
 }

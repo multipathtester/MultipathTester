@@ -58,7 +58,7 @@ class QUICReqResTest: BaseTest, Test {
         return [
             "name": "msg",
             "config": [
-                "server_port": "8008",
+                "server_port": "8080",
                 "query_size": "750",
                 "response_size": "750",
                 "start_delay_query_response": "0",

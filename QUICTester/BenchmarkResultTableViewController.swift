@@ -21,9 +21,26 @@ class BenchmarkResultTableViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
         
+        NotificationCenter.default.addObserver(self, selector: #selector(BenchmarkResultTableViewController.updateResult(note:)), name: NSNotification.Name(rawValue: "UpdateResult"), object: nil)
+        self.updateResults()
+    }
+    
+    @objc
+    func updateResult(note: Notification) {
+        print("Notified to update results")
+        self.updateResults()
+    }
+    
+    func updateResults() {
         if let savedBenchmarkResults = loadBenchmarkResults() {
-            results += savedBenchmarkResults
+            self.results = savedBenchmarkResults
         }
+        print(self.results)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.tableView.reloadData()
     }
 
     override func didReceiveMemoryWarning() {
