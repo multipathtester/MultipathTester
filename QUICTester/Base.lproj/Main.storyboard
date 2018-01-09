@@ -5,6 +5,7 @@
     </device>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -226,29 +227,29 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="25" translatesAutoresizingMaskIntoConstraints="NO" id="Io8-th-c3d">
-                                <rect key="frame" x="10" y="30" width="355" height="162"/>
+                                <rect key="frame" x="10" y="30" width="0.0" height="104"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="QUICTester" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" highlighted="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="U2r-uc-z3s">
-                                        <rect key="frame" x="117.5" y="0.0" width="120" height="29"/>
+                                        <rect key="frame" x="-10" y="0.0" width="120" height="29"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="justified" lineBreakMode="wordWrap" numberOfLines="9" baselineAdjustment="alignBaselines" highlighted="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kQg-9u-t8w">
-                                        <rect key="frame" x="-10" y="54" width="0.0" height="20.5"/>
+                                        <rect key="frame" x="-10" y="54" width="0.0" height="0.0"/>
                                         <string key="text">This application performs various network tests with the QUIC protocol. The results of those tests (download completion time, bandwith and possibly graphes) can then be visible in the "Results" section of the application.</string>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="By using this application, you agree to share metadata only for research purposes." textAlignment="justified" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2Fz-jU-ufC">
-                                        <rect key="frame" x="-10" y="99.5" width="0.0" height="20.5"/>
+                                        <rect key="frame" x="-10" y="79" width="0.0" height="0.0"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Developped by Quentin De Coninck, working at Universite Catholique de Louvain. Contact:  &lt;quentin.deconinck@uclouvain.be&gt;" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VEV-vh-gcK">
-                                        <rect key="frame" x="-10" y="145" width="0.0" height="17"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Developed by Quentin De Coninck, working at Universite Catholique de Louvain. Contact:  &lt;quentin.deconinck@uclouvain.be&gt;" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VEV-vh-gcK">
+                                        <rect key="frame" x="0.0" y="104" width="0.0" height="0.0"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -271,35 +272,6 @@
             <point key="canvasLocation" x="-3623" y="2168"/>
         </scene>
         <!--Mobile Tests-->
-        <scene sceneID="8ie-Uy-pux">
-            <objects>
-                <tableViewController id="YxI-Rx-Zoi" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="Oua-qB-zaR">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="zr7-h2-atY">
-                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="zr7-h2-atY" id="IZp-zb-dng">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </tableViewCellContentView>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="YxI-Rx-Zoi" id="msD-57-JFa"/>
-                            <outlet property="delegate" destination="YxI-Rx-Zoi" id="gM8-Ss-9dU"/>
-                        </connections>
-                    </tableView>
-                    <navigationItem key="navigationItem" title="Mobile Tests" id="TPB-gM-VQF"/>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="jFd-qM-dmJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-2450" y="375"/>
-        </scene>
-        <!--Mobile Tests-->
         <scene sceneID="ZfN-Uq-kvx">
             <objects>
                 <navigationController id="Uwd-aA-2FZ" sceneMemberID="viewController">
@@ -309,12 +281,64 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
-                        <segue destination="YxI-Rx-Zoi" kind="relationship" relationship="rootViewController" id="OQt-HX-mvm"/>
+                        <segue destination="qC0-TW-1dg" kind="relationship" relationship="rootViewController" id="PUX-2U-rCF"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uDQ-U9-eNu" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-3623" y="375"/>
+        </scene>
+        <!--Mobile Tests-->
+        <scene sceneID="kxa-se-zno">
+            <objects>
+                <viewController id="qC0-TW-1dg" customClass="MobileTesterViewController" customModule="QUICTester" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="083-vx-kh3">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="8NG-P8-5qp">
+                                <rect key="frame" x="0.0" y="64" width="375" height="554"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" restorationIdentifier="timeGraph" translatesAutoresizingMaskIntoConstraints="NO" id="1wi-5k-Gvi" customClass="LineChartView" customModule="Charts">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="138.5"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </view>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4wX-2T-B8T" customClass="LineChartView" customModule="Charts">
+                                        <rect key="frame" x="0.0" y="138.5" width="375" height="277"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </view>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pqS-QN-qD0">
+                                        <rect key="frame" x="0.0" y="415.5" width="375" height="138.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="38"/>
+                                        <state key="normal" title="Start"/>
+                                    </button>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="4wX-2T-B8T" firstAttribute="height" secondItem="1wi-5k-Gvi" secondAttribute="height" multiplier="2" id="Ytb-uF-reX"/>
+                                    <constraint firstItem="pqS-QN-qD0" firstAttribute="width" secondItem="1wi-5k-Gvi" secondAttribute="width" id="aRT-en-SPq"/>
+                                    <constraint firstItem="4wX-2T-B8T" firstAttribute="width" secondItem="1wi-5k-Gvi" secondAttribute="width" id="d6Q-Yq-SDU"/>
+                                    <constraint firstItem="pqS-QN-qD0" firstAttribute="height" secondItem="1wi-5k-Gvi" secondAttribute="height" id="eXQ-ry-Myf"/>
+                                </constraints>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="8NG-P8-5qp" firstAttribute="leading" secondItem="tEb-Hn-Nq6" secondAttribute="leading" id="0zT-w4-unb"/>
+                            <constraint firstItem="8NG-P8-5qp" firstAttribute="top" secondItem="tEb-Hn-Nq6" secondAttribute="top" id="4h6-BT-geg"/>
+                            <constraint firstItem="tEb-Hn-Nq6" firstAttribute="trailing" secondItem="8NG-P8-5qp" secondAttribute="trailing" id="B5s-eo-TBJ"/>
+                            <constraint firstItem="tEb-Hn-Nq6" firstAttribute="bottom" secondItem="8NG-P8-5qp" secondAttribute="bottom" id="dJA-4j-yyA"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="tEb-Hn-Nq6"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Mobile Tests" id="oU3-tW-uzW"/>
+                    <connections>
+                        <outlet property="distanceChartView" destination="1wi-5k-Gvi" id="dsO-Vn-so7"/>
+                        <outlet property="snrDelayChartView" destination="4wX-2T-B8T" id="ceE-eY-clk"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="yuc-LO-FFx" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-2450" y="375"/>
         </scene>
         <!--Results-->
         <scene sceneID="aO2-wA-yZk">

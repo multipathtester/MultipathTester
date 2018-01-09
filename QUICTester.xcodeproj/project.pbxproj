@@ -42,6 +42,16 @@
 		CE8E284F1F6966FC004F1558 /* TCPClientSiri.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8E284E1F6966FC004F1558 /* TCPClientSiri.swift */; };
 		CE8E28511F6ACA9A004F1558 /* BulkResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8E28501F6ACA9A004F1558 /* BulkResult.swift */; };
 		CE8E28531F6ACABB004F1558 /* ReqResResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8E28521F6ACABB004F1558 /* ReqResResult.swift */; };
+		CEA702E22003C6A000FDFB89 /* Charts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA702DF2003C66900FDFB89 /* Charts.framework */; };
+		CEA702E32003C6A000FDFB89 /* Charts.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CEA702DF2003C66900FDFB89 /* Charts.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CEA702E82003D67100FDFB89 /* MobileTesterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA702E72003D67100FDFB89 /* MobileTesterViewController.swift */; };
+		CEA702F02003DB4D00FDFB89 /* DateValueFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA702EC2003DB4D00FDFB89 /* DateValueFormatter.swift */; };
+		CEA702F12003DB4D00FDFB89 /* IntAxisValueFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA702ED2003DB4D00FDFB89 /* IntAxisValueFormatter.swift */; };
+		CEA702F22003DB4D00FDFB89 /* DayAxisValueFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA702EE2003DB4D00FDFB89 /* DayAxisValueFormatter.swift */; };
+		CEA702F32003DB4D00FDFB89 /* LargeValueFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA702EF2003DB4D00FDFB89 /* LargeValueFormatter.swift */; };
+		CEA702F62003E10E00FDFB89 /* BalloonMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA702F52003E10E00FDFB89 /* BalloonMarker.swift */; };
+		CEA702FA2004C64400FDFB89 /* LineChartHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA702F92004C64400FDFB89 /* LineChartHelper.swift */; };
+		CEA702FC2004CD4200FDFB89 /* MultiLineChartHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA702FB2004CD4200FDFB89 /* MultiLineChartHelper.swift */; };
 		CED4B5201F97972500E6F86E /* TCPFileDescriptorFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED4B51F1F97972500E6F86E /* TCPFileDescriptorFinder.swift */; };
 		CED4B5221F9F7FE300E6F86E /* TCPInfoConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED4B5211F9F7FE300E6F86E /* TCPInfoConverter.swift */; };
 		CEDAF24F1F5FE8E000310153 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDAF24E1F5FE8E000310153 /* AppDelegate.swift */; };
@@ -54,6 +64,27 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		CEA702DE2003C66900FDFB89 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CEA702D92003C66800FDFB89 /* Charts.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 65AD9E95D9ED4DC0BD73A743;
+			remoteInfo = Charts;
+		};
+		CEA702E02003C66900FDFB89 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CEA702D92003C66800FDFB89 /* Charts.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1CBBC58C6CE1EBEE9852CE41;
+			remoteInfo = ChartsTests;
+		};
+		CEA702E42003C6A000FDFB89 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CEA702D92003C66800FDFB89 /* Charts.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = A58A4ED274A941CA248EA921;
+			remoteInfo = Charts;
+		};
 		CEDAF2601F5FE8E100310153 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CEDAF2431F5FE8E000310153 /* Project object */;
@@ -71,12 +102,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		CE23A8A21FD952CE00894CA7 /* Embed Frameworks */ = {
+		CEA702E62003C6A000FDFB89 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				CEA702E32003C6A000FDFB89 /* Charts.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -122,6 +154,15 @@
 		CE8E284E1F6966FC004F1558 /* TCPClientSiri.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClientSiri.swift; sourceTree = "<group>"; };
 		CE8E28501F6ACA9A004F1558 /* BulkResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BulkResult.swift; sourceTree = "<group>"; };
 		CE8E28521F6ACABB004F1558 /* ReqResResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReqResResult.swift; sourceTree = "<group>"; };
+		CEA702D92003C66800FDFB89 /* Charts.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Charts.xcodeproj; sourceTree = "<group>"; };
+		CEA702E72003D67100FDFB89 /* MobileTesterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileTesterViewController.swift; sourceTree = "<group>"; };
+		CEA702EC2003DB4D00FDFB89 /* DateValueFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateValueFormatter.swift; sourceTree = "<group>"; };
+		CEA702ED2003DB4D00FDFB89 /* IntAxisValueFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntAxisValueFormatter.swift; sourceTree = "<group>"; };
+		CEA702EE2003DB4D00FDFB89 /* DayAxisValueFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DayAxisValueFormatter.swift; sourceTree = "<group>"; };
+		CEA702EF2003DB4D00FDFB89 /* LargeValueFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LargeValueFormatter.swift; sourceTree = "<group>"; };
+		CEA702F52003E10E00FDFB89 /* BalloonMarker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BalloonMarker.swift; sourceTree = "<group>"; };
+		CEA702F92004C64400FDFB89 /* LineChartHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineChartHelper.swift; sourceTree = "<group>"; };
+		CEA702FB2004CD4200FDFB89 /* MultiLineChartHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiLineChartHelper.swift; sourceTree = "<group>"; };
 		CED4B51F1F97972500E6F86E /* TCPFileDescriptorFinder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPFileDescriptorFinder.swift; sourceTree = "<group>"; };
 		CED4B5211F9F7FE300E6F86E /* TCPInfoConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPInfoConverter.swift; sourceTree = "<group>"; };
 		CEDAF24B1F5FE8E000310153 /* QUICTester.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QUICTester.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -147,6 +188,7 @@
 				CE58F4731FC34677009EA08F /* SystemConfiguration.framework in Frameworks */,
 				CE58F4711FC3466E009EA08F /* Security.framework in Frameworks */,
 				CE23A8A41FD9534F00894CA7 /* Quictraffic.framework in Frameworks */,
+				CEA702E22003C6A000FDFB89 /* Charts.framework in Frameworks */,
 				CE58F46F1FC34660009EA08F /* MobileCoreServices.framework in Frameworks */,
 				CE58F46D1FC34651009EA08F /* CFNetwork.framework in Frameworks */,
 				CE58F46B1FC3463F009EA08F /* libxml2.tbd in Frameworks */,
@@ -235,9 +277,57 @@
 			path = HelperObject;
 			sourceTree = "<group>";
 		};
+		CEA702DA2003C66800FDFB89 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CEA702DF2003C66900FDFB89 /* Charts.framework */,
+				CEA702E12003C66900FDFB89 /* ChartsTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		CEA702EB2003DB4100FDFB89 /* Formatters */ = {
+			isa = PBXGroup;
+			children = (
+				CEA702EC2003DB4D00FDFB89 /* DateValueFormatter.swift */,
+				CEA702EE2003DB4D00FDFB89 /* DayAxisValueFormatter.swift */,
+				CEA702ED2003DB4D00FDFB89 /* IntAxisValueFormatter.swift */,
+				CEA702EF2003DB4D00FDFB89 /* LargeValueFormatter.swift */,
+			);
+			path = Formatters;
+			sourceTree = "<group>";
+		};
+		CEA702F42003E10500FDFB89 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				CEA702F52003E10E00FDFB89 /* BalloonMarker.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		CEA702F72004B4FE00FDFB89 /* ChartsHelpers */ = {
+			isa = PBXGroup;
+			children = (
+				CEA702F82004C38A00FDFB89 /* Charts */,
+				CEA702F42003E10500FDFB89 /* Components */,
+				CEA702EB2003DB4100FDFB89 /* Formatters */,
+			);
+			path = ChartsHelpers;
+			sourceTree = "<group>";
+		};
+		CEA702F82004C38A00FDFB89 /* Charts */ = {
+			isa = PBXGroup;
+			children = (
+				CEA702F92004C64400FDFB89 /* LineChartHelper.swift */,
+				CEA702FB2004CD4200FDFB89 /* MultiLineChartHelper.swift */,
+			);
+			path = Charts;
+			sourceTree = "<group>";
+		};
 		CEDAF2421F5FE8E000310153 = {
 			isa = PBXGroup;
 			children = (
+				CEA702D92003C66800FDFB89 /* Charts.xcodeproj */,
 				CEDAF24D1F5FE8E000310153 /* QUICTester */,
 				CEDAF2621F5FE8E100310153 /* QUICTesterTests */,
 				CEDAF26D1F5FE8E100310153 /* QUICTesterUITests */,
@@ -261,6 +351,7 @@
 			children = (
 				CE58F4991FD19351009EA08F /* Reachability.m */,
 				CE58F49A1FD19351009EA08F /* Reachability.h */,
+				CEA702F72004B4FE00FDFB89 /* ChartsHelpers */,
 				CE58F4A61FD68D0E009EA08F /* HelperObject */,
 				CE58F48D1FD163FE009EA08F /* Results */,
 				CE58F4881FCF1100009EA08F /* Utils */,
@@ -287,6 +378,7 @@
 				CE58F49E1FD19A15009EA08F /* TestResultTableViewCell.swift */,
 				CE58F4A91FD6907F009EA08F /* TestResultViewController.swift */,
 				CE58F47A1FCDB693009EA08F /* TesterViewController.swift */,
+				CEA702E72003D67100FDFB89 /* MobileTesterViewController.swift */,
 			);
 			path = QUICTester;
 			sourceTree = "<group>";
@@ -319,11 +411,12 @@
 				CEDAF2471F5FE8E000310153 /* Sources */,
 				CEDAF2481F5FE8E000310153 /* Frameworks */,
 				CEDAF2491F5FE8E000310153 /* Resources */,
-				CE23A8A21FD952CE00894CA7 /* Embed Frameworks */,
+				CEA702E62003C6A000FDFB89 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				CEA702E52003C6A000FDFB89 /* PBXTargetDependency */,
 			);
 			name = QUICTester;
 			productName = QUICTester;
@@ -409,6 +502,12 @@
 			mainGroup = CEDAF2421F5FE8E000310153;
 			productRefGroup = CEDAF24C1F5FE8E000310153 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = CEA702DA2003C66800FDFB89 /* Products */;
+					ProjectRef = CEA702D92003C66800FDFB89 /* Charts.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				CEDAF24A1F5FE8E000310153 /* QUICTester */,
@@ -417,6 +516,23 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		CEA702DF2003C66900FDFB89 /* Charts.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Charts.framework;
+			remoteRef = CEA702DE2003C66900FDFB89 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		CEA702E12003C66900FDFB89 /* ChartsTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = ChartsTests.xctest;
+			remoteRef = CEA702E02003C66900FDFB89 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		CEDAF2491F5FE8E000310153 /* Resources */ = {
@@ -453,6 +569,7 @@
 				CE58F49D1FD195ED009EA08F /* TestResultTableViewController.swift in Sources */,
 				CE8E28531F6ACABB004F1558 /* ReqResResult.swift in Sources */,
 				CE29B9E31FD6FD660049A105 /* IntervalData.swift in Sources */,
+				CEA702F12003DB4D00FDFB89 /* IntAxisValueFormatter.swift in Sources */,
 				CE58F48F1FD1640F009EA08F /* BenchmarkResult.swift in Sources */,
 				CE29B9E51FD802FD0049A105 /* CWinData.swift in Sources */,
 				CE58F4AA1FD6907F009EA08F /* TestResultViewController.swift in Sources */,
@@ -461,6 +578,7 @@
 				CE8E28511F6ACA9A004F1558 /* BulkResult.swift in Sources */,
 				CEDAF2511F5FE8E000310153 /* ViewController.swift in Sources */,
 				CE8E284B1F695450004F1558 /* TCPClientReqRes.swift in Sources */,
+				CEA702F32003DB4D00FDFB89 /* LargeValueFormatter.swift in Sources */,
 				CE58F48C1FD163A8009EA08F /* BenchmarkResultTableViewController.swift in Sources */,
 				CE58F49F1FD19A15009EA08F /* TestResultTableViewCell.swift in Sources */,
 				CE58F4911FD168D8009EA08F /* TestResult.swift in Sources */,
@@ -471,16 +589,22 @@
 				CE58F49B1FD193AD009EA08F /* Reachability.m in Sources */,
 				CE29B9E11FD6AE2F0049A105 /* QUICPerfResult.swift in Sources */,
 				CE29B9E91FD833610049A105 /* QUICReqResTest.swift in Sources */,
+				CEA702F02003DB4D00FDFB89 /* DateValueFormatter.swift in Sources */,
 				CE58F4A81FD68D36009EA08F /* RcvBytesData.swift in Sources */,
 				CE58F47B1FCDB693009EA08F /* TesterViewController.swift in Sources */,
 				CE58F4821FCEB03E009EA08F /* Test.swift in Sources */,
+				CEA702FA2004C64400FDFB89 /* LineChartHelper.swift in Sources */,
 				CE8E284F1F6966FC004F1558 /* TCPClientSiri.swift in Sources */,
 				CE8E284D1F696334004F1558 /* TCPClientBulk.swift in Sources */,
+				CEA702F22003DB4D00FDFB89 /* DayAxisValueFormatter.swift in Sources */,
+				CEA702F62003E10E00FDFB89 /* BalloonMarker.swift in Sources */,
+				CEA702E82003D67100FDFB89 /* MobileTesterViewController.swift in Sources */,
 				CE58F4A11FD57C58009EA08F /* QUICBulkDownloadTest.swift in Sources */,
 				CED4B5201F97972500E6F86E /* TCPFileDescriptorFinder.swift in Sources */,
 				CED4B5221F9F7FE300E6F86E /* TCPInfoConverter.swift in Sources */,
 				CE58F4801FCEA594009EA08F /* QUICConnectivityTest.swift in Sources */,
 				CE58F4951FD188DE009EA08F /* BenchmarkResultTableViewCell.swift in Sources */,
+				CEA702FC2004CD4200FDFB89 /* MultiLineChartHelper.swift in Sources */,
 				CE58F4971FD18E64009EA08F /* BaseTest.swift in Sources */,
 				CEDAF24F1F5FE8E000310153 /* AppDelegate.swift in Sources */,
 			);
@@ -505,6 +629,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		CEA702E52003C6A000FDFB89 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Charts;
+			targetProxy = CEA702E42003C6A000FDFB89 /* PBXContainerItemProxy */;
+		};
 		CEDAF2611F5FE8E100310153 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = CEDAF24A1F5FE8E000310153 /* QUICTester */;
@@ -651,12 +780,13 @@
 		CEDAF2741F5FE8E100310153 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = QUICTester/QUICTester.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = VJZ2VP5AH7;
+				DEVELOPMENT_TEAM = Y5FQS7HL65;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -680,12 +810,13 @@
 		CEDAF2751F5FE8E100310153 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = QUICTester/QUICTester.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = VJZ2VP5AH7;
+				DEVELOPMENT_TEAM = Y5FQS7HL65;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
