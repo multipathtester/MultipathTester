@@ -52,6 +52,14 @@
 		CEA702F62003E10E00FDFB89 /* BalloonMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA702F52003E10E00FDFB89 /* BalloonMarker.swift */; };
 		CEA702FA2004C64400FDFB89 /* LineChartHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA702F92004C64400FDFB89 /* LineChartHelper.swift */; };
 		CEA702FC2004CD4200FDFB89 /* MultiLineChartHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA702FB2004CD4200FDFB89 /* MultiLineChartHelper.swift */; };
+		CEA702FF2005072000FDFB89 /* StaticMainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA702FE2005072000FDFB89 /* StaticMainViewController.swift */; };
+		CEA703072005084C00FDFB89 /* UICircularProgressRingStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA703012005084C00FDFB89 /* UICircularProgressRingStyle.swift */; };
+		CEA703082005084C00FDFB89 /* UICircularProgressRingDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA703022005084C00FDFB89 /* UICircularProgressRingDelegate.swift */; };
+		CEA703092005084C00FDFB89 /* UICircularProgressRingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA703032005084C00FDFB89 /* UICircularProgressRingView.swift */; };
+		CEA7030A2005084C00FDFB89 /* UICircularProgressRingGradientPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA703052005084C00FDFB89 /* UICircularProgressRingGradientPosition.swift */; };
+		CEA7030B2005084C00FDFB89 /* UICircularProgressRingLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA703062005084C00FDFB89 /* UICircularProgressRingLayer.swift */; };
+		CEA7030D20050C3800FDFB89 /* StaticTestTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA7030C20050C3800FDFB89 /* StaticTestTableViewCell.swift */; };
+		CEA7030F2005116900FDFB89 /* StaticRunnerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA7030E2005116900FDFB89 /* StaticRunnerViewController.swift */; };
 		CED4B5201F97972500E6F86E /* TCPFileDescriptorFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED4B51F1F97972500E6F86E /* TCPFileDescriptorFinder.swift */; };
 		CED4B5221F9F7FE300E6F86E /* TCPInfoConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED4B5211F9F7FE300E6F86E /* TCPInfoConverter.swift */; };
 		CEDAF24F1F5FE8E000310153 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDAF24E1F5FE8E000310153 /* AppDelegate.swift */; };
@@ -163,6 +171,15 @@
 		CEA702F52003E10E00FDFB89 /* BalloonMarker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BalloonMarker.swift; sourceTree = "<group>"; };
 		CEA702F92004C64400FDFB89 /* LineChartHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineChartHelper.swift; sourceTree = "<group>"; };
 		CEA702FB2004CD4200FDFB89 /* MultiLineChartHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiLineChartHelper.swift; sourceTree = "<group>"; };
+		CEA702FE2005072000FDFB89 /* StaticMainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticMainViewController.swift; sourceTree = "<group>"; };
+		CEA703012005084C00FDFB89 /* UICircularProgressRingStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UICircularProgressRingStyle.swift; sourceTree = "<group>"; };
+		CEA703022005084C00FDFB89 /* UICircularProgressRingDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UICircularProgressRingDelegate.swift; sourceTree = "<group>"; };
+		CEA703032005084C00FDFB89 /* UICircularProgressRingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UICircularProgressRingView.swift; sourceTree = "<group>"; };
+		CEA703042005084C00FDFB89 /* UICircularProgressRing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UICircularProgressRing.h; sourceTree = "<group>"; };
+		CEA703052005084C00FDFB89 /* UICircularProgressRingGradientPosition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UICircularProgressRingGradientPosition.swift; sourceTree = "<group>"; };
+		CEA703062005084C00FDFB89 /* UICircularProgressRingLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UICircularProgressRingLayer.swift; sourceTree = "<group>"; };
+		CEA7030C20050C3800FDFB89 /* StaticTestTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticTestTableViewCell.swift; sourceTree = "<group>"; };
+		CEA7030E2005116900FDFB89 /* StaticRunnerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticRunnerViewController.swift; sourceTree = "<group>"; };
 		CED4B51F1F97972500E6F86E /* TCPFileDescriptorFinder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPFileDescriptorFinder.swift; sourceTree = "<group>"; };
 		CED4B5211F9F7FE300E6F86E /* TCPInfoConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPInfoConverter.swift; sourceTree = "<group>"; };
 		CEDAF24B1F5FE8E000310153 /* QUICTester.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QUICTester.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -324,6 +341,29 @@
 			path = Charts;
 			sourceTree = "<group>";
 		};
+		CEA702FD200506E900FDFB89 /* Static */ = {
+			isa = PBXGroup;
+			children = (
+				CEA702FE2005072000FDFB89 /* StaticMainViewController.swift */,
+				CEA7030C20050C3800FDFB89 /* StaticTestTableViewCell.swift */,
+				CEA7030E2005116900FDFB89 /* StaticRunnerViewController.swift */,
+			);
+			path = Static;
+			sourceTree = "<group>";
+		};
+		CEA70300200507D900FDFB89 /* UICircularProgressRing */ = {
+			isa = PBXGroup;
+			children = (
+				CEA703042005084C00FDFB89 /* UICircularProgressRing.h */,
+				CEA703022005084C00FDFB89 /* UICircularProgressRingDelegate.swift */,
+				CEA703052005084C00FDFB89 /* UICircularProgressRingGradientPosition.swift */,
+				CEA703062005084C00FDFB89 /* UICircularProgressRingLayer.swift */,
+				CEA703012005084C00FDFB89 /* UICircularProgressRingStyle.swift */,
+				CEA703032005084C00FDFB89 /* UICircularProgressRingView.swift */,
+			);
+			path = UICircularProgressRing;
+			sourceTree = "<group>";
+		};
 		CEDAF2421F5FE8E000310153 = {
 			isa = PBXGroup;
 			children = (
@@ -353,10 +393,12 @@
 				CE58F49A1FD19351009EA08F /* Reachability.h */,
 				CEA702F72004B4FE00FDFB89 /* ChartsHelpers */,
 				CE58F4A61FD68D0E009EA08F /* HelperObject */,
+				CEA70300200507D900FDFB89 /* UICircularProgressRing */,
 				CE58F48D1FD163FE009EA08F /* Results */,
 				CE58F4881FCF1100009EA08F /* Utils */,
 				CE58F4831FCEBBDB009EA08F /* RunConfig */,
 				CE58F47C1FCEA4EE009EA08F /* Tests */,
+				CEA702FD200506E900FDFB89 /* Static */,
 				CE21D42B1F67ECF300056940 /* QUICTester.entitlements */,
 				CEDAF24E1F5FE8E000310153 /* AppDelegate.swift */,
 				CEDAF2501F5FE8E000310153 /* ViewController.swift */,
@@ -569,9 +611,15 @@
 				CE58F49D1FD195ED009EA08F /* TestResultTableViewController.swift in Sources */,
 				CE8E28531F6ACABB004F1558 /* ReqResResult.swift in Sources */,
 				CE29B9E31FD6FD660049A105 /* IntervalData.swift in Sources */,
+				CEA7030D20050C3800FDFB89 /* StaticTestTableViewCell.swift in Sources */,
 				CEA702F12003DB4D00FDFB89 /* IntAxisValueFormatter.swift in Sources */,
 				CE58F48F1FD1640F009EA08F /* BenchmarkResult.swift in Sources */,
+				CEA7030F2005116900FDFB89 /* StaticRunnerViewController.swift in Sources */,
+				CEA7030B2005084C00FDFB89 /* UICircularProgressRingLayer.swift in Sources */,
 				CE29B9E51FD802FD0049A105 /* CWinData.swift in Sources */,
+				CEA703082005084C00FDFB89 /* UICircularProgressRingDelegate.swift in Sources */,
+				CEA702FF2005072000FDFB89 /* StaticMainViewController.swift in Sources */,
+				CEA7030A2005084C00FDFB89 /* UICircularProgressRingGradientPosition.swift in Sources */,
 				CE58F4AA1FD6907F009EA08F /* TestResultViewController.swift in Sources */,
 				CE29B9EB1FD838340049A105 /* QUICReqResResult.swift in Sources */,
 				CE58F4931FD16A97009EA08F /* QUICConnectivityResult.swift in Sources */,
@@ -598,7 +646,9 @@
 				CE8E284D1F696334004F1558 /* TCPClientBulk.swift in Sources */,
 				CEA702F22003DB4D00FDFB89 /* DayAxisValueFormatter.swift in Sources */,
 				CEA702F62003E10E00FDFB89 /* BalloonMarker.swift in Sources */,
+				CEA703092005084C00FDFB89 /* UICircularProgressRingView.swift in Sources */,
 				CEA702E82003D67100FDFB89 /* MobileTesterViewController.swift in Sources */,
+				CEA703072005084C00FDFB89 /* UICircularProgressRingStyle.swift in Sources */,
 				CE58F4A11FD57C58009EA08F /* QUICBulkDownloadTest.swift in Sources */,
 				CED4B5201F97972500E6F86E /* TCPFileDescriptorFinder.swift in Sources */,
 				CED4B5221F9F7FE300E6F86E /* TCPInfoConverter.swift in Sources */,
