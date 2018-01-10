@@ -32,7 +32,7 @@ class BenchmarkResultTableViewController: UITableViewController {
     }
     
     func updateResults() {
-        if let savedBenchmarkResults = loadBenchmarkResults() {
+        if let savedBenchmarkResults = BenchmarkResult.loadBenchmarkResults() {
             self.results = savedBenchmarkResults
         }
         print(self.results)
@@ -67,9 +67,29 @@ class BenchmarkResultTableViewController: UITableViewController {
         // Fetches the appropriate benchmarkResult for the data source layout
         let benchmarkResult = results[indexPath.row]
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd MMM yyyy HH:mm:ss"
+        dateFormatter.dateFormat = "dd MMM HH:mm"
         dateFormatter.locale = .current
+        cell.testTypeLabel.text = "Static Tests"
         cell.startTimeLabel.text = dateFormatter.string(from: Date(timeIntervalSince1970: benchmarkResult.startTime))
+        
+        let bundle = Bundle(for: type(of: self))
+        let wifi = UIImage(named: "wifi_cell", in: bundle, compatibleWith: self.traitCollection)
+        cell.networkImageView.image = wifi
+        
+        cell.tcpResultsLabel.text = "0/0"
+        
+        let testCount = benchmarkResult.testResults.count
+        var testSucceeded = 0
+        for i in 0..<testCount {
+            let testResult = benchmarkResult.testResults[i]
+            if testResult.getResult() != "Failed" {
+                testSucceeded += 1
+            }
+        }
+        cell.quicResultsLabel.text = String(testSucceeded) + "/" + String(testCount)
+        
+        // FIXME
+        cell.pingResultsLabel.text = "100 ms"
         
         return cell
     }
@@ -137,10 +157,4 @@ class BenchmarkResultTableViewController: UITableViewController {
             fatalError("Unexpected Segue Identifier; \(String(describing: segue.identifier))")
         }
     }
-    
-    // MARK: Private
-    private func loadBenchmarkResults() -> [BenchmarkResult]? {
-        return NSKeyedUnarchiver.unarchiveObject(withFile: BenchmarkResult.ArchiveURL.path) as? [BenchmarkResult]
-    }
-
 }

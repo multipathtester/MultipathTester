@@ -8,7 +8,10 @@
 
 import Foundation
 
-class QUICConnectivityResult: NSObject, NSCoding, TestResult {
+class QUICConnectivityResult: NSObject, TestResult {
+    // MARK: Needed for Codable ability...
+    static var type = TestResultType.quicConnectivity
+    
     // MARK: Properties
     var name: String
     var runTime: Double
@@ -18,33 +21,11 @@ class QUICConnectivityResult: NSObject, NSCoding, TestResult {
     static let DocumentsDirectory = FileManager().urls(for: .documentDirectory, in: .userDomainMask).first!
     static let ArchiveURL = DocumentsDirectory.appendingPathComponent("quicConnectivityResults")
     
-    // MARK: Types
-    struct PropertyKey {
-        static let name = "name"
-        static let runTime = "runTime"
-        static let success = "success"
-    }
-    
     // MARK: Initializers
-    init?(name: String, runTime: Double, success: Bool) {
+    init(name: String, runTime: Double, success: Bool) {
         self.name = name
         self.runTime = runTime
         self.success = success
-    }
-    
-    // MARK: NSCoding
-    func encode(with aCoder: NSCoder) {
-        aCoder.encode(name, forKey: PropertyKey.name)
-        aCoder.encode(runTime, forKey: PropertyKey.runTime)
-        aCoder.encode(success, forKey: PropertyKey.success)
-    }
-    
-    required convenience init?(coder aDecoder: NSCoder) {
-        let name = aDecoder.decodeObject(forKey: PropertyKey.name) as! String
-        let runTime = aDecoder.decodeDouble(forKey: PropertyKey.runTime)
-        let success = aDecoder.decodeBool(forKey: PropertyKey.success)
-        
-        self.init(name: name, runTime: runTime, success: success)
     }
     
     // MARK: TestResult

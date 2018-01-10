@@ -83,7 +83,7 @@ class QUICReqResTest: BaseTest, Test {
         if delays.count > 0 {
             maxDelay = delays.max()!
         }
-        return QUICReqResResult(name: getDescription(), runTime: Double(result["run_time"] as! String)!, missed: result["missed"] as! Int64, maxDelay: maxDelay, delays: delays)!
+        return QUICReqResResult(name: getDescription(), runTime: Double(result["run_time"] as! String)!, missed: result["missed"] as! Int64, maxDelay: maxDelay, delays: delays)
     }
     
     func run() -> [String : Any] {

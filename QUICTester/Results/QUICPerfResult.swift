@@ -8,7 +8,10 @@
 
 import Foundation
 
-class QUICPerfResult: NSObject, NSCoding, TestResult {
+class QUICPerfResult: NSObject, TestResult {
+    // MARK: Needed for Codable ability...
+    static var type = TestResultType.quicPerf
+    
     // MARK: Properties
     var name: String
     var runTime: Double
@@ -21,45 +24,14 @@ class QUICPerfResult: NSObject, NSCoding, TestResult {
     static let DocumentsDirectory = FileManager().urls(for: .documentDirectory, in: .userDomainMask).first!
     static let ArchiveURL = DocumentsDirectory.appendingPathComponent("quicPerfResults")
     
-    // MARK: Types
-    struct PropertyKey {
-        static let name = "name"
-        static let runTime = "runTime"
-        static let totalRetrans = "totalRetrans"
-        static let totalSent = "totalSent"
-        static let intervals = "intervals"
-        static let cwins = "cwins"
-    }
-    
     // MARK: Initializers
-    init?(name: String, runTime: Double, totalRetrans: UInt64, totalSent: UInt64, intervals: [IntervalData], cwins:[String: [CWinData]]) {
+    init(name: String, runTime: Double, totalRetrans: UInt64, totalSent: UInt64, intervals: [IntervalData], cwins:[String: [CWinData]]) {
         self.name = name
         self.runTime = runTime
         self.totalRetrans = totalRetrans
         self.totalSent = totalSent
         self.intervals = intervals
         self.cwins = cwins
-    }
-    
-    // MARK: NSCoding
-    func encode(with aCoder: NSCoder) {
-        aCoder.encode(name, forKey: PropertyKey.name)
-        aCoder.encode(runTime, forKey: PropertyKey.runTime)
-        aCoder.encode(totalRetrans, forKey: PropertyKey.totalRetrans)
-        aCoder.encode(totalSent, forKey: PropertyKey.totalSent)
-        aCoder.encode(intervals, forKey: PropertyKey.intervals)
-        aCoder.encode(cwins, forKey: PropertyKey.cwins)
-    }
-    
-    required convenience init?(coder aDecoder: NSCoder) {
-        let name = aDecoder.decodeObject(forKey: PropertyKey.name) as! String
-        let runTime = aDecoder.decodeDouble(forKey: PropertyKey.runTime)
-        let totalRetrans = aDecoder.decodeObject(forKey: PropertyKey.totalRetrans) as! UInt64
-        let totalSent = aDecoder.decodeObject(forKey: PropertyKey.totalSent) as! UInt64
-        let intervals = aDecoder.decodeObject(forKey: PropertyKey.intervals) as! [IntervalData]
-        let cwins = aDecoder.decodeObject(forKey: PropertyKey.cwins) as! [String: [CWinData]]
-        
-        self.init(name: name, runTime: runTime, totalRetrans: totalRetrans, totalSent: totalSent, intervals: intervals, cwins: cwins)
     }
     
     // MARK: TestResult

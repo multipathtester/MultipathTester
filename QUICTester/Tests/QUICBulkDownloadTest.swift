@@ -91,10 +91,10 @@ class QUICBulkDownloadTest: BaseTest, Test {
                 let rcvbytes = UInt64(streamDict["BytesRead"] as! Int)
                 let timeDate = df.date(from: qi["Time"] as! String)!
                 let time = timeDate.timeIntervalSince1970
-                rcvBytesDatas.append(RcvBytesData(time: time, rcvBytes: rcvbytes)!)
+                rcvBytesDatas.append(RcvBytesData(time: time, rcvBytes: rcvbytes))
             }
         }
-        return QUICBulkDownloadResult(name: getDescription(), rcvBytesDatas: rcvBytesDatas, runTime: Double(result["run_time"] as! String)!)!
+        return QUICBulkDownloadResult(name: getDescription(), rcvBytesDatas: rcvBytesDatas, runTime: Double(result["run_time"] as! String)!)
     }
     
     func run() -> [String : Any] {

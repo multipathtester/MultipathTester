@@ -67,7 +67,7 @@ class QUICConnectivityTest: BaseTest, Test {
     
     func getTestResult() -> TestResult {
         // FIXME should check if result is ready
-        return QUICConnectivityResult(name: getDescription(), runTime: Double(result["run_time"] as! String)!, success: result["success"] as! Bool)!
+        return QUICConnectivityResult(name: getDescription(), runTime: Double(result["run_time"] as! String)!, success: result["success"] as! Bool)
     }
     
     func run() -> [String:Any] {

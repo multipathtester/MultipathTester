@@ -60,6 +60,8 @@
 		CEA7030B2005084C00FDFB89 /* UICircularProgressRingLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA703062005084C00FDFB89 /* UICircularProgressRingLayer.swift */; };
 		CEA7030D20050C3800FDFB89 /* StaticTestTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA7030C20050C3800FDFB89 /* StaticTestTableViewCell.swift */; };
 		CEA7030F2005116900FDFB89 /* StaticRunnerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA7030E2005116900FDFB89 /* StaticRunnerViewController.swift */; };
+		CEA70311200619D800FDFB89 /* Connectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA70310200619D800FDFB89 /* Connectivity.swift */; };
+		CEA703132006615A00FDFB89 /* AnyTestResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA703122006615A00FDFB89 /* AnyTestResult.swift */; };
 		CED4B5201F97972500E6F86E /* TCPFileDescriptorFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED4B51F1F97972500E6F86E /* TCPFileDescriptorFinder.swift */; };
 		CED4B5221F9F7FE300E6F86E /* TCPInfoConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED4B5211F9F7FE300E6F86E /* TCPInfoConverter.swift */; };
 		CEDAF24F1F5FE8E000310153 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDAF24E1F5FE8E000310153 /* AppDelegate.swift */; };
@@ -180,6 +182,8 @@
 		CEA703062005084C00FDFB89 /* UICircularProgressRingLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UICircularProgressRingLayer.swift; sourceTree = "<group>"; };
 		CEA7030C20050C3800FDFB89 /* StaticTestTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticTestTableViewCell.swift; sourceTree = "<group>"; };
 		CEA7030E2005116900FDFB89 /* StaticRunnerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticRunnerViewController.swift; sourceTree = "<group>"; };
+		CEA70310200619D800FDFB89 /* Connectivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connectivity.swift; sourceTree = "<group>"; };
+		CEA703122006615A00FDFB89 /* AnyTestResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyTestResult.swift; sourceTree = "<group>"; };
 		CED4B51F1F97972500E6F86E /* TCPFileDescriptorFinder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPFileDescriptorFinder.swift; sourceTree = "<group>"; };
 		CED4B5211F9F7FE300E6F86E /* TCPInfoConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPInfoConverter.swift; sourceTree = "<group>"; };
 		CEDAF24B1F5FE8E000310153 /* QUICTester.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QUICTester.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -274,12 +278,19 @@
 		CE58F48D1FD163FE009EA08F /* Results */ = {
 			isa = PBXGroup;
 			children = (
+				CEA70310200619D800FDFB89 /* Connectivity.swift */,
 				CE58F48E1FD1640F009EA08F /* BenchmarkResult.swift */,
+				CEA703122006615A00FDFB89 /* AnyTestResult.swift */,
 				CE58F4901FD168D8009EA08F /* TestResult.swift */,
 				CE58F4A21FD57FD7009EA08F /* QUICBulkDownloadResult.swift */,
 				CE58F4921FD16A97009EA08F /* QUICConnectivityResult.swift */,
 				CE29B9E01FD6AE2F0049A105 /* QUICPerfResult.swift */,
 				CE29B9EA1FD838340049A105 /* QUICReqResResult.swift */,
+				CE58F4941FD188DE009EA08F /* BenchmarkResultTableViewCell.swift */,
+				CE58F48B1FD163A8009EA08F /* BenchmarkResultTableViewController.swift */,
+				CE58F49C1FD195ED009EA08F /* TestResultTableViewController.swift */,
+				CE58F49E1FD19A15009EA08F /* TestResultTableViewCell.swift */,
+				CE58F4A91FD6907F009EA08F /* TestResultViewController.swift */,
 			);
 			path = Results;
 			sourceTree = "<group>";
@@ -364,6 +375,14 @@
 			path = UICircularProgressRing;
 			sourceTree = "<group>";
 		};
+		CEA70314200673E800FDFB89 /* Mobile */ = {
+			isa = PBXGroup;
+			children = (
+				CEA702E72003D67100FDFB89 /* MobileTesterViewController.swift */,
+			);
+			path = Mobile;
+			sourceTree = "<group>";
+		};
 		CEDAF2421F5FE8E000310153 = {
 			isa = PBXGroup;
 			children = (
@@ -392,13 +411,14 @@
 				CE58F4991FD19351009EA08F /* Reachability.m */,
 				CE58F49A1FD19351009EA08F /* Reachability.h */,
 				CEA702F72004B4FE00FDFB89 /* ChartsHelpers */,
-				CE58F4A61FD68D0E009EA08F /* HelperObject */,
 				CEA70300200507D900FDFB89 /* UICircularProgressRing */,
+				CE58F4A61FD68D0E009EA08F /* HelperObject */,
 				CE58F48D1FD163FE009EA08F /* Results */,
 				CE58F4881FCF1100009EA08F /* Utils */,
 				CE58F4831FCEBBDB009EA08F /* RunConfig */,
 				CE58F47C1FCEA4EE009EA08F /* Tests */,
 				CEA702FD200506E900FDFB89 /* Static */,
+				CEA70314200673E800FDFB89 /* Mobile */,
 				CE21D42B1F67ECF300056940 /* QUICTester.entitlements */,
 				CEDAF24E1F5FE8E000310153 /* AppDelegate.swift */,
 				CEDAF2501F5FE8E000310153 /* ViewController.swift */,
@@ -414,13 +434,7 @@
 				CED4B51F1F97972500E6F86E /* TCPFileDescriptorFinder.swift */,
 				CED4B5211F9F7FE300E6F86E /* TCPInfoConverter.swift */,
 				CE58F4751FC41BAE009EA08F /* QUICTester-Bridging-Header.h */,
-				CE58F4941FD188DE009EA08F /* BenchmarkResultTableViewCell.swift */,
-				CE58F48B1FD163A8009EA08F /* BenchmarkResultTableViewController.swift */,
-				CE58F49C1FD195ED009EA08F /* TestResultTableViewController.swift */,
-				CE58F49E1FD19A15009EA08F /* TestResultTableViewCell.swift */,
-				CE58F4A91FD6907F009EA08F /* TestResultViewController.swift */,
 				CE58F47A1FCDB693009EA08F /* TesterViewController.swift */,
-				CEA702E72003D67100FDFB89 /* MobileTesterViewController.swift */,
 			);
 			path = QUICTester;
 			sourceTree = "<group>";
@@ -610,6 +624,7 @@
 			files = (
 				CE58F49D1FD195ED009EA08F /* TestResultTableViewController.swift in Sources */,
 				CE8E28531F6ACABB004F1558 /* ReqResResult.swift in Sources */,
+				CEA70311200619D800FDFB89 /* Connectivity.swift in Sources */,
 				CE29B9E31FD6FD660049A105 /* IntervalData.swift in Sources */,
 				CEA7030D20050C3800FDFB89 /* StaticTestTableViewCell.swift in Sources */,
 				CEA702F12003DB4D00FDFB89 /* IntAxisValueFormatter.swift in Sources */,
@@ -646,6 +661,7 @@
 				CE8E284D1F696334004F1558 /* TCPClientBulk.swift in Sources */,
 				CEA702F22003DB4D00FDFB89 /* DayAxisValueFormatter.swift in Sources */,
 				CEA702F62003E10E00FDFB89 /* BalloonMarker.swift in Sources */,
+				CEA703132006615A00FDFB89 /* AnyTestResult.swift in Sources */,
 				CEA703092005084C00FDFB89 /* UICircularProgressRingView.swift in Sources */,
 				CEA702E82003D67100FDFB89 /* MobileTesterViewController.swift in Sources */,
 				CEA703072005084C00FDFB89 /* UICircularProgressRingStyle.swift in Sources */,

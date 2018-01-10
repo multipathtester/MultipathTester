@@ -98,8 +98,8 @@ class TesterViewController: UIViewController {
                 // TODO update serverIP
                 Utils.sendTestToCollectServer(test: test, result: result, serverIP: "176.31.249.161", benchStartTime: self.startTime)
             }
-            let benchmarkResult = BenchmarkResult(startTime: self.startTime, testResults: testResults)
-            self.saveBenchmarkTest(result: benchmarkResult!)
+            let benchmarkResult = BenchmarkResult(connectivities: [], startTime: self.startTime, testResults: testResults)
+            self.saveBenchmarkTest(result: benchmarkResult)
             print("Tests done")
             self.timer?.invalidate()
             self.timer = nil

@@ -10,7 +10,12 @@ import UIKit
 
 class BenchmarkResultTableViewCell: UITableViewCell {
     // MARK: Properties
+    @IBOutlet weak var networkImageView: UIImageView!
+    @IBOutlet weak var testTypeLabel: UILabel!
     @IBOutlet weak var startTimeLabel: UILabel!
+    @IBOutlet weak var tcpResultsLabel: UILabel!
+    @IBOutlet weak var quicResultsLabel: UILabel!
+    @IBOutlet weak var pingResultsLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()

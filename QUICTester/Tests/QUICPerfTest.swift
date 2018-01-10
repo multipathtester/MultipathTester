@@ -94,7 +94,7 @@ class QUICPerfTest: BaseTest, Test {
                 if cwinData[pth] == nil {
                     cwinData[pth] = [CWinData]()
                 }
-                cwinData[pth]!.append(CWinData(time: time, cwin: cwin)!)
+                cwinData[pth]!.append(CWinData(time: time, cwin: cwin))
             }
         }
         let intervalsRaw = result["intervals"] as! [[String: Any]]
@@ -102,12 +102,12 @@ class QUICPerfTest: BaseTest, Test {
         if intervalsRaw.count > 0 {
             for i in 0..<intervalsRaw.count {
                 let intervalRaw = intervalsRaw[i]
-                let interval = IntervalData(interval: intervalRaw["intervalInSec"] as! String, transferredLastSecond: UInt64(intervalRaw["transferredLastSecond"] as! Int), globalBandwidth: UInt64(intervalRaw["globalBandwidth"] as! Int), retransmittedLastSecond: UInt64(intervalRaw["retransmittedLastSecond"] as! Int))!
+                let interval = IntervalData(interval: intervalRaw["intervalInSec"] as! String, transferredLastSecond: UInt64(intervalRaw["transferredLastSecond"] as! Int), globalBandwidth: UInt64(intervalRaw["globalBandwidth"] as! Int), retransmittedLastSecond: UInt64(intervalRaw["retransmittedLastSecond"] as! Int))
                 intervals.append(interval)
             }
         }
         // TODO intervals
-        return QUICPerfResult(name: getDescription(), runTime: Double(result["run_time"] as! String)!, totalRetrans: UInt64(result["total_retrans"] as! String)!, totalSent: UInt64(result["total_sent"] as! String)!, intervals: intervals, cwins: cwinData)!
+        return QUICPerfResult(name: getDescription(), runTime: Double(result["run_time"] as! String)!, totalRetrans: UInt64(result["total_retrans"] as! String)!, totalSent: UInt64(result["total_sent"] as! String)!, intervals: intervals, cwins: cwinData)
     }
     
     func run() -> [String : Any] {
