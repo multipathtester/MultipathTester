@@ -17,7 +17,7 @@ class BenchmarkSummaryTableViewController: UITableViewController {
     enum Tags: Int, StringTag {
         case None
         case BenchmarkDetailTableViewController
-        case TestResultTableViewController
+        case TestResultsTableViewController
         
         var string: String {
             switch self {
@@ -25,8 +25,8 @@ class BenchmarkSummaryTableViewController: UITableViewController {
                 return ""
             case .BenchmarkDetailTableViewController:
                 return "BenchmarkDetailTableViewController"
-            case .TestResultTableViewController:
-                return "TestResultTableViewController"
+            case .TestResultsTableViewController:
+                return "TestResultsTableViewController"
             }
         }
     }
@@ -61,7 +61,7 @@ class BenchmarkSummaryTableViewController: UITableViewController {
         ]
         sections["Tests"] = [
             TableItem(title: "Results", detail: "100 % (834/834)", tag: .None),
-            TableItem(title: "Results details", detail: "ARROW", tag: .TestResultTableViewController),
+            TableItem(title: "Results details", detail: "ARROW", tag: .TestResultsTableViewController),
         ]
 
         // Uncomment the following line to preserve selection between presentations
@@ -119,7 +119,6 @@ class BenchmarkSummaryTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("Coucou")
         let tableSection = sections[sortedSections[indexPath.section]]
         let tableItem = tableSection![indexPath.row]
         
@@ -130,12 +129,12 @@ class BenchmarkSummaryTableViewController: UITableViewController {
             }
             benchmarkDetailTableViewController.benchmark = benchmark
             self.navigationController?.pushViewController(benchmarkDetailTableViewController, animated: true)
-        case .TestResultTableViewController:
-            guard let testResultTableViewController = UIStoryboard(name:"Main", bundle:nil).instantiateViewController(withIdentifier: "TestResultTableViewController") as? TestResultTableViewController else {
-                fatalError("Could not instanciate TestResultTableViewController")
+        case .TestResultsTableViewController:
+            guard let testResultsTableViewController = UIStoryboard(name:"Main", bundle:nil).instantiateViewController(withIdentifier: "TestResultsTableViewController") as? TestResultsTableViewController else {
+                fatalError("Could not instanciate TestResultsTableViewController")
             }
-            testResultTableViewController.testResults = benchmark?.testResults
-            self.navigationController?.pushViewController(testResultTableViewController, animated: true)
+            testResultsTableViewController.testResults = benchmark?.testResults
+            self.navigationController?.pushViewController(testResultsTableViewController, animated: true)
         default:
             break
         }

@@ -43,13 +43,14 @@ class QUICPerfTest: BaseTest, Test {
     }
     
     func getDescription() -> String {
+        let baseConfig = getConfig().rawValue
         switch ipVer {
         case .v4:
-            return getConfig() + " IPv4 IPerf"
+            return baseConfig + " IPv4 IPerf"
         case .v6:
-            return getConfig() + " IPv6 IPerf"
+            return baseConfig + " IPv6 IPerf"
         default:
-            return getConfig() + " IPerf"
+            return baseConfig + " IPerf"
         }
     }
     
@@ -63,12 +64,11 @@ class QUICPerfTest: BaseTest, Test {
         ]
     }
     
-    func getConfig() -> String {
+    func getConfig() -> NetProtocol {
         if maxPathID > 0 {
-            return "MPQUIC"
-        } else {
-            return "QUIC"
+            return .MPQUIC
         }
+        return .QUIC
     }
     
     func getTestResult() -> TestResult {
@@ -107,7 +107,12 @@ class QUICPerfTest: BaseTest, Test {
             }
         }
         // TODO intervals
-        return QUICPerfResult(name: getDescription(), runTime: Double(result["run_time"] as! String)!, totalRetrans: UInt64(result["total_retrans"] as! String)!, totalSent: UInt64(result["total_sent"] as! String)!, intervals: intervals, cwins: cwinData)
+        // TODO FIXME
+        let runTime = Double(result["run_time"] as! String)!
+        let totalRetrans = UInt64(result["total_retrans"] as! String)!
+        let totalSent = UInt64(result["total_sent"] as! String)!
+        let resultText = "Transferred " + String(totalSent) + " B in " + String(runTime) + " s"
+        return PerfResult(name: getDescription(), proto: getConfig(), success: true, result: resultText, runTime: runTime, totalRetrans: totalRetrans, totalSent: totalSent, intervals: intervals, cwins: cwinData)
     }
     
     func run() -> [String : Any] {

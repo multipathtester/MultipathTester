@@ -139,7 +139,7 @@ class BenchmarkResultTableViewController: UITableViewController {
         super.prepare(for: segue, sender: sender)
         switch(segue.identifier ?? "") {
         case "ShowTestResults":
-            guard let testResultsViewController = segue.destination as? TestResultTableViewController else {
+            guard let testResultsViewController = segue.destination as? TestResultsTableViewController else {
                 fatalError("Unexpected destination: \(segue.destination)")
             }
             

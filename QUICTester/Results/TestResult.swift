@@ -10,27 +10,31 @@ import Foundation
 
 enum TestResultType: String, Codable {
     // /!\ Name of the tests is definitive!
-    case quicConnectivity
-    case quicBulkDownload
-    case quicReqRes
-    case quicPerf
+    case connectivity
+    case bulkDownload
+    case reqRes
+    case perf
     
     var metatype: TestResult.Type {
         switch self {
-        case .quicConnectivity:
-            return QUICConnectivityResult.self
-        case .quicBulkDownload:
-            return QUICBulkDownloadResult.self
-        case .quicReqRes:
-            return QUICReqResResult.self
-        case .quicPerf:
-            return QUICPerfResult.self
+        case .connectivity:
+            return ConnectivityResult.self
+        case .bulkDownload:
+            return BulkDownloadResult.self
+        case .reqRes:
+            return ReqResResult.self
+        case .perf:
+            return PerfResult.self
         }
     }
 }
 
 protocol TestResult: Codable {
     static var type: TestResultType { get }
+    static func getTestName() -> String
+    static func getTestDescription() -> String
     func getDescription() -> String
+    func getProtocol() -> NetProtocol
     func getResult() -> String
+    func succeeded() -> Bool
 }

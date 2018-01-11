@@ -44,13 +44,14 @@ class QUICReqResTest: BaseTest, Test {
 
     
     func getDescription() -> String {
+        let baseConfig = getConfig().rawValue
         switch ipVer {
         case .v4:
-            return getConfig() + " IPv4 Request Response"
+            return baseConfig + " IPv4 Request Response"
         case .v6:
-            return getConfig() + " IPv6 Request Response"
+            return baseConfig + " IPv6 Request Response"
         default:
-            return getConfig() + " Request Response"
+            return baseConfig + " Request Response"
         }
     }
     
@@ -69,12 +70,11 @@ class QUICReqResTest: BaseTest, Test {
         ]
     }
     
-    func getConfig() -> String {
+    func getConfig() -> NetProtocol {
         if maxPathID > 0 {
-            return "MPQUIC"
-        } else {
-            return "QUIC"
+            return .MPQUIC
         }
+        return .QUIC
     }
     
     func getTestResult() -> TestResult {
@@ -83,7 +83,11 @@ class QUICReqResTest: BaseTest, Test {
         if delays.count > 0 {
             maxDelay = delays.max()!
         }
-        return QUICReqResResult(name: getDescription(), runTime: Double(result["run_time"] as! String)!, missed: result["missed"] as! Int64, maxDelay: maxDelay, delays: delays)
+        // FIXME
+        let runTime = Double(result["run_time"] as! String)!
+        let missed = result["missed"] as! Int64
+        let resultText = "Maximum delay of " + String(maxDelay) + " ms, " + String(missed) + " missed"
+        return ReqResResult(name: getDescription(), proto: getConfig(), success: true, result: resultText, runTime: runTime, missed: missed, maxDelay: maxDelay, delays: delays)
     }
     
     func run() -> [String : Any] {

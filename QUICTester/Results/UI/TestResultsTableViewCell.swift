@@ -8,9 +8,10 @@
 
 import UIKit
 
-class TestResultTableViewCell: UITableViewCell {
+class TestResultsTableViewCell: UITableViewCell {
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var resultLabel: UILabel!
+    @IBOutlet weak var sucessImageView: UIImageView!
     
     override func awakeFromNib() {
         super.awakeFromNib()

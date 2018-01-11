@@ -45,13 +45,14 @@ class QUICBulkDownloadTest: BaseTest, Test {
     }
     
     func getDescription() -> String {
+        let baseConfig = getConfig().rawValue
         switch ipVer {
         case .v4:
-            return getConfig() + " IPv4 Bulk Download of " + urlPath
+            return baseConfig + " IPv4 Bulk Download of " + urlPath
         case .v6:
-            return getConfig() + " IPv6 Bulk Download of " + urlPath
+            return baseConfig + " IPv6 Bulk Download of " + urlPath
         default:
-            return getConfig() + " Bulk Download of " + urlPath
+            return baseConfig + " Bulk Download of " + urlPath
         }
     }
     
@@ -65,12 +66,11 @@ class QUICBulkDownloadTest: BaseTest, Test {
         ]
     }
     
-    func getConfig() -> String {
+    func getConfig() -> NetProtocol {
         if maxPathID > 0 {
-            return "MPQUIC"
-        } else {
-            return "QUIC"
+            return .MPQUIC
         }
+        return .QUIC
     }
     
     func getTestResult() -> TestResult {
@@ -94,7 +94,7 @@ class QUICBulkDownloadTest: BaseTest, Test {
                 rcvBytesDatas.append(RcvBytesData(time: time, rcvBytes: rcvbytes))
             }
         }
-        return QUICBulkDownloadResult(name: getDescription(), rcvBytesDatas: rcvBytesDatas, runTime: Double(result["run_time"] as! String)!)
+        return BulkDownloadResult(name: getDescription(), proto: getConfig(), runTime: Double(result["run_time"] as! String)!, rcvBytesDatas: rcvBytesDatas)
     }
     
     func run() -> [String : Any] {

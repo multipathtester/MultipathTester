@@ -8,16 +8,38 @@
 
 import UIKit
 
-class TestResultTableViewController: UITableViewController {
+class TestResultsTableViewController: UITableViewController {
     // MARK: Properties
     /*
      This value is passed by `MealTableViewController` in `prepare(for:sender:)`
      */
+    struct TableItem {
+        let title: String
+        let nbSuccess: Int
+        let testResults: [TestResult]
+    }
+    
     var testResults: [TestResult]?
+    var sortedSections = ["TCP", "QUIC"]
+    var items = [String: [TableItem]]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        let resultDict = getTableDict()
+        
+        for k in resultDict.keys {
+            items[k] = [TableItem]()
+            for t in resultDict[k]!.keys {
+                let testResults = resultDict[k]![t]
+                var succeeded = 0
+                for tr in testResults! {
+                    if tr.succeeded() {
+                        succeeded += 1
+                    }
+                }
+                items[k]?.append(TableItem(title: t, nbSuccess: succeeded, testResults: testResults!))
+            }
+        }
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
@@ -33,29 +55,52 @@ class TestResultTableViewController: UITableViewController {
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        return items.keys.count
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let testResultsOk = testResults else {
+        guard let _ = testResults else {
             return 0
         }
-        return testResultsOk.count
+        return items[sortedSections[section]]!.count
     }
 
-    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cellIdentifier = "TestResultTableViewCell"
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? TestResultTableViewCell else {
-            fatalError("The dequeued cell is not an instance of TestResultTableViewCell.")
+        let cellIdentifier = "TestResultsTableViewCell"
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? TestResultsTableViewCell else {
+            fatalError("The dequeued cell is not an instance of TestResultsTableViewCell.")
         }
         
+        let sectionName = sortedSections[indexPath.section]
+        let tableItem = items[sectionName]![indexPath.row]
+        
         // Fetches the appropriate testResult for the data source layout
-        let testResult = testResults![indexPath.row]
-        cell.nameLabel.text = testResult.getDescription()
-        cell.resultLabel.text = testResult.getResult()
+        cell.nameLabel.text = tableItem.title
+        cell.resultLabel.text = String(tableItem.nbSuccess) + "/" + String(tableItem.testResults.count)
+        
+        let bundle = Bundle(for: type(of: self))
+        let ok = UIImage(named: "ok", in: bundle, compatibleWith: self.traitCollection)
+        let failed = UIImage(named: "error", in: bundle, compatibleWith: self.traitCollection)
+        
+        if tableItem.nbSuccess == tableItem.testResults.count {
+            cell.sucessImageView.image = ok
+        } else {
+            cell.sucessImageView.image = failed
+        }
         
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return sortedSections[section]
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 40.0
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 55.0
     }
     
 
@@ -108,7 +153,7 @@ class TestResultTableViewController: UITableViewController {
                 fatalError("Unexpected destination: \(segue.destination)")
             }
             
-            guard let selectedTestResultCell = sender as? TestResultTableViewCell else {
+            guard let selectedTestResultCell = sender as? TestResultsTableViewCell else {
                 fatalError("Unexpected sender: \(String(describing: sender))")
             }
             
@@ -121,6 +166,40 @@ class TestResultTableViewController: UITableViewController {
         default:
             fatalError("Unexpected Segue Identifier; \(String(describing: segue.identifier))")
         }
+    }
+    
+    // MARK: Private
+    func getTableDict() -> [String: [String: [TestResult]]] {
+        var dict = [
+            "TCP": [String: [TestResult]](),
+            "QUIC": [String: [TestResult]](),
+        ]
+        for k in dict.keys {
+            dict[k] = [
+                ConnectivityResult.getTestName(): [TestResult](),
+                BulkDownloadResult.getTestName(): [TestResult](),
+                ReqResResult.getTestName(): [TestResult](),
+                PerfResult.getTestName(): [TestResult](),
+            ]
+        }
+        
+        for t in testResults! {
+            let proto = t.getProtocol().main
+            switch t {
+            case let cr as ConnectivityResult:
+                dict[proto]![ConnectivityResult.getTestName()]?.append(cr)
+            case let bd as BulkDownloadResult:
+                dict[proto]![BulkDownloadResult.getTestName()]?.append(bd)
+            case let rr as ReqResResult:
+                dict[proto]![ReqResResult.getTestName()]?.append(rr)
+            case let p as PerfResult:
+                dict[proto]![PerfResult.getTestName()]?.append(p)
+            default:
+                fatalError("Unknown type for TestResult...")
+            }
+        }
+
+        return dict
     }
 
 }

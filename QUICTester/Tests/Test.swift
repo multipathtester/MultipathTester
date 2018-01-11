@@ -14,10 +14,30 @@ enum IPVersion {
     case any
 }
 
+enum NetProtocol: String, Codable {
+    case TCP
+    case MPTCP
+    case QUIC
+    case MPQUIC
+    
+    var main: String {
+        switch self {
+        case .TCP:
+            return "TCP"
+        case .MPTCP:
+            return "TCP"
+        case.QUIC:
+            return "QUIC"
+        case .MPQUIC:
+            return "QUIC"
+        }
+    }
+}
+
 protocol Test {
     func getDescription() -> String
     func getBenchDict() -> [String: Any]
-    func getConfig() -> String
+    func getConfig() -> NetProtocol
     func getNotifyID() -> String
     func getQUICInfo() -> [[String: Any]]
     func getStartTime() -> Double

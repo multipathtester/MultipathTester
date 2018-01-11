@@ -40,7 +40,7 @@ class Utils {
     static func sendTestToCollectServer(test: Test, result: [String:Any], serverIP: String, benchStartTime: Double) {
         let json: [String: Any] = [
             "bench": test.getBenchDict(),
-            "config_name": test.getConfig(),
+            "config_name": test.getConfig().rawValue,
             "device_id": UIDevice.current.identifierForVendor!.uuidString,
             "group_start_time": benchStartTime,
             "proto_info": test.getQUICInfo(),

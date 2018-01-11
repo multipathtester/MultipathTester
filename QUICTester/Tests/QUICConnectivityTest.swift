@@ -61,13 +61,13 @@ class QUICConnectivityTest: BaseTest, Test {
         ]
     }
     
-    func getConfig() -> String {
-        return "QUIC"
+    func getConfig() -> NetProtocol {
+        return .QUIC
     }
     
     func getTestResult() -> TestResult {
         // FIXME should check if result is ready
-        return QUICConnectivityResult(name: getDescription(), runTime: Double(result["run_time"] as! String)!, success: result["success"] as! Bool)
+        return ConnectivityResult(name: getDescription(), proto: getConfig(), success: result["success"] as! Bool, runTime: Double(result["run_time"] as! String)!)
     }
     
     func run() -> [String:Any] {

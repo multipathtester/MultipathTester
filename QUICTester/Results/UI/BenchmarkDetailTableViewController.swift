@@ -30,6 +30,7 @@ class BenchmarkDetailTableViewController: UITableViewController {
             TableItem(title: "Timezone", detail: "UTC+1"),
             TableItem(title: "Ping", detail: "100 ms"),
             TableItem(title: "Ping variance", detail: "50 ms"),
+            TableItem(title: "Location", detail: "N 50°40.121' E 04°37.288' (+/- 30 m)"),
             TableItem(title: "Network type", detail: "WiFi + LTE (4G)"),
             TableItem(title: "WiFi SSID", detail: "Cr4ckM31fUC4N"),
             TableItem(title: "WiFi BSSID", detail: "00:f2:8b:aa:89:30"),
