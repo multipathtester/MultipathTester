@@ -62,6 +62,10 @@
 		CEA7030F2005116900FDFB89 /* StaticRunnerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA7030E2005116900FDFB89 /* StaticRunnerViewController.swift */; };
 		CEA70311200619D800FDFB89 /* Connectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA70310200619D800FDFB89 /* Connectivity.swift */; };
 		CEA703132006615A00FDFB89 /* AnyTestResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA703122006615A00FDFB89 /* AnyTestResult.swift */; };
+		CEA70316200679C900FDFB89 /* BenchmarkSummaryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA70315200679C900FDFB89 /* BenchmarkSummaryTableViewCell.swift */; };
+		CEA7031820067A4900FDFB89 /* BenchmarkSummaryTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA7031720067A4900FDFB89 /* BenchmarkSummaryTableViewController.swift */; };
+		CEA7031A20076D2500FDFB89 /* BenchmarkDetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA7031920076D2500FDFB89 /* BenchmarkDetailTableViewController.swift */; };
+		CEA7031C200777C300FDFB89 /* BenchmarkDetailTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA7031B200777C300FDFB89 /* BenchmarkDetailTableViewCell.swift */; };
 		CED4B5201F97972500E6F86E /* TCPFileDescriptorFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED4B51F1F97972500E6F86E /* TCPFileDescriptorFinder.swift */; };
 		CED4B5221F9F7FE300E6F86E /* TCPInfoConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED4B5211F9F7FE300E6F86E /* TCPInfoConverter.swift */; };
 		CEDAF24F1F5FE8E000310153 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDAF24E1F5FE8E000310153 /* AppDelegate.swift */; };
@@ -184,6 +188,10 @@
 		CEA7030E2005116900FDFB89 /* StaticRunnerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticRunnerViewController.swift; sourceTree = "<group>"; };
 		CEA70310200619D800FDFB89 /* Connectivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connectivity.swift; sourceTree = "<group>"; };
 		CEA703122006615A00FDFB89 /* AnyTestResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyTestResult.swift; sourceTree = "<group>"; };
+		CEA70315200679C900FDFB89 /* BenchmarkSummaryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BenchmarkSummaryTableViewCell.swift; sourceTree = "<group>"; };
+		CEA7031720067A4900FDFB89 /* BenchmarkSummaryTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BenchmarkSummaryTableViewController.swift; sourceTree = "<group>"; };
+		CEA7031920076D2500FDFB89 /* BenchmarkDetailTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BenchmarkDetailTableViewController.swift; sourceTree = "<group>"; };
+		CEA7031B200777C300FDFB89 /* BenchmarkDetailTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BenchmarkDetailTableViewCell.swift; sourceTree = "<group>"; };
 		CED4B51F1F97972500E6F86E /* TCPFileDescriptorFinder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPFileDescriptorFinder.swift; sourceTree = "<group>"; };
 		CED4B5211F9F7FE300E6F86E /* TCPInfoConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPInfoConverter.swift; sourceTree = "<group>"; };
 		CEDAF24B1F5FE8E000310153 /* QUICTester.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QUICTester.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -291,6 +299,10 @@
 				CE58F49C1FD195ED009EA08F /* TestResultTableViewController.swift */,
 				CE58F49E1FD19A15009EA08F /* TestResultTableViewCell.swift */,
 				CE58F4A91FD6907F009EA08F /* TestResultViewController.swift */,
+				CEA70315200679C900FDFB89 /* BenchmarkSummaryTableViewCell.swift */,
+				CEA7031720067A4900FDFB89 /* BenchmarkSummaryTableViewController.swift */,
+				CEA7031920076D2500FDFB89 /* BenchmarkDetailTableViewController.swift */,
+				CEA7031B200777C300FDFB89 /* BenchmarkDetailTableViewCell.swift */,
 			);
 			path = Results;
 			sourceTree = "<group>";
@@ -626,6 +638,7 @@
 				CE8E28531F6ACABB004F1558 /* ReqResResult.swift in Sources */,
 				CEA70311200619D800FDFB89 /* Connectivity.swift in Sources */,
 				CE29B9E31FD6FD660049A105 /* IntervalData.swift in Sources */,
+				CEA7031A20076D2500FDFB89 /* BenchmarkDetailTableViewController.swift in Sources */,
 				CEA7030D20050C3800FDFB89 /* StaticTestTableViewCell.swift in Sources */,
 				CEA702F12003DB4D00FDFB89 /* IntAxisValueFormatter.swift in Sources */,
 				CE58F48F1FD1640F009EA08F /* BenchmarkResult.swift in Sources */,
@@ -636,6 +649,7 @@
 				CEA702FF2005072000FDFB89 /* StaticMainViewController.swift in Sources */,
 				CEA7030A2005084C00FDFB89 /* UICircularProgressRingGradientPosition.swift in Sources */,
 				CE58F4AA1FD6907F009EA08F /* TestResultViewController.swift in Sources */,
+				CEA7031820067A4900FDFB89 /* BenchmarkSummaryTableViewController.swift in Sources */,
 				CE29B9EB1FD838340049A105 /* QUICReqResResult.swift in Sources */,
 				CE58F4931FD16A97009EA08F /* QUICConnectivityResult.swift in Sources */,
 				CE8E28511F6ACA9A004F1558 /* BulkResult.swift in Sources */,
@@ -644,10 +658,12 @@
 				CEA702F32003DB4D00FDFB89 /* LargeValueFormatter.swift in Sources */,
 				CE58F48C1FD163A8009EA08F /* BenchmarkResultTableViewController.swift in Sources */,
 				CE58F49F1FD19A15009EA08F /* TestResultTableViewCell.swift in Sources */,
+				CEA7031C200777C300FDFB89 /* BenchmarkDetailTableViewCell.swift in Sources */,
 				CE58F4911FD168D8009EA08F /* TestResult.swift in Sources */,
 				CE58F4871FCEBCD3009EA08F /* RunConfig.swift in Sources */,
 				CE58F4A31FD57FD7009EA08F /* QUICBulkDownloadResult.swift in Sources */,
 				CE58F4A51FD6895D009EA08F /* QUICPerfTest.swift in Sources */,
+				CEA70316200679C900FDFB89 /* BenchmarkSummaryTableViewCell.swift in Sources */,
 				CE58F48A1FCF1114009EA08F /* Utils.swift in Sources */,
 				CE58F49B1FD193AD009EA08F /* Reachability.m in Sources */,
 				CE29B9E11FD6AE2F0049A105 /* QUICPerfResult.swift in Sources */,

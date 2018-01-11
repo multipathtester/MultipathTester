@@ -153,6 +153,20 @@ class BenchmarkResultTableViewController: UITableViewController {
             
             let selectedBenchmarkResult = results[indexPath.row]
             testResultsViewController.testResults = selectedBenchmarkResult.testResults
+        case "ShowBenchmarkResult":
+            guard let benchmarkSummaryTableViewController = segue.destination as? BenchmarkSummaryTableViewController else {
+                fatalError("Unexpected destination: \(segue.destination)")
+            }
+            
+            guard let selectedBenchmarkResultCell = sender as? BenchmarkResultTableViewCell else {
+                fatalError("Unexpected sender: \(String(describing: sender))")
+            }
+            
+            guard let indexPath = tableView.indexPath(for: selectedBenchmarkResultCell) else {
+                fatalError("The selected cell is not being displayed by the table")
+            }
+            let selectedBenchmarkResult = results[indexPath.row]
+            benchmarkSummaryTableViewController.benchmark = selectedBenchmarkResult
         default:
             fatalError("Unexpected Segue Identifier; \(String(describing: segue.identifier))")
         }
