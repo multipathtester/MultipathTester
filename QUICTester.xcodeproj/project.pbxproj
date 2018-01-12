@@ -12,6 +12,12 @@
 		CE2685032008A50100462C6E /* TestResultInstancesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2685022008A50100462C6E /* TestResultInstancesTableViewCell.swift */; };
 		CE2685052008A54C00462C6E /* TestResultInstancesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2685042008A54C00462C6E /* TestResultInstancesTableViewController.swift */; };
 		CE2685072008AA1400462C6E /* TestResultDetailTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2685062008AA1400462C6E /* TestResultDetailTableViewCell.swift */; };
+		CE2685092008BBB200462C6E /* TestResultInstanceDetailTextTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2685082008BBB200462C6E /* TestResultInstanceDetailTextTableViewCell.swift */; };
+		CE26850B2008BC3300462C6E /* TestResultInstanceDetailLineChartTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE26850A2008BC3300462C6E /* TestResultInstanceDetailLineChartTableViewCell.swift */; };
+		CE26850E2008BD6B00462C6E /* TestResultInstanceDetailTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE26850D2008BD6B00462C6E /* TestResultInstanceDetailTableViewController.swift */; };
+		CE2685112008E75400462C6E /* LineChartEntries.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2685102008E75400462C6E /* LineChartEntries.swift */; };
+		CE2685142008E7EC00462C6E /* ChartEntries.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2685132008E7EC00462C6E /* ChartEntries.swift */; };
+		CE2685162008E9E700462C6E /* MultiLineChartEntries.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2685152008E9E700462C6E /* MultiLineChartEntries.swift */; };
 		CE29B9E11FD6AE2F0049A105 /* PerfResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE29B9E01FD6AE2F0049A105 /* PerfResult.swift */; };
 		CE29B9E31FD6FD660049A105 /* IntervalData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE29B9E21FD6FD660049A105 /* IntervalData.swift */; };
 		CE29B9E51FD802FD0049A105 /* CWinData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE29B9E41FD802FD0049A105 /* CWinData.swift */; };
@@ -39,7 +45,6 @@
 		CE58F4A31FD57FD7009EA08F /* BulkDownloadResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE58F4A21FD57FD7009EA08F /* BulkDownloadResult.swift */; };
 		CE58F4A51FD6895D009EA08F /* QUICPerfTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE58F4A41FD6895D009EA08F /* QUICPerfTest.swift */; };
 		CE58F4A81FD68D36009EA08F /* RcvBytesData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE58F4A71FD68D36009EA08F /* RcvBytesData.swift */; };
-		CE58F4AA1FD6907F009EA08F /* TestResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE58F4A91FD6907F009EA08F /* TestResultViewController.swift */; };
 		CE8E284B1F695450004F1558 /* TCPClientReqRes.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8E284A1F695450004F1558 /* TCPClientReqRes.swift */; };
 		CE8E284D1F696334004F1558 /* TCPClientBulk.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8E284C1F696334004F1558 /* TCPClientBulk.swift */; };
 		CE8E284F1F6966FC004F1558 /* TCPClientSiri.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8E284E1F6966FC004F1558 /* TCPClientSiri.swift */; };
@@ -136,6 +141,12 @@
 		CE2685022008A50100462C6E /* TestResultInstancesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestResultInstancesTableViewCell.swift; sourceTree = "<group>"; };
 		CE2685042008A54C00462C6E /* TestResultInstancesTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestResultInstancesTableViewController.swift; sourceTree = "<group>"; };
 		CE2685062008AA1400462C6E /* TestResultDetailTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestResultDetailTableViewCell.swift; sourceTree = "<group>"; };
+		CE2685082008BBB200462C6E /* TestResultInstanceDetailTextTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestResultInstanceDetailTextTableViewCell.swift; sourceTree = "<group>"; };
+		CE26850A2008BC3300462C6E /* TestResultInstanceDetailLineChartTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestResultInstanceDetailLineChartTableViewCell.swift; sourceTree = "<group>"; };
+		CE26850D2008BD6B00462C6E /* TestResultInstanceDetailTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestResultInstanceDetailTableViewController.swift; sourceTree = "<group>"; };
+		CE2685102008E75400462C6E /* LineChartEntries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineChartEntries.swift; sourceTree = "<group>"; };
+		CE2685132008E7EC00462C6E /* ChartEntries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartEntries.swift; sourceTree = "<group>"; };
+		CE2685152008E9E700462C6E /* MultiLineChartEntries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiLineChartEntries.swift; sourceTree = "<group>"; };
 		CE29B9E01FD6AE2F0049A105 /* PerfResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerfResult.swift; sourceTree = "<group>"; };
 		CE29B9E21FD6FD660049A105 /* IntervalData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntervalData.swift; sourceTree = "<group>"; };
 		CE29B9E41FD802FD0049A105 /* CWinData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CWinData.swift; sourceTree = "<group>"; };
@@ -165,7 +176,6 @@
 		CE58F4A21FD57FD7009EA08F /* BulkDownloadResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BulkDownloadResult.swift; sourceTree = "<group>"; };
 		CE58F4A41FD6895D009EA08F /* QUICPerfTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QUICPerfTest.swift; sourceTree = "<group>"; };
 		CE58F4A71FD68D36009EA08F /* RcvBytesData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RcvBytesData.swift; sourceTree = "<group>"; };
-		CE58F4A91FD6907F009EA08F /* TestResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestResultViewController.swift; sourceTree = "<group>"; };
 		CE8E284A1F695450004F1558 /* TCPClientReqRes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClientReqRes.swift; sourceTree = "<group>"; };
 		CE8E284C1F696334004F1558 /* TCPClientBulk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClientBulk.swift; sourceTree = "<group>"; };
 		CE8E284E1F6966FC004F1558 /* TCPClientSiri.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClientSiri.swift; sourceTree = "<group>"; };
@@ -255,9 +265,21 @@
 				CE2685062008AA1400462C6E /* TestResultDetailTableViewCell.swift */,
 				CE2685042008A54C00462C6E /* TestResultInstancesTableViewController.swift */,
 				CE2685022008A50100462C6E /* TestResultInstancesTableViewCell.swift */,
-				CE58F4A91FD6907F009EA08F /* TestResultViewController.swift */,
+				CE26850D2008BD6B00462C6E /* TestResultInstanceDetailTableViewController.swift */,
+				CE2685082008BBB200462C6E /* TestResultInstanceDetailTextTableViewCell.swift */,
+				CE26850A2008BC3300462C6E /* TestResultInstanceDetailLineChartTableViewCell.swift */,
 			);
 			path = UI;
+			sourceTree = "<group>";
+		};
+		CE2685122008E75B00462C6E /* Entries */ = {
+			isa = PBXGroup;
+			children = (
+				CE2685132008E7EC00462C6E /* ChartEntries.swift */,
+				CE2685102008E75400462C6E /* LineChartEntries.swift */,
+				CE2685152008E9E700462C6E /* MultiLineChartEntries.swift */,
+			);
+			path = Entries;
 			sourceTree = "<group>";
 		};
 		CE58F4691FC34631009EA08F /* Frameworks */ = {
@@ -362,6 +384,7 @@
 			children = (
 				CEA702F82004C38A00FDFB89 /* Charts */,
 				CEA702F42003E10500FDFB89 /* Components */,
+				CE2685122008E75B00462C6E /* Entries */,
 				CEA702EB2003DB4100FDFB89 /* Formatters */,
 			);
 			path = ChartsHelpers;
@@ -646,19 +669,22 @@
 				CEA70311200619D800FDFB89 /* Connectivity.swift in Sources */,
 				CE29B9E31FD6FD660049A105 /* IntervalData.swift in Sources */,
 				CEA7031A20076D2500FDFB89 /* BenchmarkDetailTableViewController.swift in Sources */,
+				CE26850E2008BD6B00462C6E /* TestResultInstanceDetailTableViewController.swift in Sources */,
+				CE2685112008E75400462C6E /* LineChartEntries.swift in Sources */,
 				CEA7030D20050C3800FDFB89 /* StaticTestTableViewCell.swift in Sources */,
 				CEA702F12003DB4D00FDFB89 /* IntAxisValueFormatter.swift in Sources */,
 				CE58F48F1FD1640F009EA08F /* BenchmarkResult.swift in Sources */,
+				CE2685142008E7EC00462C6E /* ChartEntries.swift in Sources */,
 				CEA7030F2005116900FDFB89 /* StaticRunnerViewController.swift in Sources */,
 				CEA7030B2005084C00FDFB89 /* UICircularProgressRingLayer.swift in Sources */,
 				CE29B9E51FD802FD0049A105 /* CWinData.swift in Sources */,
 				CEA703082005084C00FDFB89 /* UICircularProgressRingDelegate.swift in Sources */,
 				CEA702FF2005072000FDFB89 /* StaticMainViewController.swift in Sources */,
 				CEA7030A2005084C00FDFB89 /* UICircularProgressRingGradientPosition.swift in Sources */,
-				CE58F4AA1FD6907F009EA08F /* TestResultViewController.swift in Sources */,
 				CEA7031820067A4900FDFB89 /* BenchmarkSummaryTableViewController.swift in Sources */,
 				CE29B9EB1FD838340049A105 /* ReqResResult.swift in Sources */,
 				CE58F4931FD16A97009EA08F /* ConnectivityResult.swift in Sources */,
+				CE2685092008BBB200462C6E /* TestResultInstanceDetailTextTableViewCell.swift in Sources */,
 				CE2685002007B26E00462C6E /* BaseResult.swift in Sources */,
 				CE8E284B1F695450004F1558 /* TCPClientReqRes.swift in Sources */,
 				CEA702F32003DB4D00FDFB89 /* LargeValueFormatter.swift in Sources */,
@@ -682,6 +708,7 @@
 				CEA702FA2004C64400FDFB89 /* LineChartHelper.swift in Sources */,
 				CE8E284F1F6966FC004F1558 /* TCPClientSiri.swift in Sources */,
 				CE8E284D1F696334004F1558 /* TCPClientBulk.swift in Sources */,
+				CE26850B2008BC3300462C6E /* TestResultInstanceDetailLineChartTableViewCell.swift in Sources */,
 				CE2685052008A54C00462C6E /* TestResultInstancesTableViewController.swift in Sources */,
 				CEA702F22003DB4D00FDFB89 /* DayAxisValueFormatter.swift in Sources */,
 				CEA702F62003E10E00FDFB89 /* BalloonMarker.swift in Sources */,
@@ -695,6 +722,7 @@
 				CE58F4801FCEA594009EA08F /* QUICConnectivityTest.swift in Sources */,
 				CE58F4951FD188DE009EA08F /* BenchmarkResultTableViewCell.swift in Sources */,
 				CEA702FC2004CD4200FDFB89 /* MultiLineChartHelper.swift in Sources */,
+				CE2685162008E9E700462C6E /* MultiLineChartEntries.swift in Sources */,
 				CE58F4971FD18E64009EA08F /* BaseTest.swift in Sources */,
 				CEDAF24F1F5FE8E000310153 /* AppDelegate.swift in Sources */,
 			);

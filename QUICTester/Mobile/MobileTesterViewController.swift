@@ -17,7 +17,7 @@ class MobileTesterViewController: UIViewController, ChartViewDelegate {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        LineChartHelper.initialize(chartView: distanceChartView, delegate: self)
+        LineChartHelper.initialize(chartView: distanceChartView, delegate: self, xValueFormatter: DateValueFormatter())
         MultiLineChartHelper.initialize(chartView: snrDelayChartView, delegate: self)
         
         self.updateChartData()
@@ -46,7 +46,7 @@ class MobileTesterViewController: UIViewController, ChartViewDelegate {
             return ChartDataEntry(x: x, y: Double(y))
         }
         
-        LineChartHelper.setData(to: distanceChartView, with: values2, label: "Distance")
+        LineChartHelper.setData(to: distanceChartView, with: values2, label: "Distance", color: UIColor(red: 51/255, green: 181/255, blue: 229/255, alpha: 1))
         MultiLineChartHelper.setData(to: snrDelayChartView, with1: values1, label1: "WiFi SNR (dB)", with2: values2, label2: "Delay (ms)")
     }
 

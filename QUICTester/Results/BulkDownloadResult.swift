@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Charts
 
 class BulkDownloadResult: BaseResult, TestResult {
     // MARK: Needed for Codable ability...
@@ -58,5 +59,12 @@ class BulkDownloadResult: BaseResult, TestResult {
     
     static func getTestDescription() -> String {
         return "This test perform a HTTP GET for a large file"
+    }
+    
+    func getChartData() -> [ChartEntries] {
+        let values = rcvBytesDatas.map { (d) -> ChartDataEntry in
+            return ChartDataEntry(x: d.time, y: Double(d.rcvBytes))
+        }
+        return [LineChartEntries(xLabel: "Time", yLabel: "Bytes", data: values, dataLabel: "Bytes received", xValueFormatter: DateValueFormatter())]
     }
 }

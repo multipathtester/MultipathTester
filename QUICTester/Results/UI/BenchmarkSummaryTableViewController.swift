@@ -8,27 +8,12 @@
 
 import UIKit
 
-protocol StringTag {
-    var string: String { get }
-}
-
 class BenchmarkSummaryTableViewController: UITableViewController {
     
-    enum Tags: Int, StringTag {
+    enum Tags: Int {
         case None
         case BenchmarkDetailTableViewController
         case TestResultsTableViewController
-        
-        var string: String {
-            switch self {
-            case .None:
-                return ""
-            case .BenchmarkDetailTableViewController:
-                return "BenchmarkDetailTableViewController"
-            case .TestResultsTableViewController:
-                return "TestResultsTableViewController"
-            }
-        }
     }
     
     struct TableItem {
@@ -57,11 +42,11 @@ class BenchmarkSummaryTableViewController: UITableViewController {
         ]
         sections["Benchmark"] = [
             TableItem(title: "Time", detail: dateFormatter.string(from: Date(timeIntervalSince1970: benchmark!.startTime)), tag: .None),
-            TableItem(title: "More details", detail: "ARROW", tag: .BenchmarkDetailTableViewController),
+            TableItem(title: "More details", detail: "", tag: .BenchmarkDetailTableViewController),
         ]
         sections["Tests"] = [
             TableItem(title: "Results", detail: "100 % (834/834)", tag: .None),
-            TableItem(title: "Results details", detail: "ARROW", tag: .TestResultsTableViewController),
+            TableItem(title: "Results details", detail: "", tag: .TestResultsTableViewController),
         ]
 
         // Uncomment the following line to preserve selection between presentations
@@ -88,20 +73,25 @@ class BenchmarkSummaryTableViewController: UITableViewController {
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let tableSection = sections[sortedSections[indexPath.section]]
+        let tableItem = tableSection![indexPath.row]
+        
+        if tableItem.tag == .BenchmarkDetailTableViewController {
+            let cellIdentifier = "BenchmarkDetails"
+            return tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
+        }
+        if tableItem.tag == .TestResultsTableViewController {
+            let cellIdentifier = "Results"
+            return tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
+        }
+        
         let cellIdentifier = "BenchmarkSummaryTableViewCell"
         guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? BenchmarkSummaryTableViewCell else {
             fatalError("The dequeued cell is not an instance of BenchmarkSummaryTableViewCell.")
         }
         
-        let tableSection = sections[sortedSections[indexPath.section]]
-        let tableItem = tableSection![indexPath.row]
-        
         cell.titleLabel.text = tableItem.title
-        if tableItem.detail == "ARROW" {
-            cell.accessoryType = .disclosureIndicator
-        } else {
-            cell.detailLabel.text = tableItem.detail
-        }
+        cell.detailLabel.text = tableItem.detail
         
         return cell
     }
@@ -117,38 +107,33 @@ class BenchmarkSummaryTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 55.0
     }
-    
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let tableSection = sections[sortedSections[indexPath.section]]
-        let tableItem = tableSection![indexPath.row]
-        
-        switch tableItem.tag {
-        case .BenchmarkDetailTableViewController:
-            guard let benchmarkDetailTableViewController = UIStoryboard(name:"Main", bundle:nil).instantiateViewController(withIdentifier: "BenchmarkDetailTableViewController") as? BenchmarkDetailTableViewController else {
-                fatalError("Could not instanciate BenchmarkDetailTableViewController")
-            }
-            benchmarkDetailTableViewController.benchmark = benchmark
-            self.navigationController?.pushViewController(benchmarkDetailTableViewController, animated: true)
-        case .TestResultsTableViewController:
-            guard let testResultsTableViewController = UIStoryboard(name:"Main", bundle:nil).instantiateViewController(withIdentifier: "TestResultsTableViewController") as? TestResultsTableViewController else {
-                fatalError("Could not instanciate TestResultsTableViewController")
-            }
-            testResultsTableViewController.testResults = benchmark?.testResults
-            self.navigationController?.pushViewController(testResultsTableViewController, animated: true)
-        default:
-            break
-        }
-    }
-    
 
-    /*
     // MARK: - Navigation
-
+    
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
+        
+        super.prepare(for: segue, sender: sender)
+        switch(segue.identifier ?? "") {
+        case "BenchmarkDetails":
+            guard let benchmarkDetailTableViewController = segue.destination as? BenchmarkDetailTableViewController else {
+                fatalError("Unexpected destination: \(segue.destination)")
+            }
+            
+            benchmarkDetailTableViewController.benchmark = benchmark
+
+        case "Results":
+            guard let testResultsTableViewController = segue.destination as? TestResultsTableViewController else {
+                fatalError("Unexpected destination: \(segue.destination)")
+            }
+            
+            testResultsTableViewController.testResults = benchmark?.testResults
+            
+        default:
+            fatalError("Unexpected Segue Identifier; \(String(describing: segue.identifier))")
+        }
     }
-    */
 
 }

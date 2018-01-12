@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Charts
 
 class ReqResResult: BaseResult, TestResult {
     // MARK: Needed for Codable ability...
@@ -64,5 +65,13 @@ class ReqResResult: BaseResult, TestResult {
     
     static func getTestDescription() -> String {
         return "This test generates small requests and computes the time to receive small responses from the server"
+    }
+    
+    func getChartData() -> [ChartEntries] {
+        let values = delays.sorted().enumerated().map { (arg) -> ChartDataEntry in
+            let (index, d) = arg
+            return ChartDataEntry(x: 100.0 * Double(index) / Double(delays.count), y: Double(d))
+        }
+        return [LineChartEntries(xLabel: "CDF", yLabel: "Time (ms)", data: values, dataLabel: "Delays", xValueFormatter: nil)]
     }
 }

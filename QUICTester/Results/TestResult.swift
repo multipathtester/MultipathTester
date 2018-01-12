@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Charts
 
 enum TestResultType: String, Codable {
     // /!\ Name of the tests is definitive!
@@ -33,6 +34,7 @@ protocol TestResult: Codable {
     static var type: TestResultType { get }
     static func getTestName() -> String
     static func getTestDescription() -> String
+    func getChartData() -> [ChartEntries]
     func getDescription() -> String
     func getProtocol() -> NetProtocol
     func getResult() -> String

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Charts
 
 class PerfResult: BaseResult, TestResult {
     // MARK: Needed for Codable ability...
@@ -69,5 +70,23 @@ class PerfResult: BaseResult, TestResult {
     
     static func getTestDescription() -> String {
         return "This test evaluates the bandwidth the protocol can leverage"
+    }
+    
+    func getChartData() -> [ChartEntries] {
+        let intervalsChart = intervals.enumerated().map { (arg) -> ChartDataEntry in
+            let (index, i) = arg
+            return ChartDataEntry(x: Double(index), y: Double(i.transferredLastSecond))
+        }
+        
+        var dataDict = [String:[ChartDataEntry]]()
+        for k in cwins.keys {
+            dataDict["Path " + k] = cwins[k]!.map { (c) -> ChartDataEntry in
+                return ChartDataEntry(x: c.time, y: Double(c.cwin))
+            }
+        }
+        return [
+            LineChartEntries(xLabel: "Time", yLabel: "Bytes", data: intervalsChart, dataLabel: "Bytes transferred last second", xValueFormatter: DateValueFormatter()),
+            MultiLineChartEntries(xLabel: "Time", yLabel: "Bytes", dataLines: dataDict)
+        ]
     }
 }

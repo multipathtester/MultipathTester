@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Charts
 
 class ConnectivityResult: BaseResult, TestResult {
     // MARK: Needed for Codable ability...
@@ -29,5 +30,9 @@ class ConnectivityResult: BaseResult, TestResult {
     
     static func getTestDescription() -> String {
         return "This test checks if a connection can be established"
+    }
+    
+    func getChartData() -> [ChartEntries] {
+        return []
     }
 }
