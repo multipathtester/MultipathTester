@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		CE23A8A41FD9534F00894CA7 /* Quictraffic.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE23A8A31FD9534F00894CA7 /* Quictraffic.framework */; };
 		CE2685002007B26E00462C6E /* BaseResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2684FF2007B26E00462C6E /* BaseResult.swift */; };
+		CE2685032008A50100462C6E /* TestResultInstancesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2685022008A50100462C6E /* TestResultInstancesTableViewCell.swift */; };
+		CE2685052008A54C00462C6E /* TestResultInstancesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2685042008A54C00462C6E /* TestResultInstancesTableViewController.swift */; };
+		CE2685072008AA1400462C6E /* TestResultDetailTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2685062008AA1400462C6E /* TestResultDetailTableViewCell.swift */; };
 		CE29B9E11FD6AE2F0049A105 /* PerfResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE29B9E01FD6AE2F0049A105 /* PerfResult.swift */; };
 		CE29B9E31FD6FD660049A105 /* IntervalData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE29B9E21FD6FD660049A105 /* IntervalData.swift */; };
 		CE29B9E51FD802FD0049A105 /* CWinData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE29B9E41FD802FD0049A105 /* CWinData.swift */; };
@@ -130,6 +133,9 @@
 		CE21D42B1F67ECF300056940 /* QUICTester.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = QUICTester.entitlements; sourceTree = "<group>"; };
 		CE23A8A31FD9534F00894CA7 /* Quictraffic.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Quictraffic.framework; sourceTree = "<group>"; };
 		CE2684FF2007B26E00462C6E /* BaseResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseResult.swift; sourceTree = "<group>"; };
+		CE2685022008A50100462C6E /* TestResultInstancesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestResultInstancesTableViewCell.swift; sourceTree = "<group>"; };
+		CE2685042008A54C00462C6E /* TestResultInstancesTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestResultInstancesTableViewController.swift; sourceTree = "<group>"; };
+		CE2685062008AA1400462C6E /* TestResultDetailTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestResultDetailTableViewCell.swift; sourceTree = "<group>"; };
 		CE29B9E01FD6AE2F0049A105 /* PerfResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerfResult.swift; sourceTree = "<group>"; };
 		CE29B9E21FD6FD660049A105 /* IntervalData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntervalData.swift; sourceTree = "<group>"; };
 		CE29B9E41FD802FD0049A105 /* CWinData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CWinData.swift; sourceTree = "<group>"; };
@@ -238,15 +244,18 @@
 		CE2685012007B2C300462C6E /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				CE58F4941FD188DE009EA08F /* BenchmarkResultTableViewCell.swift */,
 				CE58F48B1FD163A8009EA08F /* BenchmarkResultTableViewController.swift */,
-				CE58F49C1FD195ED009EA08F /* TestResultsTableViewController.swift */,
-				CE58F49E1FD19A15009EA08F /* TestResultsTableViewCell.swift */,
-				CE58F4A91FD6907F009EA08F /* TestResultViewController.swift */,
-				CEA70315200679C900FDFB89 /* BenchmarkSummaryTableViewCell.swift */,
+				CE58F4941FD188DE009EA08F /* BenchmarkResultTableViewCell.swift */,
 				CEA7031720067A4900FDFB89 /* BenchmarkSummaryTableViewController.swift */,
+				CEA70315200679C900FDFB89 /* BenchmarkSummaryTableViewCell.swift */,
 				CEA7031920076D2500FDFB89 /* BenchmarkDetailTableViewController.swift */,
 				CEA7031B200777C300FDFB89 /* BenchmarkDetailTableViewCell.swift */,
+				CE58F49C1FD195ED009EA08F /* TestResultsTableViewController.swift */,
+				CE58F49E1FD19A15009EA08F /* TestResultsTableViewCell.swift */,
+				CE2685062008AA1400462C6E /* TestResultDetailTableViewCell.swift */,
+				CE2685042008A54C00462C6E /* TestResultInstancesTableViewController.swift */,
+				CE2685022008A50100462C6E /* TestResultInstancesTableViewCell.swift */,
+				CE58F4A91FD6907F009EA08F /* TestResultViewController.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -655,6 +664,7 @@
 				CEA702F32003DB4D00FDFB89 /* LargeValueFormatter.swift in Sources */,
 				CE58F48C1FD163A8009EA08F /* BenchmarkResultTableViewController.swift in Sources */,
 				CE58F49F1FD19A15009EA08F /* TestResultsTableViewCell.swift in Sources */,
+				CE2685032008A50100462C6E /* TestResultInstancesTableViewCell.swift in Sources */,
 				CEA7031C200777C300FDFB89 /* BenchmarkDetailTableViewCell.swift in Sources */,
 				CE58F4911FD168D8009EA08F /* TestResult.swift in Sources */,
 				CE58F4871FCEBCD3009EA08F /* RunConfig.swift in Sources */,
@@ -667,10 +677,12 @@
 				CE29B9E91FD833610049A105 /* QUICReqResTest.swift in Sources */,
 				CEA702F02003DB4D00FDFB89 /* DateValueFormatter.swift in Sources */,
 				CE58F4A81FD68D36009EA08F /* RcvBytesData.swift in Sources */,
+				CE2685072008AA1400462C6E /* TestResultDetailTableViewCell.swift in Sources */,
 				CE58F4821FCEB03E009EA08F /* Test.swift in Sources */,
 				CEA702FA2004C64400FDFB89 /* LineChartHelper.swift in Sources */,
 				CE8E284F1F6966FC004F1558 /* TCPClientSiri.swift in Sources */,
 				CE8E284D1F696334004F1558 /* TCPClientBulk.swift in Sources */,
+				CE2685052008A54C00462C6E /* TestResultInstancesTableViewController.swift in Sources */,
 				CEA702F22003DB4D00FDFB89 /* DayAxisValueFormatter.swift in Sources */,
 				CEA702F62003E10E00FDFB89 /* BalloonMarker.swift in Sources */,
 				CEA703132006615A00FDFB89 /* AnyTestResult.swift in Sources */,

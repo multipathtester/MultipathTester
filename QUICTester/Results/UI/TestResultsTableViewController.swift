@@ -148,8 +148,8 @@ class TestResultsTableViewController: UITableViewController {
         
         super.prepare(for: segue, sender: sender)
         switch(segue.identifier ?? "") {
-        case "ShowTestResultDetails":
-            guard let testResultViewController = segue.destination as? TestResultViewController else {
+        case "ShowTestResultInstances":
+            guard let testResultInstancesTableViewController = segue.destination as? TestResultInstancesTableViewController else {
                 fatalError("Unexpected destination: \(segue.destination)")
             }
             
@@ -161,8 +161,26 @@ class TestResultsTableViewController: UITableViewController {
                 fatalError("The selected cell is not being displayed by the table")
             }
             
-            let selectedTestResult = testResults![indexPath.row]
-            testResultViewController.testResult = selectedTestResult
+            let sectionName = sortedSections[indexPath.section]
+            let tableItem = items[sectionName]![indexPath.row]
+            
+            var detailText: String = ""
+            switch tableItem.title {
+            case ConnectivityResult.getTestName():
+                detailText = ConnectivityResult.getTestDescription()
+            case BulkDownloadResult.getTestName():
+                detailText = BulkDownloadResult.getTestDescription()
+            case ReqResResult.getTestName():
+                detailText = ReqResResult.getTestDescription()
+            case PerfResult.getTestName():
+                detailText = PerfResult.getTestDescription()
+            default:
+                fatalError("Unknown test name " + tableItem.title)
+            }
+            
+            testResultInstancesTableViewController.detailText = detailText
+            testResultInstancesTableViewController.testResults = tableItem.testResults
+            testResultInstancesTableViewController.navigationTitle = sectionName + " " + tableItem.title
         default:
             fatalError("Unexpected Segue Identifier; \(String(describing: segue.identifier))")
         }
