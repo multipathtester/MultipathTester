@@ -79,7 +79,6 @@ class LineChartHelper {
             data.setValueFont(.systemFont(ofSize: 9, weight: .light))
             
             chartView.data = data
-            print("UO")
         }
         chartView.data?.addDataSet(set1)
     }

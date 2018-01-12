@@ -25,9 +25,11 @@ class BenchmarkDetailTableViewController: UITableViewController {
         dateFormatter.dateFormat = "dd MMM YYYY HH:mm:ss"
         dateFormatter.locale = .current
         
+        let bench = benchmark!
+        
         benchmarkDetails = [
-            TableItem(title: "Test time", detail: dateFormatter.string(from: Date(timeIntervalSince1970: benchmark!.startTime))),
-            TableItem(title: "Timezone", detail: "UTC+1"),
+            TableItem(title: "Test time", detail: dateFormatter.string(from: Date(timeIntervalSince1970: bench.startTime))),
+            TableItem(title: "Timezone", detail: bench.timezone.abbreviation() ?? bench.timezone.description),
             TableItem(title: "Ping", detail: "100 ms"),
             TableItem(title: "Ping variance", detail: "50 ms"),
             TableItem(title: "Location", detail: "N 50°40.121' E 04°37.288' (+/- 30 m)"),
@@ -47,11 +49,11 @@ class BenchmarkDetailTableViewController: UITableViewController {
             TableItem(title: "Data amount WiFi interface", detail: "40 MB"),
             TableItem(title: "Data amount cellular interface", detail: "34 MB"),
             TableItem(title: "Testserver name", detail: "FR"),
-            TableItem(title: "Platform", detail: "iOS"),
-            TableItem(title: "Platform version", detail: "11.2"),
-            TableItem(title: "Model", detail: "iPhone8,4"),
-            TableItem(title: "Software name", detail: "QUICTester"),
-            TableItem(title: "Software version", detail: "0.1alpha"),
+            TableItem(title: "Platform", detail: bench.platform),
+            TableItem(title: "Platform version", detail: bench.platformVersion),
+            TableItem(title: "Model", detail: bench.model),
+            TableItem(title: "Software name", detail: bench.softwareName),
+            TableItem(title: "Software version", detail: bench.softwareVersion),
             TableItem(title: "QUIC version", detail: "cafebabe"),
         ]
 
