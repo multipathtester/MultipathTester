@@ -29,6 +29,15 @@ class BenchmarkSummaryTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let testResults = benchmark!.testResults
+        var succeeded = 0
+        for i in 0..<testResults.count {
+            if testResults[i].succeeded() {
+                succeeded += 1
+            }
+        }
+        let percentageSucceeded = (100.0 * Double(succeeded) / Double(testResults.count))
+        
         // Prepare sections
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd MMM YYYY HH:mm:ss"
@@ -45,7 +54,7 @@ class BenchmarkSummaryTableViewController: UITableViewController {
             TableItem(title: "More details", detail: "", tag: .BenchmarkDetailTableViewController),
         ]
         sections["Tests"] = [
-            TableItem(title: "Results", detail: "100 % (834/834)", tag: .None),
+            TableItem(title: "Results", detail: String(format: "%.0f", percentageSucceeded) + " % (" + String(succeeded) + "/" + String(testResults.count) + ")", tag: .None),
             TableItem(title: "Results details", detail: "", tag: .TestResultsTableViewController),
         ]
 
