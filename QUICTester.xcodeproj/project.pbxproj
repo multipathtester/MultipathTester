@@ -21,6 +21,7 @@
 		CE268519200DED5200462C6E /* UIDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE268518200DED5200462C6E /* UIDevice.swift */; };
 		CE26851B200F60BE00462C6E /* LocationTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE26851A200F60BE00462C6E /* LocationTracker.swift */; };
 		CE26851D200F809A00462C6E /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE26851C200F809A00462C6E /* Location.swift */; };
+		CE268523200FACD200462C6E /* BenchmarkUUIDTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE268522200FACD200462C6E /* BenchmarkUUIDTableViewCell.swift */; };
 		CE29B9E11FD6AE2F0049A105 /* PerfResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE29B9E01FD6AE2F0049A105 /* PerfResult.swift */; };
 		CE29B9E31FD6FD660049A105 /* IntervalData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE29B9E21FD6FD660049A105 /* IntervalData.swift */; };
 		CE29B9E51FD802FD0049A105 /* CWinData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE29B9E41FD802FD0049A105 /* CWinData.swift */; };
@@ -153,6 +154,7 @@
 		CE268518200DED5200462C6E /* UIDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIDevice.swift; sourceTree = "<group>"; };
 		CE26851A200F60BE00462C6E /* LocationTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationTracker.swift; sourceTree = "<group>"; };
 		CE26851C200F809A00462C6E /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
+		CE268522200FACD200462C6E /* BenchmarkUUIDTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BenchmarkUUIDTableViewCell.swift; sourceTree = "<group>"; };
 		CE29B9E01FD6AE2F0049A105 /* PerfResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerfResult.swift; sourceTree = "<group>"; };
 		CE29B9E21FD6FD660049A105 /* IntervalData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntervalData.swift; sourceTree = "<group>"; };
 		CE29B9E41FD802FD0049A105 /* CWinData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CWinData.swift; sourceTree = "<group>"; };
@@ -266,6 +268,7 @@
 				CEA70315200679C900FDFB89 /* BenchmarkSummaryTableViewCell.swift */,
 				CEA7031920076D2500FDFB89 /* BenchmarkDetailTableViewController.swift */,
 				CEA7031B200777C300FDFB89 /* BenchmarkDetailTableViewCell.swift */,
+				CE268522200FACD200462C6E /* BenchmarkUUIDTableViewCell.swift */,
 				CE58F49C1FD195ED009EA08F /* TestResultsTableViewController.swift */,
 				CE58F49E1FD19A15009EA08F /* TestResultsTableViewCell.swift */,
 				CE2685062008AA1400462C6E /* TestResultDetailTableViewCell.swift */,
@@ -682,6 +685,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE268523200FACD200462C6E /* BenchmarkUUIDTableViewCell.swift in Sources */,
 				CE58F49D1FD195ED009EA08F /* TestResultsTableViewController.swift in Sources */,
 				CEA70311200619D800FDFB89 /* Connectivity.swift in Sources */,
 				CE29B9E31FD6FD660049A105 /* IntervalData.swift in Sources */,

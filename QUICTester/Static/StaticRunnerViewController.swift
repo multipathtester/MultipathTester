@@ -55,6 +55,8 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
         
         NotificationCenter.default.addObserver(self, selector: #selector(StaticRunnerViewController.locationChanged(note:)), name: LocationTracker.LocationTrackerNotification, object: nil)
         
+        locationTracker.forceUpdate()
+        
         Utils.traceroute(toIP: "coucou")
         testsTable.dataSource = self
         testsTable.delegate = self
@@ -88,13 +90,10 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
     }
     
     func startTests() {
+        locations = []
         let reachabilityStatus = internetReachability.currentReachabilityStatus()
         var connectivities = [Connectivity]()
-        if reachabilityStatus == ReachableViaWiFi {
-            connectivities.append(Connectivity(networkType: .WiFi, networkName: "WiFi Network Name", timestamp: Date().timeIntervalSince1970))
-        } else if reachabilityStatus == ReachableViaWWAN {
-            connectivities.append(Connectivity(networkType: .Cellular, networkName: "Cellular Network Name", timestamp: Date().timeIntervalSince1970))
-        }
+        connectivities.append(Connectivity.getCurrentConnectivity(reachabilityStatus: reachabilityStatus))
         startTime = Date()
         self.navigationItem.hidesBackButton = true
         print("We start the tests")

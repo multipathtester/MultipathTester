@@ -43,12 +43,29 @@ class BenchmarkSummaryTableViewController: UITableViewController {
         dateFormatter.dateFormat = "dd MMM YYYY HH:mm:ss"
         dateFormatter.locale = .current
         
+        let bench = benchmark!
+        
         sortedSections = ["Network", "Benchmark", "Tests"]
-        sections["Network"] = [
-            TableItem(title: "Network", detail: "WiFi + LTE (4G)", tag: .None),
-            TableItem(title: "WiFi SSID", detail: "Cr4ckM31fUC4N", tag: .None),
-            TableItem(title: "Cellular operator", detail: "Orange Improved", tag: .None),
-        ]
+        if bench.connectivities.count > 0 {
+            let conn = bench.connectivities[0]
+            sections["Network"] = [
+                TableItem(title: "Network", detail: conn.getNetworkTypeDescription(), tag: .None),
+            ]
+            if conn.networkType == .WiFi || conn.networkType == .WiFiCellular {
+                sections["Network"]!.append(TableItem(title: "WiFi SSID", detail: conn.networkName, tag: .None))
+            }
+            if conn.networkType == .Cellular {
+                sections["Network"]!.append(TableItem(title: "Cellular operator", detail: conn.networkName, tag: .None))
+            }
+            if conn.networkType == .WiFiCellular {
+                sections["Network"]!.append(TableItem(title: "Cellular operator", detail: conn.cellNetworkName ?? "No cellular operator", tag: .None))
+            }
+        } else {
+            sections["Network"] = [
+                TableItem(title: "Network", detail: "None", tag: .None),
+            ]
+        }
+        
         sections["Benchmark"] = [
             TableItem(title: "Time", detail: dateFormatter.string(from: benchmark!.startTime), tag: .None),
             TableItem(title: "More details", detail: "", tag: .BenchmarkDetailTableViewController),

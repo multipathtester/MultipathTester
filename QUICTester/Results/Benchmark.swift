@@ -28,6 +28,7 @@ class Benchmark: NSObject, Codable {
     var softwareName: String
     var softwareVersion: String
     var timezone: TimeZone
+    var uuid: UUID
     
     enum CodingKeys: String, CodingKey {
         case connectivities
@@ -48,6 +49,7 @@ class Benchmark: NSObject, Codable {
         case softwareName
         case softwareVersion
         case timezone
+        case uuid
     }
     
     // MARK: Archiving Paths
@@ -78,6 +80,7 @@ class Benchmark: NSObject, Codable {
         let buildVersion = Bundle.main.infoDictionary?[kCFBundleVersionKey as String] as? String ?? ""
         self.softwareVersion = softVersion + " (" + buildVersion + ")"
         self.timezone = TimeZone.current
+        self.uuid = UUID() // Has to be overriden
     }
     
     // MARK: Codable
@@ -101,6 +104,7 @@ class Benchmark: NSObject, Codable {
         try container.encode(softwareName, forKey: .softwareName)
         try container.encode(softwareVersion, forKey: .softwareVersion)
         try container.encode(timezone, forKey: .timezone)
+        try container.encode(uuid, forKey: .uuid)
     }
     
     required init(from decoder: Decoder) throws {
@@ -123,6 +127,7 @@ class Benchmark: NSObject, Codable {
         softwareName = try container.decode(String.self, forKey: .softwareName)
         softwareVersion = try container.decode(String.self, forKey: .softwareVersion)
         timezone = try container.decode(TimeZone.self, forKey: .timezone)
+        uuid = try container.decode(UUID.self, forKey: .uuid)
     }
     
     // MARK: Utils
@@ -134,7 +139,7 @@ class Benchmark: NSObject, Codable {
                 let benchmarks = try decoder.decode([Benchmark].self, from: data)
                 return benchmarks
             } catch {
-                print("Retrieve Failed")
+                print("Retrieve Failed: \(error)")
                 return nil
             }
         }

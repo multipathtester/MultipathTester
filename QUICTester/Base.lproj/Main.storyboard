@@ -971,6 +971,43 @@
                                     <outlet property="titleLabel" destination="bg7-kB-AJF" id="b8W-yj-rJq"/>
                                 </connections>
                             </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="BenchmarkUUIDTableViewCell" id="iT9-dy-WPU" customClass="BenchmarkUUIDTableViewCell" customModule="QUICTester" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="68" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="iT9-dy-WPU" id="fX8-dg-Scb">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="bwJ-1w-9zd">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5o2-Tj-TXM">
+                                                    <rect key="frame" x="0.0" y="0.0" width="375" height="27.5"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sa7-4r-kpE">
+                                                    <rect key="frame" x="0.0" y="27.5" width="375" height="16"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                                    <color key="textColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </stackView>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="trailing" secondItem="bwJ-1w-9zd" secondAttribute="trailing" id="Ib9-2s-OBI"/>
+                                        <constraint firstAttribute="bottom" secondItem="bwJ-1w-9zd" secondAttribute="bottom" id="ZAF-5x-HA8"/>
+                                        <constraint firstItem="bwJ-1w-9zd" firstAttribute="top" secondItem="fX8-dg-Scb" secondAttribute="top" id="eFj-kK-Z4P"/>
+                                        <constraint firstItem="bwJ-1w-9zd" firstAttribute="leading" secondItem="fX8-dg-Scb" secondAttribute="leading" id="wR8-d1-Qf2"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="titleLabel" destination="5o2-Tj-TXM" id="AO7-kR-aCi"/>
+                                    <outlet property="uuidLabel" destination="sa7-4r-kpE" id="UFB-FI-51Q"/>
+                                </connections>
+                            </tableViewCell>
                         </prototypes>
                         <connections>
                             <outlet property="dataSource" destination="WV3-P6-HZ7" id="eOP-Zm-3qz"/>

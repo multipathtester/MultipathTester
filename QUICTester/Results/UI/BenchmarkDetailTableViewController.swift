@@ -40,19 +40,46 @@ class BenchmarkDetailTableViewController: UITableViewController {
         } else {
             benchmarkDetails += [TableItem(title: "Location", detail: "No data")]
         }
+        
+        if bench.connectivities.count > 0 {
+            let conn = bench.connectivities[0]
+            benchmarkDetails += [
+                TableItem(title: "Network", detail: conn.getNetworkTypeDescription()),
+            ]
+            if conn.networkType == .WiFi || conn.networkType == .WiFiCellular {
+                benchmarkDetails += [
+                    TableItem(title: "WiFi SSID", detail: conn.networkName),
+                    TableItem(title: "WiFi BSSID", detail: conn.bssid ?? "No BSSID"),
+                    TableItem(title: "Country of WiFi AS", detail: "BE"),
+                    TableItem(title: "Country of WiFI IP", detail: "BE"),
+                    TableItem(title: "WiFi IP network (AS)", detail: "2611"),
+                    TableItem(title: "WiFi IP network name", detail: "BELNET, BE"),
+                ]
+            }
+            if conn.networkType == .Cellular {
+                benchmarkDetails += [
+                    TableItem(title: "Cellular operator", detail: conn.networkName),
+                ]
+            }
+            if conn.networkType == .WiFiCellular {
+                benchmarkDetails += [
+                    TableItem(title: "Cellular operator", detail: conn.cellNetworkName ?? "No network name"),
+                ]
+            }
+            if conn.networkType == .Cellular || conn.networkType == .WiFiCellular {
+                benchmarkDetails += [
+                    TableItem(title: "Country of cellular AS", detail: conn.telephonyNetworkSimCountry ?? "No cellular country"),
+                    TableItem(title: "Country of cellular IP", detail: "BE"),
+                    TableItem(title: "Cellular IP network (AS)", detail: "2611"),
+                    TableItem(title: "Cellular IP network name", detail: conn.telephonyNetworkSimOperator ?? "No cellular name"),
+                ]
+            }
+        } else {
+            benchmarkDetails += [
+                TableItem(title: "Network", detail: "None"),
+            ]
+        }
         benchmarkDetails += [
-            TableItem(title: "Network type", detail: "WiFi + LTE (4G)"),
-            TableItem(title: "WiFi SSID", detail: "Cr4ckM31fUC4N"),
-            TableItem(title: "WiFi BSSID", detail: "00:f2:8b:aa:89:30"),
-            TableItem(title: "Country of WiFi AS", detail: "BE"),
-            TableItem(title: "Country of WiFI IP", detail: "BE"),
-            TableItem(title: "WiFi IP network (AS)", detail: "2611"),
-            TableItem(title: "WiFi IP network name", detail: "BELNET, BE"),
-            TableItem(title: "Cellular operator", detail: "Orange Improved"),
-            TableItem(title: "Country of cellular AS", detail: "BE"),
-            TableItem(title: "Country of cellular IP", detail: "BE"),
-            TableItem(title: "Cellular IP network (AS)", detail: "2611"),
-            TableItem(title: "Cellular IP network name", detail: "BELNET, BE"),
             TableItem(title: "Test duration", detail: Utils.stringSecondsToMinutesSeconds(seconds: Int(bench.duration))),
             TableItem(title: "Data amount WiFi interface", detail: "40 MB"),
             TableItem(title: "Data amount cellular interface", detail: "34 MB"),
@@ -63,6 +90,7 @@ class BenchmarkDetailTableViewController: UITableViewController {
             TableItem(title: "Software name", detail: bench.softwareName),
             TableItem(title: "Software version", detail: bench.softwareVersion),
             TableItem(title: "QUIC version", detail: bench.quicVersion),
+            TableItem(title: "Benchmark ID", detail: bench.uuid.uuidString),
         ]
 
         // Uncomment the following line to preserve selection between presentations
@@ -88,6 +116,19 @@ class BenchmarkDetailTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if indexPath.row == benchmarkDetails.count - 1 {
+            // UUID field
+            let cellIdentifier = "BenchmarkUUIDTableViewCell"
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? BenchmarkUUIDTableViewCell else {
+                fatalError("The dequeued cell is not an instance of BenchmarkUUIDTableViewCell.")
+            }
+            let tableItem = benchmarkDetails[indexPath.row]
+            
+            cell.titleLabel.text = tableItem.title
+            cell.uuidLabel.text = tableItem.detail
+            
+            return cell
+        }
         let cellIdentifier = "BenchmarkDetailTableViewCell"
         guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? BenchmarkDetailTableViewCell else {
             fatalError("The dequeued cell is not an instance of BenchmarkDetailTableViewCell.")
@@ -102,6 +143,10 @@ class BenchmarkDetailTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if indexPath.row == benchmarkDetails.count - 1 {
+            // UUID cell
+            return 60.0
+        }
         return 40.0
     }
 }

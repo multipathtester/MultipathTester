@@ -48,6 +48,11 @@ class LocationTracker: NSObject, CLLocationManagerDelegate {
         locationManager.stopUpdatingLocation()
     }
     
+    func forceUpdate() {
+        stop()
+        _ = startIfAuthorized()
+    }
+    
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         NotificationCenter.default.post(name: LocationTracker.LocationTrackerNotification, object: self, userInfo: ["locations": locations])
     }

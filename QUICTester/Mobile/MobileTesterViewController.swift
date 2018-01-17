@@ -15,7 +15,7 @@ class MobileTesterViewController: UIViewController, ChartViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // Do any additional setup after loading the view.
         LineChartHelper.initialize(chartView: distanceChartView, delegate: self, xValueFormatter: DateValueFormatter())
         MultiLineChartHelper.initialize(chartView: snrDelayChartView, delegate: self)

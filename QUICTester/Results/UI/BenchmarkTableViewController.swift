@@ -73,8 +73,27 @@ class BenchmarkTableViewController: UITableViewController {
         cell.startTimeLabel.text = dateFormatter.string(from: benchmark.startTime)
         
         let bundle = Bundle(for: type(of: self))
-        let wifi = UIImage(named: "wifi_cell", in: bundle, compatibleWith: self.traitCollection)
-        cell.networkImageView.image = wifi
+        let wifi = UIImage(named: "wifi", in: bundle, compatibleWith: self.traitCollection)
+        let cellular = UIImage(named: "cellular", in: bundle, compatibleWith: self.traitCollection)
+        let wifi_cell = UIImage(named: "wifi_cell", in: bundle, compatibleWith: self.traitCollection)
+        let blank = UIImage(named: "blank", in: bundle, compatibleWith: self.traitCollection)
+        
+        if benchmark.connectivities.count > 0 {
+            let conn = benchmark.connectivities[0]
+            switch conn.networkType {
+            case .WiFi:
+                cell.networkImageView.image = wifi
+            case .Cellular:
+                cell.networkImageView.image = cellular
+            case .WiFiCellular:
+                cell.networkImageView.image = wifi_cell
+            default:
+                cell.networkImageView.image = blank
+            }
+            
+        } else {
+            cell.networkImageView.image = blank
+        }
         
         cell.tcpResultsLabel.text = "0/0"
         
@@ -82,7 +101,7 @@ class BenchmarkTableViewController: UITableViewController {
         var testSucceeded = 0
         for i in 0..<testCount {
             let testResult = benchmark.testResults[i]
-            if testResult.getResult() != "Failed" {
+            if testResult.succeeded() {
                 testSucceeded += 1
             }
         }
