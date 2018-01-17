@@ -15,7 +15,7 @@ class BenchmarkDetailTableViewController: UITableViewController {
         let detail: String
     }
     
-    var benchmark: BenchmarkResult?
+    var benchmark: Benchmark?
     var benchmarkDetails = [TableItem]()
 
     override func viewDidLoad() {
@@ -28,7 +28,7 @@ class BenchmarkDetailTableViewController: UITableViewController {
         let bench = benchmark!
         
         benchmarkDetails = [
-            TableItem(title: "Test time", detail: dateFormatter.string(from: Date(timeIntervalSince1970: bench.startTime))),
+            TableItem(title: "Test time", detail: dateFormatter.string(from: bench.startTime)),
             TableItem(title: "Timezone", detail: bench.timezone.abbreviation() ?? bench.timezone.description),
             TableItem(title: "Ping", detail: "100 ms"),
             TableItem(title: "Ping variance", detail: "50 ms"),
@@ -45,16 +45,16 @@ class BenchmarkDetailTableViewController: UITableViewController {
             TableItem(title: "Country of cellular IP", detail: "BE"),
             TableItem(title: "Cellular IP network (AS)", detail: "2611"),
             TableItem(title: "Cellular IP network name", detail: "BELNET, BE"),
-            TableItem(title: "Test duration", detail: "2m48s"),
+            TableItem(title: "Test duration", detail: Utils.stringSecondsToMinutesSeconds(seconds: Int(bench.duration))),
             TableItem(title: "Data amount WiFi interface", detail: "40 MB"),
             TableItem(title: "Data amount cellular interface", detail: "34 MB"),
-            TableItem(title: "Testserver name", detail: "FR"),
+            TableItem(title: "Server name", detail: bench.serverName),
             TableItem(title: "Platform", detail: bench.platform),
             TableItem(title: "Platform version", detail: bench.platformVersion),
             TableItem(title: "Model", detail: bench.model),
             TableItem(title: "Software name", detail: bench.softwareName),
             TableItem(title: "Software version", detail: bench.softwareVersion),
-            TableItem(title: "QUIC version", detail: "cafebabe"),
+            TableItem(title: "QUIC version", detail: bench.quicVersion),
         ]
 
         // Uncomment the following line to preserve selection between presentations

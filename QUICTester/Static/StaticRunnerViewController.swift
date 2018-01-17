@@ -15,7 +15,8 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
     @IBOutlet weak var testsTable: UITableView!
     @IBOutlet weak var progress: UICircularProgressRingView!
     
-    var startTime: Double = Date().timeIntervalSince1970
+    var startTime: Date = Date()
+    var stopTime: Date = Date()
     
     var tests: [Test] = [Test]()
     var runningIndex: Int = -1
@@ -76,7 +77,7 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
         } else if reachabilityStatus == ReachableViaWWAN {
             connectivities.append(Connectivity(networkType: .Cellular, networkName: "Cellular Network Name", timestamp: Date().timeIntervalSince1970))
         }
-        startTime = Date().timeIntervalSince1970
+        startTime = Date()
         self.navigationItem.hidesBackButton = true
         print("We start the tests")
         
@@ -97,6 +98,7 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
                 }
                 results.append(test.run())
             }
+            self.stopTime = Date()
             self.runningIndex = nbTests
             DispatchQueue.main.async {
                 self.testsTable.reloadData()
@@ -107,10 +109,11 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
                 testResults.append(test.getTestResult())
                 let result = results[i]
                 // TODO update serverIP
-                Utils.sendTestToCollectServer(test: test, result: result, serverIP: "176.31.249.161", benchStartTime: self.startTime)
+                Utils.sendTestToCollectServer(test: test, result: result, serverIP: "176.31.249.161", benchStartTime: self.startTime.timeIntervalSince1970)
             }
-            let benchmarkResult = BenchmarkResult(connectivities: connectivities, startTime: self.startTime, testResults: testResults)
-            self.saveBenchmarkTest(result: benchmarkResult)
+            let duration = self.stopTime.timeIntervalSince(self.startTime)
+            let benchmark = Benchmark(connectivities: connectivities, duration: duration, serverName: "FR", startTime: self.startTime, testResults: testResults)
+            self.saveBenchmark(benchmark: benchmark)
             print("Tests done")
             DispatchQueue.main.async {
                 self.progress.setProgress(value: 100.0, animationDuration: 0.2) {}
@@ -120,25 +123,25 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
     }
     
     // MARK: Private
-    private func saveBenchmarkTest(result: BenchmarkResult) {
-        var results: [BenchmarkResult] = [BenchmarkResult]()
-        if let resultsOk = BenchmarkResult.loadBenchmarkResults() {
-            results = resultsOk
+    private func saveBenchmark(benchmark: Benchmark) {
+        var benchmarks: [Benchmark] = [Benchmark]()
+        if let benchmarksOk = Benchmark.loadBenchmarks() {
+            benchmarks = benchmarksOk
         }
         // Add the new result at the top of the list
-        results = [result] + results
+        benchmarks = [benchmark] + benchmarks
         // And save the results
         do {
-            let data = try PropertyListEncoder().encode(results)
-            let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(data, toFile: BenchmarkResult.ArchiveURL.path)
+            let data = try PropertyListEncoder().encode(benchmarks)
+            let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(data, toFile: Benchmark.ArchiveURL.path)
             if isSuccessfulSave {
-                os_log("Results successfully saved.", log: OSLog.default, type: .debug)
+                os_log("Benchmarks successfully saved.", log: OSLog.default, type: .debug)
                 NotificationCenter.default.post(name: NSNotification.Name(rawValue: "UpdateResult"), object: nil)
             } else {
-                os_log("Failed to save results...", log: OSLog.default, type: .error)
+                os_log("Failed to save benchmarks...", log: OSLog.default, type: .error)
             }
         } catch {
-            os_log("Failed to save results...", log: OSLog.default, type: .error)
+            os_log("Failed to save benchmarks...", log: OSLog.default, type: .error)
         }
     }
     

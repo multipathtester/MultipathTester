@@ -24,7 +24,7 @@ class BenchmarkSummaryTableViewController: UITableViewController {
     
     var sections = Dictionary<String, Array<TableItem>>()
     var sortedSections = [String]()
-    var benchmark: BenchmarkResult?
+    var benchmark: Benchmark?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,7 +50,7 @@ class BenchmarkSummaryTableViewController: UITableViewController {
             TableItem(title: "Cellular operator", detail: "Orange Improved", tag: .None),
         ]
         sections["Benchmark"] = [
-            TableItem(title: "Time", detail: dateFormatter.string(from: Date(timeIntervalSince1970: benchmark!.startTime)), tag: .None),
+            TableItem(title: "Time", detail: dateFormatter.string(from: benchmark!.startTime), tag: .None),
             TableItem(title: "More details", detail: "", tag: .BenchmarkDetailTableViewController),
         ]
         sections["Tests"] = [

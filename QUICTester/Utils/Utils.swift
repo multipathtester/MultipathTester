@@ -37,6 +37,19 @@ class Utils {
         return array
     }
     
+    static func secondsToMinutesSeconds(seconds: Int) -> (Int, Int) {
+        return (seconds / 60, seconds % 60)
+    }
+    
+    static func stringSecondsToMinutesSeconds(seconds: Int) -> String {
+        let (m, s) = secondsToMinutesSeconds(seconds: seconds)
+        return "\(m) m \(s) s"
+    }
+    
+    static func sendBenchmarkToServer(benchmark: Benchmark) {
+        
+    }
+    
     static func sendTestToCollectServer(test: Test, result: [String:Any], serverIP: String, benchStartTime: Double) {
         let json: [String: Any] = [
             "bench": test.getBenchDict(),

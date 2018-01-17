@@ -8,9 +8,9 @@
 
 import UIKit
 
-class BenchmarkResultTableViewController: UITableViewController {
+class BenchmarkTableViewController: UITableViewController {
     // MARK: Properties
-    var results = [BenchmarkResult]()
+    var benchmarks = [Benchmark]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,7 +21,7 @@ class BenchmarkResultTableViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
         
-        NotificationCenter.default.addObserver(self, selector: #selector(BenchmarkResultTableViewController.updateResult(note:)), name: NSNotification.Name(rawValue: "UpdateResult"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(BenchmarkTableViewController.updateResult(note:)), name: NSNotification.Name(rawValue: "UpdateResult"), object: nil)
         self.updateResults()
     }
     
@@ -32,10 +32,10 @@ class BenchmarkResultTableViewController: UITableViewController {
     }
     
     func updateResults() {
-        if let savedBenchmarkResults = BenchmarkResult.loadBenchmarkResults() {
-            self.results = savedBenchmarkResults
+        if let savedBenchmarks = Benchmark.loadBenchmarks() {
+            self.benchmarks = savedBenchmarks
         }
-        print(self.results)
+        print(self.benchmarks)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -55,22 +55,22 @@ class BenchmarkResultTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return results.count
+        return benchmarks.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cellIdentifier = "BenchmarkResultTableViewCell"
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? BenchmarkResultTableViewCell else {
-            fatalError("The dequeued cell is not an instance of BenchmarkResultTableViewCell.")
+        let cellIdentifier = "BenchmarkTableViewCell"
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? BenchmarkTableViewCell else {
+            fatalError("The dequeued cell is not an instance of BenchmarkTableViewCell.")
         }
 
         // Fetches the appropriate benchmarkResult for the data source layout
-        let benchmarkResult = results[indexPath.row]
+        let benchmark = benchmarks[indexPath.row]
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd MMM HH:mm"
         dateFormatter.locale = .current
         cell.testTypeLabel.text = "Static Tests"
-        cell.startTimeLabel.text = dateFormatter.string(from: Date(timeIntervalSince1970: benchmarkResult.startTime))
+        cell.startTimeLabel.text = dateFormatter.string(from: benchmark.startTime)
         
         let bundle = Bundle(for: type(of: self))
         let wifi = UIImage(named: "wifi_cell", in: bundle, compatibleWith: self.traitCollection)
@@ -78,10 +78,10 @@ class BenchmarkResultTableViewController: UITableViewController {
         
         cell.tcpResultsLabel.text = "0/0"
         
-        let testCount = benchmarkResult.testResults.count
+        let testCount = benchmark.testResults.count
         var testSucceeded = 0
         for i in 0..<testCount {
-            let testResult = benchmarkResult.testResults[i]
+            let testResult = benchmark.testResults[i]
             if testResult.getResult() != "Failed" {
                 testSucceeded += 1
             }
@@ -138,35 +138,20 @@ class BenchmarkResultTableViewController: UITableViewController {
         
         super.prepare(for: segue, sender: sender)
         switch(segue.identifier ?? "") {
-        case "ShowTestResults":
-            guard let testResultsViewController = segue.destination as? TestResultsTableViewController else {
-                fatalError("Unexpected destination: \(segue.destination)")
-            }
-            
-            guard let selectedBenchmarkResultCell = sender as? BenchmarkResultTableViewCell else {
-                fatalError("Unexpected sender: \(String(describing: sender))")
-            }
-            
-            guard let indexPath = tableView.indexPath(for: selectedBenchmarkResultCell) else {
-                fatalError("The selected cell is not being displayed by the table")
-            }
-            
-            let selectedBenchmarkResult = results[indexPath.row]
-            testResultsViewController.testResults = selectedBenchmarkResult.testResults
-        case "ShowBenchmarkResult":
+        case "ShowBenchmarkSummary":
             guard let benchmarkSummaryTableViewController = segue.destination as? BenchmarkSummaryTableViewController else {
                 fatalError("Unexpected destination: \(segue.destination)")
             }
             
-            guard let selectedBenchmarkResultCell = sender as? BenchmarkResultTableViewCell else {
+            guard let selectedBenchmarkCell = sender as? BenchmarkTableViewCell else {
                 fatalError("Unexpected sender: \(String(describing: sender))")
             }
             
-            guard let indexPath = tableView.indexPath(for: selectedBenchmarkResultCell) else {
+            guard let indexPath = tableView.indexPath(for: selectedBenchmarkCell) else {
                 fatalError("The selected cell is not being displayed by the table")
             }
-            let selectedBenchmarkResult = results[indexPath.row]
-            benchmarkSummaryTableViewController.benchmark = selectedBenchmarkResult
+            let selectedBenchmark = benchmarks[indexPath.row]
+            benchmarkSummaryTableViewController.benchmark = selectedBenchmark
         default:
             fatalError("Unexpected Segue Identifier; \(String(describing: segue.identifier))")
         }
