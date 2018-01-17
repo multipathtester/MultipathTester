@@ -125,7 +125,7 @@
         <!--Static Tests-->
         <scene sceneID="OzA-gN-vRj">
             <objects>
-                <viewController id="BPV-zC-5n0" sceneMemberID="viewController">
+                <viewController id="BPV-zC-5n0" customClass="StaticMainViewController" customModule="QUICTester" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="bYZ-6g-kfl">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

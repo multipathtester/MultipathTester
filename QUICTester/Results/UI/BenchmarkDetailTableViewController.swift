@@ -6,6 +6,7 @@
 //  Copyright © 2018 Universite Catholique de Louvain. All rights reserved.
 //
 
+import CoreLocation
 import UIKit
 
 class BenchmarkDetailTableViewController: UITableViewController {
@@ -30,9 +31,16 @@ class BenchmarkDetailTableViewController: UITableViewController {
         benchmarkDetails = [
             TableItem(title: "Test time", detail: dateFormatter.string(from: bench.startTime)),
             TableItem(title: "Timezone", detail: bench.timezone.abbreviation() ?? bench.timezone.description),
-            TableItem(title: "Ping", detail: "100 ms"),
-            TableItem(title: "Ping variance", detail: "50 ms"),
-            TableItem(title: "Location", detail: "N 50°40.121' E 04°37.288' (+/- 30 m)"),
+            TableItem(title: "Ping", detail: String.init(format: "%.1f ms", bench.pingMean * 1000.0)),
+            TableItem(title: "Ping variance", detail: String.init(format: "%.1f ms", bench.pingVar * 1000.0)),
+        ]
+        if bench.locations.count > 0 {
+            let loc = bench.locations[bench.locations.count - 1]
+            benchmarkDetails += [TableItem(title: "Location", detail: loc.getDescription())]
+        } else {
+            benchmarkDetails += [TableItem(title: "Location", detail: "No data")]
+        }
+        benchmarkDetails += [
             TableItem(title: "Network type", detail: "WiFi + LTE (4G)"),
             TableItem(title: "WiFi SSID", detail: "Cr4ckM31fUC4N"),
             TableItem(title: "WiFi BSSID", detail: "00:f2:8b:aa:89:30"),

@@ -87,9 +87,7 @@ class BenchmarkTableViewController: UITableViewController {
             }
         }
         cell.quicResultsLabel.text = String(testSucceeded) + "/" + String(testCount)
-        
-        // FIXME
-        cell.pingResultsLabel.text = "100 ms"
+        cell.pingResultsLabel.text = String.init(format: "%.0f ms", benchmark.pingMean * 1000.0)
         
         return cell
     }

@@ -7,12 +7,17 @@
 //
 
 import UIKit
+import CoreLocation
 
 class StaticMainViewController: UIViewController {
+    var locationTracker = LocationTracker.sharedTracker()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(StaticMainViewController.locationChanged(note:)), name: LocationTracker.LocationTrackerNotification, object: nil)
+        
+        _ = locationTracker.startIfAuthorized()
         // Do any additional setup after loading the view.
     }
 
@@ -21,6 +26,16 @@ class StaticMainViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    @objc
+    func locationChanged(note: Notification) {
+        let info = note.userInfo
+        guard let locations = info!["locations"] as? [CLLocation] else {
+            return
+        }
+        for location in locations {
+            print(location.description)
+        }
+    }
 
     /*
     // MARK: - Navigation

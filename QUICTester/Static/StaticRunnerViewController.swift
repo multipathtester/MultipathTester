@@ -6,6 +6,7 @@
 //  Copyright © 2018 Universite Catholique de Louvain. All rights reserved.
 //
 
+import CoreLocation
 import UIKit
 import Quictraffic
 import os.log
@@ -22,10 +23,13 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
     var runningIndex: Int = -1
     
     var internetReachability: Reachability = Reachability.forInternetConnection()
+    var locationTracker: LocationTracker = LocationTracker.sharedTracker()
+    var locations: [Location] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        _ = locationTracker.startIfAuthorized()
         self.progress.value = 0.0
         
         // Do any additional setup after loading the view.
@@ -49,6 +53,8 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
         NotificationCenter.default.addObserver(self, selector: #selector(StaticRunnerViewController.reachabilityChanged(note:)), name: .reachabilityChanged, object: nil)
         internetReachability.startNotifier()
         
+        NotificationCenter.default.addObserver(self, selector: #selector(StaticRunnerViewController.locationChanged(note:)), name: LocationTracker.LocationTrackerNotification, object: nil)
+        
         Utils.traceroute(toIP: "coucou")
         testsTable.dataSource = self
         testsTable.delegate = self
@@ -66,6 +72,18 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
         print("Reachability changed! In static tests, this should abort the test!")
         for i in 0..<tests.count {
             QuictrafficNotifyReachability(tests[i].getNotifyID())
+        }
+    }
+    
+    @objc
+    func locationChanged(note: Notification) {
+        let info = note.userInfo
+        guard let locations = info!["locations"] as? [CLLocation] else {
+            return
+        }
+        for cl in locations {
+            let location = Location(lon: cl.coordinate.longitude, lat: cl.coordinate.latitude, timestamp: cl.timestamp, accuracy: cl.horizontalAccuracy, altitude: cl.altitude, speed: cl.speed)
+            self.locations.append(location)
         }
     }
     
@@ -112,7 +130,8 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
                 Utils.sendTestToCollectServer(test: test, result: result, serverIP: "176.31.249.161", benchStartTime: self.startTime.timeIntervalSince1970)
             }
             let duration = self.stopTime.timeIntervalSince(self.startTime)
-            let benchmark = Benchmark(connectivities: connectivities, duration: duration, serverName: "FR", startTime: self.startTime, testResults: testResults)
+            // FIXME
+            let benchmark = Benchmark(connectivities: connectivities, duration: duration, locations: self.locations, pingMean: 0.1, pingVar: 0.05, serverName: "FR", startTime: self.startTime, testResults: testResults)
             self.saveBenchmark(benchmark: benchmark)
             print("Tests done")
             DispatchQueue.main.async {
