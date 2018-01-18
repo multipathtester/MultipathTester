@@ -26,14 +26,16 @@ class Connectivity: Codable {
     // Timestamp at which connectivity was detected
     var timestamp: Date
     
-    // Only for WiFi
+    // Only if WiFi
     var bssid: String?
+    var wifiAddresses: [String]?
     
-    // Only for cellular
+    // Only if cellular
     var cellularCode: String?
     var cellularCodeDescription: String?
     var telephonyNetworkSimOperator: String?
     var telephonyNetworkSimCountry: String?
+    var cellularAddresses: [String]?
     
     // Only for WiFi + Cellular
     var cellNetworkName: String?
@@ -117,6 +119,7 @@ class Connectivity: Codable {
             let (netName, bssid) = Connectivity.getWiFiSSID()
             conn.networkName = netName ?? "None"
             conn.bssid = bssid ?? "None"
+            conn.wifiAddresses = UIDevice.current.wifiAddresses
             // Good, but now distinguish the case between WiFi and WiFi + Cellular
             if UIDevice.current.hasCellularConnectivity {
                 conn.networkType = .WiFiCellular
@@ -127,6 +130,7 @@ class Connectivity: Codable {
                 conn.telephonyNetworkSimOperator = String.init(format: "%@-%@", carrier?.mobileCountryCode ?? "None", carrier?.mobileNetworkCode ?? "None")
                 conn.cellularCode = netInfo.currentRadioAccessTechnology ?? "None"
                 conn.cellularCodeDescription = Connectivity.getCellularCodeDescriptionFor(conn.cellularCode) ?? "None"
+                conn.cellularAddresses = UIDevice.current.cellularAddresses
             }
             // Only WiFi
             return conn
@@ -139,6 +143,7 @@ class Connectivity: Codable {
             conn.telephonyNetworkSimOperator = String.init(format: "%@-%@", carrier?.mobileCountryCode ?? "None", carrier?.mobileNetworkCode ?? "None")
             conn.cellularCode = netInfo.currentRadioAccessTechnology ?? "None"
             conn.cellularCodeDescription = Connectivity.getCellularCodeDescriptionFor(conn.cellularCode) ?? "None"
+            conn.cellularAddresses = UIDevice.current.cellularAddresses
         }
         return conn
     }

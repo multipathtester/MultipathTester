@@ -95,4 +95,59 @@ public extension UIDevice {
         }
         return false
     }
+    
+    func getAddresses(interface_name: String) -> [String] {
+        // Inspired from https://stackoverflow.com/a/30754194
+        var addresses = [String]()
+        
+        // Get list of all interfaces of the local machine
+        var ifaddr: UnsafeMutablePointer<ifaddrs>?
+        guard getifaddrs(&ifaddr) == 0 else { return [] }
+        guard let firstAddr = ifaddr else { return [] }
+        
+        // For each interface...
+        for ifptr in sequence(first: firstAddr, next: { $0.pointee.ifa_next }) {
+            let interface = ifptr.pointee
+            
+            // Check for IPv4 or IPv6 addresses
+            let addrFamily = interface.ifa_addr.pointee.sa_family
+            if addrFamily == UInt8(AF_INET) || addrFamily == UInt8(AF_INET6) {
+                // Check interface name
+                let name = String(cString: interface.ifa_name)
+                if name == interface_name {
+                    // Convert interface name to a human readable string
+                    var hostname = [CChar](repeating: 0, count: Int(NI_MAXHOST))
+                    getnameinfo(interface.ifa_addr, socklen_t(interface.ifa_addr.pointee.sa_len), &hostname, socklen_t(hostname.count), nil, socklen_t(0), NI_NUMERICHOST)
+                    addresses.append(String(cString: hostname))
+                }
+            }
+        }
+        
+        return addresses
+    }
+    
+    func getFilteredAddresses(interface_name: String) -> [String] {
+        var addrs = getAddresses(interface_name: interface_name)
+        var indexToRemove = [Int]()
+        // Remove link-local IPv6 addresses
+        for i in 0..<addrs.count {
+            if addrs[i].starts(with: "fe80:") {
+                indexToRemove.append(i)
+            }
+        }
+        // Remove indexes in reverse order, to avoid removing a wrong element if several items have to be removed
+        for r in (0..<indexToRemove.count).reversed() {
+            addrs.remove(at: r)
+        }
+        
+        return addrs
+    }
+    
+    var wifiAddresses: [String] {
+        return getFilteredAddresses(interface_name: "en0")
+    }
+    
+    var cellularAddresses: [String] {
+        return getFilteredAddresses(interface_name: "pdp_ip0")
+    }
 }
