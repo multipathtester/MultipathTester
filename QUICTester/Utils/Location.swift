@@ -47,4 +47,16 @@ class Location: Codable {
         
         return String.init(format: latDirection + " %d° %.3f' " + lonDirection + " %d° %.3f' (+/- %.0fm)", latDegrees, latMinutes, lonDegrees, lonMinutes, accuracy)
     }
+    
+    // MARK: JSON serialization to collect server
+    func toJSONDict() -> [String: Any] {
+        return [
+            "lon": lon,
+            "lat": lat,
+            "timestamp": Utils.getDateFormatter().string(from: timestamp),
+            "acc": String.init(format: "%.1f", accuracy),
+            "alt": String.init(format: "%.1f", altitude),
+            "speed": String.init(format: "%.3f", speed),
+        ]
+    }
 }

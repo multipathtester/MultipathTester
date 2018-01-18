@@ -21,34 +21,32 @@ class Connectivity: Codable {
     
     // MARK: Properties
     var networkType: NetworkType
-    // WLAN SSID for WiFi, operator name for cellular
-    var networkName: String
     // Timestamp at which connectivity was detected
     var timestamp: Date
     
     // Only if WiFi
-    var bssid: String?
+    // WLAN SSID for WiFi
+    var wifiNetworkName: String?
+    var wifiBSSID: String?
     var wifiAddresses: [String]?
     
     // Only if cellular
+    // operator name for cellular
+    var cellularNetworkName: String?
     var cellularCode: String?
     var cellularCodeDescription: String?
     var telephonyNetworkSimOperator: String?
     var telephonyNetworkSimCountry: String?
     var cellularAddresses: [String]?
     
-    // Only for WiFi + Cellular
-    var cellNetworkName: String?
-    
     // MARK: Archiving Paths
     static let DocumentsDirectory = FileManager().urls(for: .documentDirectory, in: .userDomainMask).first!
     static let ArchiveURL = DocumentsDirectory.appendingPathComponent("connectivities")
     
     // MARK: Initializers
-    init(networkType: NetworkType, networkName: String, timestamp: Date) {
+    init(networkType: NetworkType, timestamp: Date) {
         // Initilialize stored properties
         self.networkType = networkType
-        self.networkName = networkName
         self.timestamp = timestamp
     }
     
@@ -66,6 +64,55 @@ class Connectivity: Codable {
         case .WiFiCellular:
             return "WiFi + " + (cellularCodeDescription ?? "No cellular code")
         }
+    }
+    
+    func getShortNetworkType() -> String {
+        switch networkType {
+        case .Unknown:
+            return "unknown"
+        case .None:
+            return "none"
+        case .WiFi:
+            return "wifi"
+        case .Cellular:
+            return "cell"
+        case .WiFiCellular:
+            return "wificell"
+        }
+    }
+    
+    // MARK: JSON serialization to collect server
+    func toJSONDict(benchmarkUUID: String) -> [String: Any] {
+        var connDict: [String: Any] = [
+            "benchmark_uuid": benchmarkUUID,
+            "network_type": getShortNetworkType(),
+            "timestamp": Utils.getDateFormatter().string(from: timestamp),
+        ]
+        
+        if networkType == .WiFi || networkType == .WiFiCellular {
+            var wifiIPs = [[String: Any]]()
+            for wa in wifiAddresses ?? [] {
+                wifiIPs.append(["ip": wa])
+            }
+            connDict["wifi_ips"] = wifiIPs
+            connDict["wifi_network_name"] = wifiNetworkName
+            connDict["wifi_bssid"] = wifiBSSID
+        }
+        
+        if networkType == .Cellular || networkType == .WiFiCellular {
+            var cellIPs = [[String: Any]]()
+            for ca in cellularAddresses ?? [] {
+                cellIPs.append(["ip": ca])
+            }
+            connDict["cell_ips"] = cellIPs
+            connDict["cell_network_name"] = cellularNetworkName
+            connDict["cell_code"] = cellularCode
+            connDict["cell_code_description"] = cellularCodeDescription
+            connDict["cell_iso_country_code"] = telephonyNetworkSimCountry
+            connDict["cell_operator_code"] = telephonyNetworkSimOperator
+        }
+        
+        return connDict
     }
     
     // MARK: Static
@@ -113,19 +160,19 @@ class Connectivity: Codable {
     }
     
     static func getCurrentConnectivity(reachabilityStatus: NetworkStatus) -> Connectivity {
-        let conn = Connectivity(networkType: .None, networkName: "None", timestamp: Date())
+        let conn = Connectivity(networkType: .None, timestamp: Date())
         if reachabilityStatus == ReachableViaWiFi {
             conn.networkType = .WiFi
             let (netName, bssid) = Connectivity.getWiFiSSID()
-            conn.networkName = netName ?? "None"
-            conn.bssid = bssid ?? "None"
+            conn.wifiNetworkName = netName ?? "None"
+            conn.wifiBSSID = bssid ?? "None"
             conn.wifiAddresses = UIDevice.current.wifiAddresses
             // Good, but now distinguish the case between WiFi and WiFi + Cellular
             if UIDevice.current.hasCellularConnectivity {
                 conn.networkType = .WiFiCellular
                 let netInfo = CTTelephonyNetworkInfo.init()
                 let carrier = netInfo.subscriberCellularProvider
-                conn.cellNetworkName = carrier?.carrierName ?? "None"
+                conn.cellularNetworkName = carrier?.carrierName ?? "None"
                 conn.telephonyNetworkSimCountry = carrier?.isoCountryCode
                 conn.telephonyNetworkSimOperator = String.init(format: "%@-%@", carrier?.mobileCountryCode ?? "None", carrier?.mobileNetworkCode ?? "None")
                 conn.cellularCode = netInfo.currentRadioAccessTechnology ?? "None"
@@ -138,7 +185,7 @@ class Connectivity: Codable {
             conn.networkType = .Cellular
             let netInfo = CTTelephonyNetworkInfo.init()
             let carrier = netInfo.subscriberCellularProvider
-            conn.networkName = carrier?.carrierName ?? "None"
+            conn.cellularNetworkName = carrier?.carrierName ?? "None"
             conn.telephonyNetworkSimCountry = carrier?.isoCountryCode
             conn.telephonyNetworkSimOperator = String.init(format: "%@-%@", carrier?.mobileCountryCode ?? "None", carrier?.mobileNetworkCode ?? "None")
             conn.cellularCode = netInfo.currentRadioAccessTechnology ?? "None"

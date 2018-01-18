@@ -52,13 +52,10 @@ class BenchmarkSummaryTableViewController: UITableViewController {
                 TableItem(title: "Network", detail: conn.getNetworkTypeDescription(), tag: .None),
             ]
             if conn.networkType == .WiFi || conn.networkType == .WiFiCellular {
-                sections["Network"]!.append(TableItem(title: "WiFi SSID", detail: conn.networkName, tag: .None))
+                sections["Network"]!.append(TableItem(title: "WiFi SSID", detail: conn.wifiNetworkName ?? "No WiFi SSID", tag: .None))
             }
-            if conn.networkType == .Cellular {
-                sections["Network"]!.append(TableItem(title: "Cellular operator", detail: conn.networkName, tag: .None))
-            }
-            if conn.networkType == .WiFiCellular {
-                sections["Network"]!.append(TableItem(title: "Cellular operator", detail: conn.cellNetworkName ?? "No cellular operator", tag: .None))
+            if conn.networkType == .Cellular || conn.networkType == .WiFiCellular {
+                sections["Network"]!.append(TableItem(title: "Cellular operator", detail: conn.cellularNetworkName ?? "No cellular operator", tag: .None))
             }
         } else {
             sections["Network"] = [

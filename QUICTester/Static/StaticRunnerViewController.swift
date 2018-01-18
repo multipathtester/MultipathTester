@@ -126,11 +126,12 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
                 testResults.append(test.getTestResult())
                 let result = results[i]
                 // TODO update serverIP
-                Utils.sendTestToCollectServer(test: test, result: result, serverIP: "176.31.249.161", benchStartTime: self.startTime.timeIntervalSince1970)
+                //Utils.sendTestToCollectServer(test: test, result: result, serverIP: "176.31.249.161", benchStartTime: self.startTime.timeIntervalSince1970)
             }
             let duration = self.stopTime.timeIntervalSince(self.startTime)
             // FIXME
             let benchmark = Benchmark(connectivities: connectivities, duration: duration, locations: self.locations, pingMean: 0.1, pingVar: 0.05, serverName: "FR", startTime: self.startTime, testResults: testResults)
+            Utils.sendToServer(benchmark: benchmark)
             self.saveBenchmark(benchmark: benchmark)
             print("Tests done")
             DispatchQueue.main.async {

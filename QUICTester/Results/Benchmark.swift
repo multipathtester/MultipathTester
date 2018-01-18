@@ -130,6 +130,32 @@ class Benchmark: NSObject, Codable {
         uuid = try container.decode(UUID.self, forKey: .uuid)
     }
     
+    // MARK: JSON serialization to collect server
+    func toJSONDict() -> [String: Any] {
+        var locationsList = [[String: Any]]()
+        for location in locations {
+            locationsList.append(location.toJSONDict())
+        }
+        return [
+            "locations": locationsList,
+            "start_time": Utils.getDateFormatter().string(from: startTime),
+            "duration": String.init(format: "%.6f", duration),
+            "tz": timezone.identifier,
+            "ping_mean": String.init(format: "%.6f", pingMean),
+            "ping_var": String.init(format: "%.6f", pingVar),
+            "server_name": serverName,
+            "platform": platform,
+            "platform_version_name": platformVersion,
+            "platform_version_code": platformVersionCode,
+            "device_uuid": UIDevice.current.identifierForVendor!.uuidString,
+            "device_model": model,
+            "device_model_code": modelCode,
+            "software_name": softwareName,
+            "software_version": softwareVersion,
+            "quic_version": quicVersion,
+        ]
+    }
+    
     // MARK: Utils
     static func loadBenchmarks() -> [Benchmark]? {
         let unarchivedData = NSKeyedUnarchiver.unarchiveObject(withFile: Benchmark.ArchiveURL.path)

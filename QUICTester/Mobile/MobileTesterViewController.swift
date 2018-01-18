@@ -18,6 +18,7 @@ class MobileTesterViewController: UIViewController, ChartViewDelegate {
         
         print(UIDevice.current.wifiAddresses)
         print(UIDevice.current.cellularAddresses)
+        print(TimeZone.current.identifier)
         
         // Do any additional setup after loading the view.
         LineChartHelper.initialize(chartView: distanceChartView, delegate: self, xValueFormatter: DateValueFormatter())
