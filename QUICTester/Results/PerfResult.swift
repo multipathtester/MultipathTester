@@ -13,6 +13,11 @@ class PerfResult: BaseResult, TestResult {
     // MARK: Needed for Codable ability...
     static var type = TestResultType.perf
     
+    // MARK: Collect URL
+    static func getCollectURL() -> URL {
+        return URL(string: "https://ns387496.ip-176-31-249.eu/iperf/test/")!
+    }
+    
     // MARK: Properties
     var totalRetrans: UInt64
     var totalSent: UInt64
@@ -31,13 +36,13 @@ class PerfResult: BaseResult, TestResult {
     static let ArchiveURL = DocumentsDirectory.appendingPathComponent("perfResults")
     
     // MARK: Initializers
-    init(name: String, proto: NetProtocol, success: Bool, result: String, runTime: Double, totalRetrans: UInt64, totalSent: UInt64, intervals: [IntervalData], cwins:[String: [CWinData]]) {
+    init(name: String, proto: NetProtocol, success: Bool, result: String, duration: Double, startTime: Date, waitTime: Double, totalRetrans: UInt64, totalSent: UInt64, intervals: [IntervalData], cwins:[String: [CWinData]]) {
         self.totalRetrans = totalRetrans
         self.totalSent = totalSent
         self.intervals = intervals
         self.cwins = cwins
         
-        super.init(name: name, proto: proto, success: success, result: result, runTime: runTime)
+        super.init(name: name, proto: proto, success: success, result: result, duration: duration, startTime: startTime, waitTime: waitTime)
     }
     
     required init(from decoder: Decoder) throws {
@@ -88,5 +93,18 @@ class PerfResult: BaseResult, TestResult {
             LineChartEntries(xLabel: "Time", yLabel: "Bytes", data: intervalsChart, dataLabel: "Bytes transferred last second", xValueFormatter: DateValueFormatter()),
             MultiLineChartEntries(xLabel: "Time", yLabel: "Bytes", dataLines: dataDict)
         ]
+    }
+    
+    override func resultsToJSONDict() -> [String : Any] {
+        var res = super.resultsToJSONDict()
+        res["total_sent"] = totalSent
+        res["total_retrans"] = totalRetrans
+        var intervalsJSON = [[String: Any]]()
+        for i in intervals {
+            intervalsJSON.append(i.toJSONDict())
+        }
+        res["intervals"] = intervalsJSON
+        
+        return res
     }
 }

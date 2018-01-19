@@ -13,6 +13,11 @@ class BulkDownloadResult: BaseResult, TestResult {
     // MARK: Needed for Codable ability...
     static var type = TestResultType.bulkDownload
     
+    // MARK: Collect URL
+    static func getCollectURL() -> URL {
+        return URL(string: "https://ns387496.ip-176-31-249.eu/simplehttpget/test/")!
+    }
+    
     // MARK: Properties
     var rcvBytesDatas: [RcvBytesData]
     
@@ -25,14 +30,14 @@ class BulkDownloadResult: BaseResult, TestResult {
     static let ArchiveURL = DocumentsDirectory.appendingPathComponent("bulkDownloadResults")
     
     // MARK: Initializers
-    init(name: String, proto: NetProtocol, success: Bool, result: String, runTime: Double, rcvBytesDatas: [RcvBytesData]) {
+    init(name: String, proto: NetProtocol, success: Bool, result: String, duration: Double, startTime: Date, waitTime: Double, rcvBytesDatas: [RcvBytesData]) {
         self.rcvBytesDatas = rcvBytesDatas
-        super.init(name: name, proto: proto, success: success, result: result, runTime: runTime)
+        super.init(name: name, proto: proto, success: success, result: result, duration: duration, startTime: startTime, waitTime: waitTime)
     }
     
-    convenience init(name: String, proto: NetProtocol, runTime: Double, rcvBytesDatas: [RcvBytesData]) {
-        let result = "Completed in " + String(describing: runTime) + " s"
-        self.init(name: name, proto: proto, success: true, result: result, runTime: runTime, rcvBytesDatas: rcvBytesDatas)
+    convenience init(name: String, proto: NetProtocol, duration: Double, startTime: Date, waitTime: Double, rcvBytesDatas: [RcvBytesData]) {
+        let result = "Completed in " + String(describing: duration) + " s"
+        self.init(name: name, proto: proto, success: true, result: result, duration: duration, startTime: startTime, waitTime: waitTime, rcvBytesDatas: rcvBytesDatas)
     }
     
     required init(from decoder: Decoder) throws {

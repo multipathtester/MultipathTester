@@ -13,6 +13,7 @@ class QUICPerfTest: BaseTest, Test {
     // MARK: Properties
     var ipVer: IPVersion
     var maxPathID: UInt8
+    var port: Int
     var url: String
     
     init(maxPathID: UInt8, ipVer: IPVersion) {
@@ -32,7 +33,8 @@ class QUICPerfTest: BaseTest, Test {
             suffix = "any"
         }
         
-        url = baseURL + ":5201"
+        port = 5201
+        url = baseURL + ":" + String(port)
         let filePrefix = "quictraffic_qperf_" + suffix
         
         super.init(traffic: "qperf", url: url, filePrefix: filePrefix)
@@ -43,7 +45,7 @@ class QUICPerfTest: BaseTest, Test {
     }
     
     func getDescription() -> String {
-        let baseConfig = getConfig().rawValue
+        let baseConfig = getProtocol().rawValue
         switch ipVer {
         case .v4:
             return baseConfig + " IPv4 IPerf"
@@ -54,17 +56,15 @@ class QUICPerfTest: BaseTest, Test {
         }
     }
     
-    func getBenchDict() -> [String : Any] {
+    func getConfigDict() -> [String : Any] {
         return [
-            "name": "iperf",
-            "config": [
-                "duration": 10,
-                "url": url,
-            ]
+            "duration": 10,
+            "port": port,
+            "url": url,
         ]
     }
     
-    func getConfig() -> NetProtocol {
+    func getProtocol() -> NetProtocol {
         if maxPathID > 0 {
             return .MPQUIC
         }
@@ -72,7 +72,7 @@ class QUICPerfTest: BaseTest, Test {
     }
     
     func getTestResult() -> TestResult {
-        let quicInfos = getQUICInfo()
+        let quicInfos = getProtoInfo()
         var cwinData = [String: [CWinData]]()
         var cid: String = ""
         var paths: [String] = [String]()
@@ -108,22 +108,23 @@ class QUICPerfTest: BaseTest, Test {
         }
         // TODO intervals
         // TODO FIXME
-        let runTime = Double(result["run_time"] as! String)!
+        // TODO
+        let duration = Double(result["duration"] as! String)!
         let totalRetrans = UInt64(result["total_retrans"] as! String)!
         let totalSent = UInt64(result["total_sent"] as! String)!
-        let resultText = "Transferred " + String(totalSent) + " B in " + String(runTime) + " s"
-        return PerfResult(name: getDescription(), proto: getConfig(), success: true, result: resultText, runTime: runTime, totalRetrans: totalRetrans, totalSent: totalSent, intervals: intervals, cwins: cwinData)
+        let resultText = "Transferred " + String(totalSent) + " B in " + String(duration) + " s"
+        return PerfResult(name: getDescription(), proto: getProtocol(), success: true, result: resultText, duration: duration, startTime: startTime, waitTime: 0.0, totalRetrans: totalRetrans, totalSent: totalSent, intervals: intervals, cwins: cwinData)
     }
     
     func run() -> [String : Any] {
-        startTime = Date().timeIntervalSince1970
+        startTime = Date()
         let qperfString = QuictrafficRun(runCfg)
         let lines = qperfString!.components(separatedBy: .newlines)
         if lines.count < 2 || lines[lines.count - 1] != "" {
             // An error occurred: the string does not end with a '\n'
             result = [
                 "intervals": [],
-                "run_time": "-1.0",
+                "duration": "-1.0",
                 "total_retrans": "0",
                 "total_sent": "0",
             ]
@@ -142,7 +143,7 @@ class QUICPerfTest: BaseTest, Test {
         let splitted_line = lines[lines.count - 2].components(separatedBy: " ")
         result = [
             "intervals": intervals,
-            "run_time": String(format: "%.9f", Utils.parse(durationString: splitted_line[3])),
+            "duration": String(format: "%.9f", Utils.parse(durationString: splitted_line[3])),
             "total_retrans": splitted_line[5],
             "total_sent": splitted_line[1],
         ]

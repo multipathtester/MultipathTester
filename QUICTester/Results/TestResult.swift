@@ -32,11 +32,16 @@ enum TestResultType: String, Codable {
 
 protocol TestResult: Codable {
     static var type: TestResultType { get }
+    static func getCollectURL() -> URL
     static func getTestName() -> String
     static func getTestDescription() -> String
     func getChartData() -> [ChartEntries]
     func getDescription() -> String
+    func getDuration() -> Double
     func getProtocol() -> NetProtocol
     func getResult() -> String
+    func getWaitTime() -> Double
+    func resultsToJSONDict() -> [String: Any]
+    func toJSONDict(benchmarkUUID: String, order: Int, protoInfo: [[String: Any]], config: [String: Any]) -> [String: Any]
     func succeeded() -> Bool
 }

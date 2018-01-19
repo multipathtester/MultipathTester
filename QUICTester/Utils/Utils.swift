@@ -132,7 +132,40 @@ class Utils {
         task.resume()
     }
     
-    static func sendToServer(benchmark: Benchmark) {
+    static func sendTestToServer(testResult: TestResult, benchmarkUUID: String, order: Int, protoInfo: [[String: Any]], config: [String: Any]) {
+        let json = testResult.toJSONDict(benchmarkUUID: benchmarkUUID, order: order, protoInfo: protoInfo, config: config)
+        let jsonData = try? JSONSerialization.data(withJSONObject: json)
+        
+        // Create POST request
+        var request = URLRequest(url: type(of: testResult).getCollectURL())
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        
+        // Insert JSON data to the request
+        request.httpBody = jsonData
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let checkedData = data, error == nil else {
+                print(error?.localizedDescription ?? "No data")
+                if let checkedData = data {
+                    let responseJSON = try? JSONSerialization.jsonObject(with: checkedData, options: [])
+                    if let responseJSON = responseJSON as? [String: Any] {
+                        print(responseJSON)
+                    }
+                }
+                return
+            }
+            let responseJSON = try? JSONSerialization.jsonObject(with: checkedData, options: [])
+            if let responseJSON = responseJSON as? [String: Any] {
+                print(responseJSON)
+            }
+        }
+        
+        task.resume()
+    }
+    
+    static func sendToServer(benchmark: Benchmark, tests: [Test]) {
         let uuid = Utils.sendBenchmarkToServer(benchmark: benchmark)
         guard let benchmarkUUID = uuid else {
             print("Got error whem trying to save benchmark; abort")
@@ -144,42 +177,13 @@ class Utils {
             connectivities.append(connectivity.toJSONDict(benchmarkUUID: benchmarkUUID))
         }
         Utils.sendConnectivitiesToServer(connectivities: connectivities)
-    }
-    
-    static func sendTestToCollectServer(test: Test, result: [String:Any], serverIP: String, benchStartTime: Double) {
-        let json: [String: Any] = [
-            "bench": test.getBenchDict(),
-            "config_name": test.getConfig().rawValue,
-            "device_id": UIDevice.current.identifierForVendor!.uuidString,
-            "group_start_time": benchStartTime,
-            "proto_info": test.getQUICInfo(),
-            "result": result,
-            "server_ip": serverIP,
-            "smartphone": true,
-            "start_time": test.getStartTime(),
-        ]
-        let jsonData = try? JSONSerialization.data(withJSONObject: json)
-        
-        // Create POST request
-        let url = URL(string: "https://ns387496.ip-176-31-249.eu/collect/save_test/")!
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        
-        // Insert JSON data to the request
-        request.httpBody = jsonData
-        
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            guard let data = data, error == nil else {
-                print(error?.localizedDescription ?? "No data")
-                return
-            }
-            let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
-            if let responseJSON = responseJSON as? [String: Any] {
-                print(responseJSON)
-            }
+        for i in 0..<tests.count {
+            let testResult = benchmark.testResults[i]
+            let test = tests[i]
+            let protoInfo = test.getProtoInfo()
+            let config = test.getConfigDict()
+            Utils.sendTestToServer(testResult: testResult, benchmarkUUID: benchmarkUUID, order: i, protoInfo: protoInfo, config: config)
         }
-        
-        task.resume()
     }
     
     static func traceroute(toIP: String) {

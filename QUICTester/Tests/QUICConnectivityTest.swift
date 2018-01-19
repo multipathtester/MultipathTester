@@ -51,27 +51,25 @@ class QUICConnectivityTest: BaseTest, Test {
         }
     }
     
-    func getBenchDict() -> [String : Any] {
+    func getConfigDict() -> [String : Any] {
         return [
-            "name": "connectivity",
-            "config": [
-                "port": self.port,
-                "url": self.url,
-            ],
+            "port": self.port,
+            "url": self.url,
         ]
     }
     
-    func getConfig() -> NetProtocol {
+    func getProtocol() -> NetProtocol {
         return .QUIC
     }
     
     func getTestResult() -> TestResult {
         // FIXME should check if result is ready
-        return ConnectivityResult(name: getDescription(), proto: getConfig(), success: result["success"] as! Bool, runTime: Double(result["run_time"] as! String)!)
+        // TODO update
+        return ConnectivityResult(name: getDescription(), proto: getProtocol(), success: result["success"] as! Bool, duration: Double(result["duration"] as! String)!, startTime: startTime, waitTime: 0.0)
     }
     
     func run() -> [String:Any] {
-        startTime = Date().timeIntervalSince1970
+        startTime = Date()
         var success = false
         let durationString = QuictrafficRun(runCfg)
         do {
@@ -84,7 +82,7 @@ class QUICConnectivityTest: BaseTest, Test {
             }
         } catch { print("Nope...") }
         result = [
-            "run_time": String(format: "%.9f", Utils.parse(durationString: durationString!)),
+            "duration": String(format: "%.9f", Utils.parse(durationString: durationString!)),
             "success": success,
         ]
         return result

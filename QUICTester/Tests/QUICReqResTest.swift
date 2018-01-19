@@ -44,7 +44,7 @@ class QUICReqResTest: BaseTest, Test {
 
     
     func getDescription() -> String {
-        let baseConfig = getConfig().rawValue
+        let baseConfig = getProtocol().rawValue
         switch ipVer {
         case .v4:
             return baseConfig + " IPv4 Request Response"
@@ -55,22 +55,20 @@ class QUICReqResTest: BaseTest, Test {
         }
     }
     
-    func getBenchDict() -> [String : Any] {
+    func getConfigDict() -> [String : Any] {
         return [
-            "name": "msg",
-            "config": [
-                "server_port": "8080",
-                "query_size": "750",
-                "response_size": "750",
-                "start_delay_query_response": "0",
-                "nb_msgs": "35",
-                "interval_time_ms": "400",
-                "timeout_sec": "14",
-            ],
+            "url": url,
+            "port": "8080",
+            "query_size": "750",
+            "response_size": "750",
+            "start_delay_query_response": "0",
+            "nb_msgs": "35",
+            "interval_time_ms": "400",
+            "timeout_sec": "14",
         ]
     }
     
-    func getConfig() -> NetProtocol {
+    func getProtocol() -> NetProtocol {
         if maxPathID > 0 {
             return .MPQUIC
         }
@@ -84,14 +82,15 @@ class QUICReqResTest: BaseTest, Test {
             maxDelay = delays.max()!
         }
         // FIXME
-        let runTime = Double(result["run_time"] as! String)!
+        // TODO
+        let duration = Double(result["duration"] as! String)!
         let missed = result["missed"] as! Int64
         let resultText = "Maximum delay of " + String(maxDelay) + " ms, " + String(missed) + " missed"
-        return ReqResResult(name: getDescription(), proto: getConfig(), success: true, result: resultText, runTime: runTime, missed: missed, maxDelay: maxDelay, delays: delays)
+        return ReqResResult(name: getDescription(), proto: getProtocol(), success: true, result: resultText, duration: duration, startTime: startTime, waitTime: 0.0, missed: missed, maxDelay: maxDelay, delays: delays)
     }
     
     func run() -> [String : Any] {
-        startTime = Date().timeIntervalSince1970
+        startTime = Date()
         let reqresString = QuictrafficRun(runCfg)
         var delays = [Int64]()
         let lines = reqresString!.components(separatedBy: .newlines)
@@ -100,8 +99,7 @@ class QUICReqResTest: BaseTest, Test {
             result = [
                 "delays": [],
                 "missed": Int64(35),
-                "netcfgs": [],
-                "run_time": "-1.0",
+                "duration": "-1.0",
             ]
             return result
         }
@@ -112,8 +110,7 @@ class QUICReqResTest: BaseTest, Test {
         result = [
             "delays": delays,
             "missed": Int64(missed),
-            "netcfgs": [],
-            "run_time": String(format: "%.9f", 14.0),
+            "duration": String(format: "%.9f", 14.0),
         ]
         return result
     }

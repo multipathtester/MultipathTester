@@ -45,7 +45,7 @@ class QUICBulkDownloadTest: BaseTest, Test {
     }
     
     func getDescription() -> String {
-        let baseConfig = getConfig().rawValue
+        let baseConfig = getProtocol().rawValue
         switch ipVer {
         case .v4:
             return baseConfig + " IPv4 Bulk Download of " + urlPath
@@ -56,17 +56,13 @@ class QUICBulkDownloadTest: BaseTest, Test {
         }
     }
     
-    func getBenchDict() -> [String : Any] {
+    func getConfigDict() -> [String : Any] {
         return [
-            "name": "simple_http_get",
-            "config": [
-                "file_name": urlPath,
-                "server_url": url,
-            ],
+            "url": url,
         ]
     }
     
-    func getConfig() -> NetProtocol {
+    func getProtocol() -> NetProtocol {
         if maxPathID > 0 {
             return .MPQUIC
         }
@@ -74,7 +70,7 @@ class QUICBulkDownloadTest: BaseTest, Test {
     }
     
     func getTestResult() -> TestResult {
-        let quicInfos = getQUICInfo()
+        let quicInfos = getProtoInfo()
         var rcvBytesDatas = [RcvBytesData]()
         var cid: String = ""
         let df = DateFormatter()
@@ -94,11 +90,13 @@ class QUICBulkDownloadTest: BaseTest, Test {
                 rcvBytesDatas.append(RcvBytesData(time: time, rcvBytes: rcvbytes))
             }
         }
-        return BulkDownloadResult(name: getDescription(), proto: getConfig(), runTime: Double(result["run_time"] as! String)!, rcvBytesDatas: rcvBytesDatas)
+        // FIXME
+        // TODO
+        return BulkDownloadResult(name: getDescription(), proto: getProtocol(), duration: Double(result["duration"] as! String)!, startTime: startTime, waitTime: 0.0, rcvBytesDatas: rcvBytesDatas)
     }
     
     func run() -> [String : Any] {
-        startTime = Date().timeIntervalSince1970
+        startTime = Date()
         let durationString = QuictrafficRun(runCfg)
         do {
             let text = try String(contentsOf: outFileURL, encoding: .utf8)
@@ -108,7 +106,7 @@ class QUICBulkDownloadTest: BaseTest, Test {
             }
         } catch { print("Nope...") }
         result = [
-            "run_time": String(format: "%.9f", Utils.parse(durationString: durationString!)),
+            "duration": String(format: "%.9f", Utils.parse(durationString: durationString!)),
         ]
         return result
     }

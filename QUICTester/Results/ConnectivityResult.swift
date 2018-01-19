@@ -12,15 +12,20 @@ import Charts
 class ConnectivityResult: BaseResult, TestResult {
     // MARK: Needed for Codable ability...
     static var type = TestResultType.connectivity
+    
+    // MARK: Collect URL
+    static func getCollectURL() -> URL {
+        return URL(string: "https://ns387496.ip-176-31-249.eu/connectivity/test/")!
+    }
 
     // MARK: Archiving Paths
     static let DocumentsDirectory = FileManager().urls(for: .documentDirectory, in: .userDomainMask).first!
     static let ArchiveURL = DocumentsDirectory.appendingPathComponent("connectivityResults")
     
     // MARK: Initializers    
-    convenience init(name: String, proto: NetProtocol, success: Bool, runTime: Double) {
-        let result = "Succeeded in " + String(runTime) + " s"
-        self.init(name: name, proto: proto, success: success, result: result, runTime: runTime)
+    convenience init(name: String, proto: NetProtocol, success: Bool, duration: Double, startTime: Date, waitTime: Double) {
+        let result = "Succeeded in " + String(duration) + " s"
+        self.init(name: name, proto: proto, success: success, result: result, duration: duration, startTime: startTime, waitTime: waitTime)
     }
     
     // MARK: TestResult

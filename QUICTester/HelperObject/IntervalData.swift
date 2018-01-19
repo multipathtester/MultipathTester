@@ -26,4 +26,14 @@ class IntervalData: Codable {
         self.globalBandwidth = globalBandwidth
         self.retransmittedLastSecond = retransmittedLastSecond
     }
+    
+    // MARK: JSON serialization for sending to collect server
+    func toJSONDict() -> [String: Any] {
+        return [
+            "intervalInSec": interval,
+            "transferredLastSecond": transferredLastSecond,
+            "globalBandwidth": globalBandwidth,
+            "retransmittedLastSecond": retransmittedLastSecond,
+        ]
+    }
 }

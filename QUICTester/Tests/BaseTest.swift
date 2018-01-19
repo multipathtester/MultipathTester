@@ -12,7 +12,7 @@ class BaseTest {
     var notifyID: String
     var outFileURL: URL = URL(fileURLWithPath: "")
     var runCfg: RunConfig
-    var startTime: Double = 0.0
+    var startTime: Date = Date()
     var result: [String:Any] = [String:Any]()
     
     init(traffic: String, url: String, filePrefix: String) {
@@ -56,11 +56,11 @@ class BaseTest {
         return notifyID
     }
     
-    func getStartTime() -> Double {
+    func getStartTime() -> Date {
         return startTime
     }
     
-    func getQUICInfo() -> [[String: Any]] {
+    func getProtoInfo() -> [[String: Any]] {
         return Utils.collectQUICInfo(logFileURL: logFileURL)
     }
 }

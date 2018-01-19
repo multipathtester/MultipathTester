@@ -100,8 +100,6 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
         
         DispatchQueue.global(qos: .background).async {
             let nbTests = self.tests.count
-            var results = [[String:Any]]()
-            var testResults = [TestResult]()
             for i in 0..<nbTests {
                 let test = self.tests[i]
                 self.runningIndex = i
@@ -113,25 +111,22 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
                         // Do anything your heart desires...
                     }
                 }
-                results.append(test.run())
+                _ = test.run()
             }
             self.stopTime = Date()
             self.runningIndex = nbTests
             DispatchQueue.main.async {
                 self.testsTable.reloadData()
             }
-            print("send the following to the collect server", results)
+            var testResults = [TestResult]()
             for i in 0..<nbTests {
                 let test = self.tests[i]
                 testResults.append(test.getTestResult())
-                let result = results[i]
-                // TODO update serverIP
-                //Utils.sendTestToCollectServer(test: test, result: result, serverIP: "176.31.249.161", benchStartTime: self.startTime.timeIntervalSince1970)
             }
             let duration = self.stopTime.timeIntervalSince(self.startTime)
             // FIXME
             let benchmark = Benchmark(connectivities: connectivities, duration: duration, locations: self.locations, pingMean: 0.1, pingVar: 0.05, serverName: "FR", startTime: self.startTime, testResults: testResults)
-            Utils.sendToServer(benchmark: benchmark)
+            Utils.sendToServer(benchmark: benchmark, tests: self.tests)
             self.saveBenchmark(benchmark: benchmark)
             print("Tests done")
             DispatchQueue.main.async {

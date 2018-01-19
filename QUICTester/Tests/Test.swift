@@ -36,11 +36,11 @@ enum NetProtocol: String, Codable {
 
 protocol Test {
     func getDescription() -> String
-    func getBenchDict() -> [String: Any]
-    func getConfig() -> NetProtocol
+    func getConfigDict() -> [String: Any]
     func getNotifyID() -> String
-    func getQUICInfo() -> [[String: Any]]
-    func getStartTime() -> Double
+    func getProtocol() -> NetProtocol
+    func getProtoInfo() -> [[String: Any]]
+    func getStartTime() -> Date
     func getTestResult() -> TestResult
     func run() -> [String:Any]
 }

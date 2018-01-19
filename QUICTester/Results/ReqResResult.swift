@@ -13,6 +13,11 @@ class ReqResResult: BaseResult, TestResult {
     // MARK: Needed for Codable ability...
     static var type = TestResultType.reqRes
     
+    // MARK: Collect URL
+    static func getCollectURL() -> URL {
+        return URL(string: "https://ns387496.ip-176-31-249.eu/msg/test/")!
+    }
+    
     // MARK: Properties
     var missed: Int64
     var maxDelay: Int64
@@ -29,12 +34,12 @@ class ReqResResult: BaseResult, TestResult {
     static let ArchiveURL = DocumentsDirectory.appendingPathComponent("reqResResults")
     
     // MARK: Initializers
-    init(name: String, proto: NetProtocol, success: Bool, result: String, runTime: Double, missed: Int64, maxDelay: Int64, delays: [Int64]) {
+    init(name: String, proto: NetProtocol, success: Bool, result: String, duration: Double, startTime: Date, waitTime: Double, missed: Int64, maxDelay: Int64, delays: [Int64]) {
         self.missed = missed
         self.maxDelay = maxDelay
         self.delays = delays
         
-        super.init(name: name, proto: proto, success: success, result: result, runTime: runTime)
+        super.init(name: name, proto: proto, success: success, result: result, duration: duration, startTime: startTime, waitTime: waitTime)
     }
     
     required init(from decoder: Decoder) throws {
@@ -73,5 +78,12 @@ class ReqResResult: BaseResult, TestResult {
             return ChartDataEntry(x: 100.0 * Double(index) / Double(delays.count), y: Double(d))
         }
         return [LineChartEntries(xLabel: "CDF", yLabel: "Time (ms)", data: values, dataLabel: "Delays", xValueFormatter: nil)]
+    }
+    
+    override func resultsToJSONDict() -> [String : Any] {
+        var res = super.resultsToJSONDict()
+        res["missed"] = missed
+        res["delays"] = delays
+        return res
     }
 }
