@@ -40,7 +40,7 @@ class QUICStreamTest: BaseTest, Test {
         // Prepare the run configuration
         runCfg.maxPathIDVar = Int(maxPathID)
         runCfg.logPeriodMsVar = 100
-        runCfg.runTimeVar = 150
+        runCfg.runTimeVar = 10
     }
     
     
@@ -61,7 +61,7 @@ class QUICStreamTest: BaseTest, Test {
             "url": url,
             "port": "5202",
             "chunk_client_size": "2000",
-            "chunk_server_siwe": "2000",
+            "chunk_server_size": "2000",
             "duration": "14.0",
             "interval_client_time": "0.1",
             "interval_server_time": "0.1",
@@ -92,12 +92,85 @@ class QUICStreamTest: BaseTest, Test {
     func run() -> [String : Any] {
         startTime = Date()
         let streamString = QuictrafficRun(runCfg)
-        print(streamString)
+        let duration = Date().timeIntervalSince(startTime)
+        let lines = streamString!.components(separatedBy: .newlines)
+        let errorMsg = lines[0]
+        if lines.count < 3 {
+            result = [
+                "duration": String(format: "%.9f", duration),
+                "error_msg": errorMsg,
+                "success": false,
+            ]
+            return result
+        }
+        var upDelays = [DelayData]()
+        var downDelays = [DelayData]()
+        let splitted_up_line = lines[1].components(separatedBy: " ")
+        let up_count = Int(splitted_up_line[1])!
+        if up_count > 0 {
+            for i in 2...up_count {
+                let splitted_line = lines[i].components(separatedBy: ",")
+                let ts = Double(splitted_line[0])! / 1000000000.0
+                let delayUs = UInt64(splitted_line[1])!
+                upDelays.append(DelayData(time: ts, delayUs: delayUs))
+            }
+        }
+        let splitted_down_line = lines[up_count+2].components(separatedBy: " ")
+        let down_count = Int(splitted_down_line[1])!
+        if down_count > 0 {
+            for i in up_count+3...up_count+2+down_count {
+                let splitted_line = lines[i].components(separatedBy: ",")
+                let ts = Double(splitted_line[0])! / 1000000000.0
+                let delayUs = UInt64(splitted_line[1])!
+                downDelays.append(DelayData(time: ts, delayUs: delayUs))
+            }
+        }
+        
+        var success = false
+        if errorMsg.contains("nil") || errorMsg.contains("deadline exceeded") {
+            success = true
+        }
 
         result = [
-            "duration": String(format: "%.9f", 14.0),
+            "duration": String(format: "%.9f", duration),
+            "error_msg": errorMsg,
+            "down_delays": downDelays,
+            "up_delays": upDelays,
+            "success": success,
         ]
         return result
+    }
+    
+    // MARK: Specific to that test
+    func getProgressDelays() -> ([DelayData], [DelayData]) {
+        var upDelays = [DelayData]()
+        var downDelays = [DelayData]()
+        let delaysStr = QuictrafficGetStreamProgressResult()
+        let lines = delaysStr!.components(separatedBy: .newlines)
+        if lines.count < 2 {
+            return ([], [])
+        }
+        let splitted_up_line = lines[0].components(separatedBy: " ")
+        let up_count = Int(splitted_up_line[1])!
+        if up_count > 0 {
+            for i in 1...up_count {
+                let splitted_line = lines[i].components(separatedBy: ",")
+                let ts = Double(splitted_line[0])! / 1000000000.0
+                let delayUs = UInt64(splitted_line[1])!
+                upDelays.append(DelayData(time: ts, delayUs: delayUs))
+            }
+        }
+        let splitted_down_line = lines[up_count+1].components(separatedBy: " ")
+        let down_count = Int(splitted_down_line[1])!
+        if down_count > 0 {
+            for i in up_count+2...up_count+1+down_count {
+                let splitted_line = lines[i].components(separatedBy: ",")
+                let ts = Double(splitted_line[0])! / 1000000000.0
+                let delayUs = UInt64(splitted_line[1])!
+                downDelays.append(DelayData(time: ts, delayUs: delayUs))
+            }
+        }
+        return (upDelays, downDelays)
     }
 }
 

@@ -80,7 +80,6 @@ class BenchmarkDetailTableViewController: UITableViewController {
             TableItem(title: "Model", detail: bench.model),
             TableItem(title: "Software name", detail: bench.softwareName),
             TableItem(title: "Software version", detail: bench.softwareVersion),
-            TableItem(title: "QUIC version", detail: bench.quicVersion),
             TableItem(title: "Benchmark ID", detail: bench.uuid.uuidString),
         ]
 

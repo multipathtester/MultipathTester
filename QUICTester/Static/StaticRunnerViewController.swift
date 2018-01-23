@@ -125,7 +125,7 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
             }
             let duration = self.stopTime.timeIntervalSince(self.startTime)
             // FIXME
-            let benchmark = Benchmark(connectivities: connectivities, duration: duration, locations: self.locations, pingMean: 0.1, pingVar: 0.05, serverName: "FR", startTime: self.startTime, testResults: testResults)
+            let benchmark = Benchmark(connectivities: connectivities, duration: duration, locations: self.locations, mobile: false, pingMean: 0.1, pingVar: 0.05, serverName: "FR", startTime: self.startTime, testResults: testResults)
             Utils.sendToServer(benchmark: benchmark, tests: self.tests)
             self.saveBenchmark(benchmark: benchmark)
             print("Tests done")

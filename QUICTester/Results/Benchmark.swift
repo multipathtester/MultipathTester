@@ -13,7 +13,7 @@ class Benchmark: NSObject, Codable {
     var connectivities: [Connectivity]
     var duration: Double
     var locations: [Location]
-    var mobile: String
+    var mobile: Bool
     var pingMean: Double
     var pingVar: Double
     var serverName: String
@@ -25,7 +25,6 @@ class Benchmark: NSObject, Codable {
     var platform: String
     var platformVersion: String
     var platformVersionCode: String
-    var quicVersion: String
     var softwareName: String
     var softwareVersion: String
     var timezone: TimeZone
@@ -47,7 +46,6 @@ class Benchmark: NSObject, Codable {
         case platform
         case platformVersion
         case platformVersionCode
-        case quicVersion
         case softwareName
         case softwareVersion
         case timezone
@@ -76,8 +74,6 @@ class Benchmark: NSObject, Codable {
         self.platform = "iOS"
         self.platformVersion = UIDevice.current.systemVersion
         self.platformVersionCode = ProcessInfo().operatingSystemVersionString
-        // FIXME
-        self.quicVersion = "cafebabe"
         self.softwareName = Bundle.main.infoDictionary?[kCFBundleNameKey as String] as? String ?? ""
         let softVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
         let buildVersion = Bundle.main.infoDictionary?[kCFBundleVersionKey as String] as? String ?? ""
@@ -104,7 +100,6 @@ class Benchmark: NSObject, Codable {
         try container.encode(platform, forKey: .platform)
         try container.encode(platformVersion, forKey: .platformVersion)
         try container.encode(platformVersionCode, forKey: .platformVersionCode)
-        try container.encode(quicVersion, forKey: .quicVersion)
         try container.encode(softwareName, forKey: .softwareName)
         try container.encode(softwareVersion, forKey: .softwareVersion)
         try container.encode(timezone, forKey: .timezone)
@@ -128,7 +123,6 @@ class Benchmark: NSObject, Codable {
         platform = try container.decode(String.self, forKey: .platform)
         platformVersion = try container.decode(String.self, forKey: .platformVersion)
         platformVersionCode = try container.decode(String.self, forKey: .platformVersionCode)
-        quicVersion = try container.decode(String.self, forKey: .quicVersion)
         softwareName = try container.decode(String.self, forKey: .softwareName)
         softwareVersion = try container.decode(String.self, forKey: .softwareVersion)
         timezone = try container.decode(TimeZone.self, forKey: .timezone)
@@ -158,7 +152,6 @@ class Benchmark: NSObject, Codable {
             "device_model_code": modelCode,
             "software_name": softwareName,
             "software_version": softwareVersion,
-            "quic_version": quicVersion,
         ]
     }
     
