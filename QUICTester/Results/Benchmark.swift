@@ -13,6 +13,7 @@ class Benchmark: NSObject, Codable {
     var connectivities: [Connectivity]
     var duration: Double
     var locations: [Location]
+    var mobile: String
     var pingMean: Double
     var pingVar: Double
     var serverName: String
@@ -34,6 +35,7 @@ class Benchmark: NSObject, Codable {
         case connectivities
         case duration
         case locations
+        case mobile
         case pingMean
         case pingVar
         case serverName
@@ -57,11 +59,12 @@ class Benchmark: NSObject, Codable {
     static let ArchiveURL = DocumentsDirectory.appendingPathComponent("benchmarks")
     
     // MARK: Initializers
-    init(connectivities: [Connectivity], duration: Double, locations: [Location], pingMean: Double, pingVar: Double, serverName: String, startTime: Date, testResults: [TestResult]) {
+    init(connectivities: [Connectivity], duration: Double, locations: [Location], mobile: Bool, pingMean: Double, pingVar: Double, serverName: String, startTime: Date, testResults: [TestResult]) {
         // Initilialize stored properties
         self.connectivities = connectivities
         self.duration = duration
         self.locations = locations
+        self.mobile = mobile
         self.pingMean = pingMean
         self.pingVar = pingVar
         self.serverName = serverName
@@ -89,6 +92,7 @@ class Benchmark: NSObject, Codable {
         try container.encode(connectivities, forKey: .connectivities)
         try container.encode(duration, forKey: .duration)
         try container.encode(locations, forKey: .locations)
+        try container.encode(mobile, forKey: .mobile)
         try container.encode(pingMean, forKey: .pingMean)
         try container.encode(pingVar, forKey: .pingVar)
         try container.encode(serverName, forKey: .serverName)
@@ -112,6 +116,7 @@ class Benchmark: NSObject, Codable {
         connectivities = try container.decode([Connectivity].self, forKey: .connectivities)
         duration = try container.decode(Double.self, forKey: .duration)
         locations = try container.decode([Location].self, forKey: .locations)
+        mobile = try container.decode(Bool.self, forKey: .mobile)
         pingMean = try container.decode(Double.self, forKey: .pingMean)
         pingVar = try container.decode(Double.self, forKey: .pingVar)
         serverName = try container.decode(String.self, forKey: .serverName)
@@ -141,6 +146,7 @@ class Benchmark: NSObject, Codable {
             "start_time": Utils.getDateFormatter().string(from: startTime),
             "duration": String.init(format: "%.6f", duration),
             "tz": timezone.identifier,
+            "mobile": mobile,
             "ping_mean": String.init(format: "%.6f", pingMean),
             "ping_var": String.init(format: "%.6f", pingVar),
             "server_name": serverName,

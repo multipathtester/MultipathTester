@@ -22,6 +22,11 @@
 		CE26851B200F60BE00462C6E /* LocationTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE26851A200F60BE00462C6E /* LocationTracker.swift */; };
 		CE26851D200F809A00462C6E /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE26851C200F809A00462C6E /* Location.swift */; };
 		CE268523200FACD200462C6E /* BenchmarkUUIDTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE268522200FACD200462C6E /* BenchmarkUUIDTableViewCell.swift */; };
+		CE2685272012201000462C6E /* IOCTL.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2685262012201000462C6E /* IOCTL.m */; };
+		CE26852D201239A400462C6E /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE26852C201239A400462C6E /* NetworkExtension.framework */; };
+		CE26852F20163FFD00462C6E /* MobileMainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE26852E20163FFD00462C6E /* MobileMainViewController.swift */; };
+		CE268531201646F100462C6E /* QUICStreamTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE268530201646F100462C6E /* QUICStreamTest.swift */; };
+		CE26853320175EFB00462C6E /* DelayData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE26853220175EFB00462C6E /* DelayData.swift */; };
 		CE29B9E11FD6AE2F0049A105 /* PerfResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE29B9E01FD6AE2F0049A105 /* PerfResult.swift */; };
 		CE29B9E31FD6FD660049A105 /* IntervalData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE29B9E21FD6FD660049A105 /* IntervalData.swift */; };
 		CE29B9E51FD802FD0049A105 /* CWinData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE29B9E41FD802FD0049A105 /* CWinData.swift */; };
@@ -54,7 +59,7 @@
 		CE8E284F1F6966FC004F1558 /* TCPClientSiri.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8E284E1F6966FC004F1558 /* TCPClientSiri.swift */; };
 		CEA702E22003C6A000FDFB89 /* Charts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA702DF2003C66900FDFB89 /* Charts.framework */; };
 		CEA702E32003C6A000FDFB89 /* Charts.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CEA702DF2003C66900FDFB89 /* Charts.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CEA702E82003D67100FDFB89 /* MobileTesterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA702E72003D67100FDFB89 /* MobileTesterViewController.swift */; };
+		CEA702E82003D67100FDFB89 /* MobileRunnerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA702E72003D67100FDFB89 /* MobileRunnerViewController.swift */; };
 		CEA702F02003DB4D00FDFB89 /* DateValueFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA702EC2003DB4D00FDFB89 /* DateValueFormatter.swift */; };
 		CEA702F12003DB4D00FDFB89 /* IntAxisValueFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA702ED2003DB4D00FDFB89 /* IntAxisValueFormatter.swift */; };
 		CEA702F22003DB4D00FDFB89 /* DayAxisValueFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA702EE2003DB4D00FDFB89 /* DayAxisValueFormatter.swift */; };
@@ -155,6 +160,12 @@
 		CE26851A200F60BE00462C6E /* LocationTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationTracker.swift; sourceTree = "<group>"; };
 		CE26851C200F809A00462C6E /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		CE268522200FACD200462C6E /* BenchmarkUUIDTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BenchmarkUUIDTableViewCell.swift; sourceTree = "<group>"; };
+		CE2685262012201000462C6E /* IOCTL.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IOCTL.m; sourceTree = "<group>"; };
+		CE2685282012205800462C6E /* IOCTL.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IOCTL.h; sourceTree = "<group>"; };
+		CE26852C201239A400462C6E /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
+		CE26852E20163FFD00462C6E /* MobileMainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileMainViewController.swift; sourceTree = "<group>"; };
+		CE268530201646F100462C6E /* QUICStreamTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QUICStreamTest.swift; sourceTree = "<group>"; };
+		CE26853220175EFB00462C6E /* DelayData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelayData.swift; sourceTree = "<group>"; };
 		CE29B9E01FD6AE2F0049A105 /* PerfResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerfResult.swift; sourceTree = "<group>"; };
 		CE29B9E21FD6FD660049A105 /* IntervalData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntervalData.swift; sourceTree = "<group>"; };
 		CE29B9E41FD802FD0049A105 /* CWinData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CWinData.swift; sourceTree = "<group>"; };
@@ -188,7 +199,7 @@
 		CE8E284C1F696334004F1558 /* TCPClientBulk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClientBulk.swift; sourceTree = "<group>"; };
 		CE8E284E1F6966FC004F1558 /* TCPClientSiri.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClientSiri.swift; sourceTree = "<group>"; };
 		CEA702D92003C66800FDFB89 /* Charts.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Charts.xcodeproj; sourceTree = "<group>"; };
-		CEA702E72003D67100FDFB89 /* MobileTesterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileTesterViewController.swift; sourceTree = "<group>"; };
+		CEA702E72003D67100FDFB89 /* MobileRunnerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileRunnerViewController.swift; sourceTree = "<group>"; };
 		CEA702EC2003DB4D00FDFB89 /* DateValueFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateValueFormatter.swift; sourceTree = "<group>"; };
 		CEA702ED2003DB4D00FDFB89 /* IntAxisValueFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntAxisValueFormatter.swift; sourceTree = "<group>"; };
 		CEA702EE2003DB4D00FDFB89 /* DayAxisValueFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DayAxisValueFormatter.swift; sourceTree = "<group>"; };
@@ -237,6 +248,7 @@
 				CE23A8A41FD9534F00894CA7 /* Quictraffic.framework in Frameworks */,
 				CEA702E22003C6A000FDFB89 /* Charts.framework in Frameworks */,
 				CE58F46F1FC34660009EA08F /* MobileCoreServices.framework in Frameworks */,
+				CE26852D201239A400462C6E /* NetworkExtension.framework in Frameworks */,
 				CE58F46D1FC34651009EA08F /* CFNetwork.framework in Frameworks */,
 				CE58F46B1FC3463F009EA08F /* libxml2.tbd in Frameworks */,
 			);
@@ -302,6 +314,7 @@
 		CE58F4691FC34631009EA08F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CE26852C201239A400462C6E /* NetworkExtension.framework */,
 				CE23A8A31FD9534F00894CA7 /* Quictraffic.framework */,
 				CE58F4721FC34673009EA08F /* SystemConfiguration.framework */,
 				CE58F4701FC34669009EA08F /* Security.framework */,
@@ -321,6 +334,7 @@
 				CE58F47F1FCEA594009EA08F /* QUICConnectivityTest.swift */,
 				CE58F4A41FD6895D009EA08F /* QUICPerfTest.swift */,
 				CE29B9E81FD833610049A105 /* QUICReqResTest.swift */,
+				CE268530201646F100462C6E /* QUICStreamTest.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -366,6 +380,7 @@
 				CE29B9E41FD802FD0049A105 /* CWinData.swift */,
 				CE29B9E21FD6FD660049A105 /* IntervalData.swift */,
 				CE58F4A71FD68D36009EA08F /* RcvBytesData.swift */,
+				CE26853220175EFB00462C6E /* DelayData.swift */,
 			);
 			path = HelperObject;
 			sourceTree = "<group>";
@@ -444,7 +459,8 @@
 		CEA70314200673E800FDFB89 /* Mobile */ = {
 			isa = PBXGroup;
 			children = (
-				CEA702E72003D67100FDFB89 /* MobileTesterViewController.swift */,
+				CEA702E72003D67100FDFB89 /* MobileRunnerViewController.swift */,
+				CE26852E20163FFD00462C6E /* MobileMainViewController.swift */,
 			);
 			path = Mobile;
 			sourceTree = "<group>";
@@ -474,6 +490,8 @@
 		CEDAF24D1F5FE8E000310153 /* QUICTester */ = {
 			isa = PBXGroup;
 			children = (
+				CE2685282012205800462C6E /* IOCTL.h */,
+				CE2685262012201000462C6E /* IOCTL.m */,
 				CE58F4991FD19351009EA08F /* Reachability.m */,
 				CE58F49A1FD19351009EA08F /* Reachability.h */,
 				CEA702F72004B4FE00FDFB89 /* ChartsHelpers */,
@@ -593,7 +611,13 @@
 						LastSwiftMigration = 0910;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
+							com.apple.HotspotConfiguration = {
+								enabled = 1;
+							};
 							com.apple.Multipath = {
+								enabled = 1;
+							};
+							com.apple.NetworkExtensions.iOS = {
 								enabled = 1;
 							};
 						};
@@ -700,18 +724,21 @@
 				CEA7030F2005116900FDFB89 /* StaticRunnerViewController.swift in Sources */,
 				CEA7030B2005084C00FDFB89 /* UICircularProgressRingLayer.swift in Sources */,
 				CE26851D200F809A00462C6E /* Location.swift in Sources */,
+				CE26853320175EFB00462C6E /* DelayData.swift in Sources */,
 				CE29B9E51FD802FD0049A105 /* CWinData.swift in Sources */,
 				CEA703082005084C00FDFB89 /* UICircularProgressRingDelegate.swift in Sources */,
 				CEA702FF2005072000FDFB89 /* StaticMainViewController.swift in Sources */,
 				CEA7030A2005084C00FDFB89 /* UICircularProgressRingGradientPosition.swift in Sources */,
 				CEA7031820067A4900FDFB89 /* BenchmarkSummaryTableViewController.swift in Sources */,
 				CE29B9EB1FD838340049A105 /* ReqResResult.swift in Sources */,
+				CE268531201646F100462C6E /* QUICStreamTest.swift in Sources */,
 				CE58F4931FD16A97009EA08F /* ConnectivityResult.swift in Sources */,
 				CE2685092008BBB200462C6E /* TestResultInstanceDetailTextTableViewCell.swift in Sources */,
 				CE2685002007B26E00462C6E /* BaseResult.swift in Sources */,
 				CE8E284B1F695450004F1558 /* TCPClientReqRes.swift in Sources */,
 				CEA702F32003DB4D00FDFB89 /* LargeValueFormatter.swift in Sources */,
 				CE58F48C1FD163A8009EA08F /* BenchmarkTableViewController.swift in Sources */,
+				CE2685272012201000462C6E /* IOCTL.m in Sources */,
 				CE58F49F1FD19A15009EA08F /* TestResultsTableViewCell.swift in Sources */,
 				CE2685032008A50100462C6E /* TestResultInstancesTableViewCell.swift in Sources */,
 				CEA7031C200777C300FDFB89 /* BenchmarkDetailTableViewCell.swift in Sources */,
@@ -737,8 +764,9 @@
 				CE268519200DED5200462C6E /* UIDevice.swift in Sources */,
 				CEA702F62003E10E00FDFB89 /* BalloonMarker.swift in Sources */,
 				CEA703132006615A00FDFB89 /* AnyTestResult.swift in Sources */,
+				CE26852F20163FFD00462C6E /* MobileMainViewController.swift in Sources */,
 				CEA703092005084C00FDFB89 /* UICircularProgressRingView.swift in Sources */,
-				CEA702E82003D67100FDFB89 /* MobileTesterViewController.swift in Sources */,
+				CEA702E82003D67100FDFB89 /* MobileRunnerViewController.swift in Sources */,
 				CEA703072005084C00FDFB89 /* UICircularProgressRingStyle.swift in Sources */,
 				CE58F4A11FD57C58009EA08F /* QUICBulkDownloadTest.swift in Sources */,
 				CED4B5201F97972500E6F86E /* TCPFileDescriptorFinder.swift in Sources */,

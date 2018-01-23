@@ -60,12 +60,22 @@ class LineChartHelper {
         chartView.legend.form = .line
     }
     
+    static func clearData(to chartView: LineChartView) {
+        let data = LineChartData()
+        data.setValueTextColor(.white)
+        data.setValueFont(.systemFont(ofSize: 9, weight: .light))
+        
+        chartView.data = data
+    }
+    
     static func setData(to chartView: LineChartView, with values: [ChartDataEntry], label: String, color: UIColor) {
         let set1 = LineChartDataSet(values: values, label: label)
         set1.axisDependency = .left
         set1.setColor(color)
         set1.lineWidth = 1.5
-        set1.drawCirclesEnabled = false
+        set1.drawCirclesEnabled = true
+        set1.setCircleColor(.black)
+        set1.circleRadius = 1
         set1.drawValuesEnabled = false
         set1.fillAlpha = 0.26
         set1.fillColor = color

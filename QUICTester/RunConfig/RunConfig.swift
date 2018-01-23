@@ -20,6 +20,7 @@ class RunConfig: NSObject, QuictrafficRunConfigProtocol {
     var notifyIDVar: String = ""
     var outputVar: String = ""
     var printBodyVar: Bool = false
+    var runTimeVar: Int = 30
     var urlVar: String
     
     init(traffic: String, url: String) {
@@ -57,6 +58,10 @@ class RunConfig: NSObject, QuictrafficRunConfigProtocol {
     
     func printBody() -> Bool {
         return printBodyVar
+    }
+    
+    func runTime() -> Int {
+        return runTimeVar
     }
     
     func url() -> String! {

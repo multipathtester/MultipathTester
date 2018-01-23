@@ -21,9 +21,15 @@
 - (NSString*)notifyID;
 - (NSString*)output;
 - (BOOL)printBody;
+- (long)runTime;
 - (NSString*)traffic;
 - (NSString*)url;
 @end
+
+/**
+ * GetStreamProgressResult gets ongoing stream delays
+ */
+FOUNDATION_EXPORT NSString* QuictrafficGetStreamProgressResult(void);
 
 /**
  * NotifyReachability change for the notifyID
@@ -52,6 +58,7 @@ FOUNDATION_EXPORT NSString* QuictrafficRun(id<QuictrafficRunConfig> runcfg);
 - (NSString*)notifyID;
 - (NSString*)output;
 - (BOOL)printBody;
+- (long)runTime;
 - (NSString*)traffic;
 - (NSString*)url;
 @end
