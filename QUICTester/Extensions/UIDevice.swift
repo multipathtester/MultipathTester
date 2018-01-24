@@ -131,12 +131,14 @@ public extension UIDevice {
         var indexToRemove = [Int]()
         // Remove link-local IPv6 addresses
         for i in 0..<addrs.count {
-            if addrs[i].starts(with: "fe80:") {
+            // Also remove site-local private IPv6 addresses
+            let addr = addrs[i]
+            if addr.starts(with: "fe80:") || addr.starts(with: "fc") || addr.starts(with: "fd") {
                 indexToRemove.append(i)
             }
         }
         // Remove indexes in reverse order, to avoid removing a wrong element if several items have to be removed
-        for r in (0..<indexToRemove.count).reversed() {
+        for r in (indexToRemove).reversed() {
             addrs.remove(at: r)
         }
         

@@ -286,16 +286,16 @@
                                         <rect key="frame" x="0.0" y="338.5" width="371" height="113.5"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </view>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Both network interfaces are ready" textAlignment="center" lineBreakMode="characterWrap" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SNq-cl-Ee0">
-                                        <rect key="frame" x="0.0" y="452" width="371" height="0.0"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Both network interfaces are ready" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SNq-cl-Ee0">
+                                        <rect key="frame" x="0.0" y="452" width="371" height="20"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5w5-8D-Mil">
-                                        <rect key="frame" x="0.0" y="452" width="371" height="100"/>
+                                        <rect key="frame" x="0.0" y="472" width="371" height="80"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="100" id="wuC-0f-28h"/>
+                                            <constraint firstAttribute="height" constant="80" id="wuC-0f-28h"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="36"/>
                                         <state key="normal" title="Start"/>
@@ -324,7 +324,17 @@
                     </view>
                     <navigationItem key="navigationItem" title="Static Tests" id="KOD-c2-f8I"/>
                     <connections>
+                        <outlet property="cellIPv4ImageView" destination="cRu-mV-9o8" id="ivL-GF-DTM"/>
+                        <outlet property="cellIPv6ImageView" destination="28R-wv-ZO6" id="iyk-mi-IRW"/>
+                        <outlet property="cellImageView" destination="SJg-BN-VCX" id="nzG-Uz-WIb"/>
+                        <outlet property="cellNameLabel" destination="cbx-Ib-WDY" id="FBW-D6-86X"/>
+                        <outlet property="cellTechLabel" destination="DV0-Kt-Api" id="GPi-80-VUh"/>
                         <outlet property="startButton" destination="5w5-8D-Mil" id="k2P-ti-ku5"/>
+                        <outlet property="summaryLabel" destination="SNq-cl-Ee0" id="gjH-jX-2sf"/>
+                        <outlet property="wifiIPv4ImageView" destination="b7B-5z-VKI" id="NVu-LQ-ION"/>
+                        <outlet property="wifiIPv6ImageView" destination="OBL-zm-Qbj" id="gfR-WM-toB"/>
+                        <outlet property="wifiImageView" destination="47j-QP-vhO" id="l2L-2I-caH"/>
+                        <outlet property="wifiNameLabel" destination="RgK-d4-L31" id="YKy-sU-a4y"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hv8-0I-o0q" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -553,16 +563,16 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7rQ-hz-5f8">
-                                        <rect key="frame" x="0.0" y="100" width="371" height="83.5"/>
+                                        <rect key="frame" x="0.0" y="100" width="371" height="90"/>
                                         <subviews>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="no_wifi" translatesAutoresizingMaskIntoConstraints="NO" id="mHo-P5-1ao">
-                                                <rect key="frame" x="0.0" y="0.0" width="83.5" height="83.5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="90" height="90"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" secondItem="mHo-P5-1ao" secondAttribute="height" multiplier="1:1" id="UPm-uo-PxF"/>
                                                 </constraints>
                                             </imageView>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kPs-Rf-nts">
-                                                <rect key="frame" x="83.5" y="0.0" width="287.5" height="83.5"/>
+                                                <rect key="frame" x="90" y="0.0" width="281" height="90"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
@@ -570,16 +580,16 @@
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Cb0-Ol-z05">
-                                        <rect key="frame" x="0.0" y="183.5" width="371" height="83"/>
+                                        <rect key="frame" x="0.0" y="190" width="371" height="90"/>
                                         <subviews>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="no_cellular" translatesAutoresizingMaskIntoConstraints="NO" id="RLh-Xo-co7">
-                                                <rect key="frame" x="0.0" y="0.0" width="83.5" height="83"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="90" height="90"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" secondItem="RLh-Xo-co7" secondAttribute="height" multiplier="1:1" id="OWy-8Y-6OT"/>
                                                 </constraints>
                                             </imageView>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0Fx-8d-bk8">
-                                                <rect key="frame" x="83.5" y="0.0" width="287.5" height="83"/>
+                                                <rect key="frame" x="90" y="0.0" width="281" height="90"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
@@ -587,16 +597,16 @@
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9V8-0f-IVy">
-                                        <rect key="frame" x="0.0" y="266.5" width="371" height="83.5"/>
+                                        <rect key="frame" x="0.0" y="280" width="371" height="90"/>
                                         <subviews>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="no_location" translatesAutoresizingMaskIntoConstraints="NO" id="PBM-7A-MSA">
-                                                <rect key="frame" x="0.0" y="0.0" width="83.5" height="83.5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="90" height="90"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" secondItem="PBM-7A-MSA" secondAttribute="height" multiplier="1:1" id="j0e-Ny-954"/>
                                                 </constraints>
                                             </imageView>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lnp-TN-vlr">
-                                                <rect key="frame" x="83.5" y="0.0" width="287.5" height="83.5"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lnp-TN-vlr">
+                                                <rect key="frame" x="90" y="0.0" width="281" height="90"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
@@ -604,15 +614,15 @@
                                         </subviews>
                                     </stackView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="You need both WiFi and cellular to perform this test." textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TxT-aS-9sp">
-                                        <rect key="frame" x="0.0" y="350" width="371" height="100"/>
+                                        <rect key="frame" x="0.0" y="370" width="371" height="100"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fcS-br-kVr">
-                                        <rect key="frame" x="0.0" y="450" width="371" height="100"/>
+                                        <rect key="frame" x="0.0" y="470" width="371" height="80"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="100" id="MpE-44-jjb"/>
+                                            <constraint firstAttribute="height" constant="80" id="MpE-44-jjb"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="36"/>
                                         <state key="normal" title="Start"/>
@@ -639,7 +649,14 @@
                     </view>
                     <navigationItem key="navigationItem" title="Mobile Tests" id="oU3-tW-uzW"/>
                     <connections>
+                        <outlet property="cellImageView" destination="RLh-Xo-co7" id="fEX-el-jzx"/>
+                        <outlet property="cellLabel" destination="0Fx-8d-bk8" id="L5G-ey-iRA"/>
+                        <outlet property="locImageView" destination="PBM-7A-MSA" id="U2F-YQ-gGz"/>
+                        <outlet property="locLabel" destination="lnp-TN-vlr" id="med-aH-afD"/>
                         <outlet property="startButton" destination="fcS-br-kVr" id="Ajf-Ke-38a"/>
+                        <outlet property="summaryLabel" destination="TxT-aS-9sp" id="zGU-cr-KmC"/>
+                        <outlet property="wifiImageView" destination="mHo-P5-1ao" id="6PQ-l1-ZLe"/>
+                        <outlet property="wifiLabel" destination="kPs-Rf-nts" id="9GN-Me-WJK"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ryB-gv-ZoV" userLabel="First Responder" sceneMemberID="firstResponder"/>
