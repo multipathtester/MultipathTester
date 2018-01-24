@@ -51,6 +51,8 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
         
         locations = []
         
+        NotificationCenter.default.post(name: Utils.TestsLaunchedNotification, object: nil, userInfo: ["startNewTestsEnabled": false])
+        
         NotificationCenter.default.addObserver(self, selector: #selector(StaticRunnerViewController.reachabilityChanged(note:)), name: .reachabilityChanged, object: nil)
         internetReachability.startNotifier()
         
@@ -129,6 +131,7 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
             Utils.sendToServer(benchmark: benchmark, tests: self.tests)
             benchmark.save()
             print("Tests done")
+            NotificationCenter.default.post(name: Utils.TestsLaunchedNotification, object: nil, userInfo: ["startNewTestsEnabled": true])
             DispatchQueue.main.async {
                 self.progress.setProgress(value: 100.0, animationDuration: 0.2) {}
                 self.navigationItem.hidesBackButton = false

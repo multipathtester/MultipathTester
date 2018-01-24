@@ -10,10 +10,19 @@ import UIKit
 import CoreLocation
 
 class StaticMainViewController: UIViewController {
-    var locationTracker = LocationTracker.sharedTracker()
+    @IBOutlet weak var startButton: UIButton?
 
+    var locationTracker = LocationTracker.sharedTracker()
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        NotificationCenter.default.addObserver(self, selector: #selector(StaticMainViewController.testsLaunched(note:)), name: Utils.TestsLaunchedNotification, object: nil)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        startButton!.isEnabled = Utils.startNewTestsEnabled
         
         NotificationCenter.default.addObserver(self, selector: #selector(StaticMainViewController.locationChanged(note:)), name: LocationTracker.LocationTrackerNotification, object: nil)
         
@@ -34,6 +43,20 @@ class StaticMainViewController: UIViewController {
         }
         for location in locations {
             print(location.description)
+        }
+    }
+    
+    @objc
+    func testsLaunched(note: Notification) {
+        let info = note.userInfo
+        guard let enabled = info!["startNewTestsEnabled"] as? Bool else {
+            return
+        }
+        Utils.startNewTestsEnabled = enabled
+        if let button = startButton {
+            DispatchQueue.main.async {
+                button.isEnabled = enabled
+            }
         }
     }
 

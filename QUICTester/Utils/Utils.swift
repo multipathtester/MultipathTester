@@ -9,6 +9,9 @@
 import UIKit
 
 class Utils {
+    static let TestsLaunchedNotification = NSNotification.Name("TestsLaunchedNotification")
+    static var startNewTestsEnabled = true
+    
     static func parse(durationString: String) -> Double {
         // Be cautious about the formatting of the durationString
         if durationString.range(of: "ms") != nil {

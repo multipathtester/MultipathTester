@@ -41,8 +41,10 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
         distanceChartView.animate(xAxisDuration: 0.01 * Double(distanceChartView.data!.entryCount))
         
         tests = [
-            QUICStreamTest(maxPathID: 255, ipVer: .any, runTime: 120)
+            QUICStreamTest(maxPathID: 255, ipVer: .any, runTime: 5)
         ]
+        
+        NotificationCenter.default.post(name: Utils.TestsLaunchedNotification, object: nil, userInfo: ["startNewTestsEnabled": false])
         
         NotificationCenter.default.addObserver(self, selector: #selector(MobileRunnerViewController.reachabilityChanged(note:)), name: .reachabilityChanged, object: nil)
         internetReachability.startNotifier()
@@ -145,6 +147,7 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
             let benchmark = Benchmark(connectivities: self.connectivities, duration: duration, locations: self.locations, mobile: true, pingMean: 0.1, pingVar: 0.05, serverName: "FR", startTime: self.startTime, testResults: testResults)
             Utils.sendToServer(benchmark: benchmark, tests: self.tests)
             benchmark.save()
+            NotificationCenter.default.post(name: Utils.TestsLaunchedNotification, object: nil, userInfo: ["startNewTestsEnabled": true])
 
             DispatchQueue.main.async {
                 self.userLabel.text = "Test completed."

@@ -323,6 +323,9 @@
                         <viewLayoutGuide key="safeArea" id="Pw6-6V-ZBW"/>
                     </view>
                     <navigationItem key="navigationItem" title="Static Tests" id="KOD-c2-f8I"/>
+                    <connections>
+                        <outlet property="startButton" destination="5w5-8D-Mil" id="k2P-ti-ku5"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hv8-0I-o0q" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -635,6 +638,9 @@
                         <viewLayoutGuide key="safeArea" id="Sl3-gD-MGB"/>
                     </view>
                     <navigationItem key="navigationItem" title="Mobile Tests" id="oU3-tW-uzW"/>
+                    <connections>
+                        <outlet property="startButton" destination="fcS-br-kVr" id="Ajf-Ke-38a"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ryB-gv-ZoV" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
