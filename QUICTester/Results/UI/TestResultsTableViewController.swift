@@ -174,6 +174,8 @@ class TestResultsTableViewController: UITableViewController {
                 detailText = ReqResResult.getTestDescription()
             case PerfResult.getTestName():
                 detailText = PerfResult.getTestDescription()
+            case StreamResult.getTestName():
+                detailText = StreamResult.getTestDescription()
             default:
                 fatalError("Unknown test name " + tableItem.title)
             }
@@ -198,6 +200,7 @@ class TestResultsTableViewController: UITableViewController {
                 BulkDownloadResult.getTestName(): [TestResult](),
                 ReqResResult.getTestName(): [TestResult](),
                 PerfResult.getTestName(): [TestResult](),
+                StreamResult.getTestName(): [TestResult](),
             ]
         }
         
@@ -212,6 +215,8 @@ class TestResultsTableViewController: UITableViewController {
                 dict[proto]![ReqResResult.getTestName()]?.append(rr)
             case let p as PerfResult:
                 dict[proto]![PerfResult.getTestName()]?.append(p)
+            case let s as StreamResult:
+                dict[proto]![StreamResult.getTestName()]?.append(s)
             default:
                 fatalError("Unknown type for TestResult...")
             }

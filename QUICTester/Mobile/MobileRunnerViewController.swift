@@ -8,7 +8,8 @@
 
 import UIKit
 import Charts
-import Quictraffic // TODO remove
+import CoreLocation
+import Quictraffic
 
 class MobileRunnerViewController: UIViewController, ChartViewDelegate {
     @IBOutlet weak var distanceChartView: LineChartView!
@@ -18,7 +19,13 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
     var tests: [QUICStreamTest] = [QUICStreamTest]()
     var runningTest: QUICStreamTest?
     var startTime: Date = Date()
+    var stopTime: Date = Date()
     var timer: Timer?
+    
+    var internetReachability: Reachability = Reachability.forInternetConnection()
+    var locationTracker: LocationTracker = LocationTracker.sharedTracker()
+    var connectivities: [Connectivity] = [Connectivity]()
+    var locations: [Location] = [Location]()
     
     var upDelays: [ChartDataEntry] = [ChartDataEntry]()
     var downDelays: [ChartDataEntry] = [ChartDataEntry]()
@@ -34,10 +41,38 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
         distanceChartView.animate(xAxisDuration: 0.01 * Double(distanceChartView.data!.entryCount))
         
         tests = [
-            QUICStreamTest(maxPathID: 255, ipVer: .any)
+            QUICStreamTest(maxPathID: 255, ipVer: .any, runTime: 120)
         ]
         
+        NotificationCenter.default.addObserver(self, selector: #selector(MobileRunnerViewController.reachabilityChanged(note:)), name: .reachabilityChanged, object: nil)
+        internetReachability.startNotifier()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(MobileRunnerViewController.locationChanged(note:)), name: LocationTracker.LocationTrackerNotification, object: nil)
+        
+        locationTracker.forceUpdate()
+        
         startTests()
+    }
+    
+    @objc
+    func reachabilityChanged(note: Notification) {
+        let reachabilityStatus = internetReachability.currentReachabilityStatus()
+        for i in 0..<tests.count {
+            QuictrafficNotifyReachability(tests[i].getNotifyID())
+        }
+        connectivities.append(Connectivity.getCurrentConnectivity(reachabilityStatus: reachabilityStatus))
+    }
+    
+    @objc
+    func locationChanged(note: Notification) {
+        let info = note.userInfo
+        guard let locations = info!["locations"] as? [CLLocation] else {
+            return
+        }
+        for cl in locations {
+            let location = Location(lon: cl.coordinate.longitude, lat: cl.coordinate.latitude, timestamp: cl.timestamp, accuracy: cl.horizontalAccuracy, altitude: cl.altitude, speed: cl.speed)
+            self.locations.append(location)
+        }
     }
     
     func updateChartData() {
@@ -77,6 +112,8 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
     }
     
     func startTests() {
+        let reachabilityStatus = internetReachability.currentReachabilityStatus()
+        connectivities.append(Connectivity.getCurrentConnectivity(reachabilityStatus: reachabilityStatus))
         startTime = Date()
         self.userLabel.text = "Please move away from your WiFi Access Point."
         self.navigationItem.hidesBackButton = true
@@ -87,6 +124,7 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
         downDelays = []
         
         DispatchQueue.global(qos: .background).async {
+            let nbTests = self.tests.count
             for t in self.tests {
                 self.runningTest = t
                 _ = t.run()
@@ -95,6 +133,18 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
             self.timer?.invalidate()
             self.timer = nil
             print("Finished!")
+
+            var testResults = [TestResult]()
+            for i in 0..<nbTests {
+                let test = self.tests[i]
+                testResults.append(test.getTestResult())
+            }
+            self.stopTime = Date()
+            let duration = self.stopTime.timeIntervalSince(self.startTime)
+            // FIXME
+            let benchmark = Benchmark(connectivities: self.connectivities, duration: duration, locations: self.locations, mobile: true, pingMean: 0.1, pingVar: 0.05, serverName: "FR", startTime: self.startTime, testResults: testResults)
+            Utils.sendToServer(benchmark: benchmark, tests: self.tests)
+            benchmark.save()
 
             DispatchQueue.main.async {
                 self.userLabel.text = "Test completed."

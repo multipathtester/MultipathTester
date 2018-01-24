@@ -9,7 +9,6 @@
 import CoreLocation
 import UIKit
 import Quictraffic
-import os.log
 
 class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
@@ -49,6 +48,8 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
             QUICPerfTest(maxPathID: 0, ipVer: .v6),
             QUICPerfTest(maxPathID: 255, ipVer: .any),
         ]
+        
+        locations = []
         
         NotificationCenter.default.addObserver(self, selector: #selector(StaticRunnerViewController.reachabilityChanged(note:)), name: .reachabilityChanged, object: nil)
         internetReachability.startNotifier()
@@ -90,9 +91,8 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
     }
     
     func startTests() {
-        locations = []
-        let reachabilityStatus = internetReachability.currentReachabilityStatus()
         var connectivities = [Connectivity]()
+        let reachabilityStatus = internetReachability.currentReachabilityStatus()
         connectivities.append(Connectivity.getCurrentConnectivity(reachabilityStatus: reachabilityStatus))
         startTime = Date()
         self.navigationItem.hidesBackButton = true
@@ -127,7 +127,7 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
             // FIXME
             let benchmark = Benchmark(connectivities: connectivities, duration: duration, locations: self.locations, mobile: false, pingMean: 0.1, pingVar: 0.05, serverName: "FR", startTime: self.startTime, testResults: testResults)
             Utils.sendToServer(benchmark: benchmark, tests: self.tests)
-            self.saveBenchmark(benchmark: benchmark)
+            benchmark.save()
             print("Tests done")
             DispatchQueue.main.async {
                 self.progress.setProgress(value: 100.0, animationDuration: 0.2) {}
@@ -135,32 +135,8 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
             }
         }
     }
-    
-    // MARK: Private
-    private func saveBenchmark(benchmark: Benchmark) {
-        var benchmarks: [Benchmark] = [Benchmark]()
-        if let benchmarksOk = Benchmark.loadBenchmarks() {
-            benchmarks = benchmarksOk
-        }
-        // Add the new result at the top of the list
-        benchmarks = [benchmark] + benchmarks
-        // And save the results
-        do {
-            let data = try PropertyListEncoder().encode(benchmarks)
-            let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(data, toFile: Benchmark.ArchiveURL.path)
-            if isSuccessfulSave {
-                os_log("Benchmarks successfully saved.", log: OSLog.default, type: .debug)
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "UpdateResult"), object: nil)
-            } else {
-                os_log("Failed to save benchmarks...", log: OSLog.default, type: .error)
-            }
-        } catch {
-            os_log("Failed to save benchmarks...", log: OSLog.default, type: .error)
-        }
-    }
-    
-    // MARK: Protocols
-    
+
+    // MARK: Protocols    
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }

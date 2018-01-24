@@ -55,6 +55,9 @@ class TestResultInstancesTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if indexPath.section == 0 {
+            return CGFloat(20.0 * (Double(detailText!.count) / 50.0)) + 20.0
+        }
         return 60.0
     }
     

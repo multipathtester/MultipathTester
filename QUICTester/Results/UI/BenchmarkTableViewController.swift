@@ -69,7 +69,11 @@ class BenchmarkTableViewController: UITableViewController {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd MMM HH:mm"
         dateFormatter.locale = .current
-        cell.testTypeLabel.text = "Static Tests"
+        if benchmark.mobile {
+            cell.testTypeLabel.text = "Mobile Tests"
+        } else {
+            cell.testTypeLabel.text = "Static Tests"
+        }
         cell.startTimeLabel.text = dateFormatter.string(from: benchmark.startTime)
         
         let bundle = Bundle(for: type(of: self))

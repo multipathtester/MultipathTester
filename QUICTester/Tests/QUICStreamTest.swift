@@ -13,11 +13,13 @@ class QUICStreamTest: BaseTest, Test {
     // MARK: Properties
     var ipVer: IPVersion
     var maxPathID: UInt8
+    var runTime: Int
     var url: String
     
-    init(maxPathID: UInt8, ipVer: IPVersion) {
+    init(maxPathID: UInt8, ipVer: IPVersion, runTime: Int) {
         self.ipVer = ipVer
         self.maxPathID = maxPathID
+        self.runTime = runTime
         var baseURL: String = "traffic.multipath-quic.org"
         var suffix: String
         switch ipVer {
@@ -40,7 +42,7 @@ class QUICStreamTest: BaseTest, Test {
         // Prepare the run configuration
         runCfg.maxPathIDVar = Int(maxPathID)
         runCfg.logPeriodMsVar = 100
-        runCfg.runTimeVar = 10
+        runCfg.runTimeVar = runTime
     }
     
     
@@ -60,11 +62,11 @@ class QUICStreamTest: BaseTest, Test {
         return [
             "url": url,
             "port": "5202",
-            "chunk_client_size": "2000",
-            "chunk_server_size": "2000",
-            "duration": "14.0",
-            "interval_client_time": "0.1",
-            "interval_server_time": "0.1",
+            "upload_chunk_size": "2000",
+            "download_chunk_size": "2000",
+            "duration": String(runTime) + ".0",
+            "upload_interval_time": "0.1",
+            "download_interval_time": "0.1",
         ]
     }
     
@@ -76,17 +78,26 @@ class QUICStreamTest: BaseTest, Test {
     }
     
     func getTestResult() -> TestResult {
-        let delays = result["delays"] as! [Int64]
-        var maxDelay = Int64(-1)
-        if delays.count > 0 {
-            maxDelay = delays.max()!
+        
+        let upDelays = result["up_delays"] as! [DelayData]
+        let downDelays = result["down_delays"] as! [DelayData]
+        var maxUpDelay = DelayData(time: -1, delayUs: 0)
+        if upDelays.count > 0 {
+            maxUpDelay = upDelays.max { a, b in a.delayUs < b.delayUs }!
         }
-        // FIXME
-        // TODO
+        var maxDownDelay = DelayData(time: -1, delayUs: 0)
+        if downDelays.count > 0 {
+            maxDownDelay = downDelays.max { a, b in a.delayUs < b.delayUs }!
+        }
+        let success = result["success"] as! Bool
+        var resultText = ""
+        if success {
+            resultText = "Maximum upload delay of " + String(Double(maxUpDelay.delayUs) / 1000.0) + " ms, maximum download delay of " + String(Double(maxDownDelay.delayUs) / 1000.0) + " ms"
+        } else {
+            resultText = result["error_msg"] as! String
+        }
         let duration = Double(result["duration"] as! String)!
-        let missed = result["missed"] as! Int64
-        let resultText = "Maximum delay of " + String(maxDelay) + " ms, " + String(missed) + " missed"
-        return ReqResResult(name: getDescription(), proto: getProtocol(), success: true, result: resultText, duration: duration, startTime: startTime, waitTime: 0.0, missed: missed, maxDelay: maxDelay, delays: delays)
+        return StreamResult(name: getDescription(), proto: getProtocol(), success: true, result: resultText, duration: duration, startTime: startTime, waitTime: 0.0, upDelays: upDelays, downDelays: downDelays, errorMsg: result["error_msg"] as! String)
     }
     
     func run() -> [String : Any] {

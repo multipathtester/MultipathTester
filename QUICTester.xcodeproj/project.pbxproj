@@ -32,6 +32,7 @@
 		CE29B9E51FD802FD0049A105 /* CWinData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE29B9E41FD802FD0049A105 /* CWinData.swift */; };
 		CE29B9E91FD833610049A105 /* QUICReqResTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE29B9E81FD833610049A105 /* QUICReqResTest.swift */; };
 		CE29B9EB1FD838340049A105 /* ReqResResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE29B9EA1FD838340049A105 /* ReqResResult.swift */; };
+		CE4B90472018711100E71C5E /* StreamResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4B90462018711100E71C5E /* StreamResult.swift */; };
 		CE58F46B1FC3463F009EA08F /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = CE58F46A1FC34631009EA08F /* libxml2.tbd */; };
 		CE58F46D1FC34651009EA08F /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE58F46C1FC3464A009EA08F /* CFNetwork.framework */; };
 		CE58F46F1FC34660009EA08F /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE58F46E1FC34659009EA08F /* MobileCoreServices.framework */; };
@@ -171,6 +172,7 @@
 		CE29B9E41FD802FD0049A105 /* CWinData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CWinData.swift; sourceTree = "<group>"; };
 		CE29B9E81FD833610049A105 /* QUICReqResTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QUICReqResTest.swift; sourceTree = "<group>"; };
 		CE29B9EA1FD838340049A105 /* ReqResResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReqResResult.swift; sourceTree = "<group>"; };
+		CE4B90462018711100E71C5E /* StreamResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamResult.swift; sourceTree = "<group>"; };
 		CE58F46A1FC34631009EA08F /* libxml2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.tbd; path = usr/lib/libxml2.tbd; sourceTree = SDKROOT; };
 		CE58F46C1FC3464A009EA08F /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		CE58F46E1FC34659009EA08F /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
@@ -370,6 +372,7 @@
 				CE58F4921FD16A97009EA08F /* ConnectivityResult.swift */,
 				CE29B9E01FD6AE2F0049A105 /* PerfResult.swift */,
 				CE29B9EA1FD838340049A105 /* ReqResResult.swift */,
+				CE4B90462018711100E71C5E /* StreamResult.swift */,
 			);
 			path = Results;
 			sourceTree = "<group>";
@@ -774,6 +777,7 @@
 				CE58F4801FCEA594009EA08F /* QUICConnectivityTest.swift in Sources */,
 				CE58F4951FD188DE009EA08F /* BenchmarkTableViewCell.swift in Sources */,
 				CEA702FC2004CD4200FDFB89 /* MultiLineChartHelper.swift in Sources */,
+				CE4B90472018711100E71C5E /* StreamResult.swift in Sources */,
 				CE2685162008E9E700462C6E /* MultiLineChartEntries.swift in Sources */,
 				CE58F4971FD18E64009EA08F /* BaseTest.swift in Sources */,
 				CEDAF24F1F5FE8E000310153 /* AppDelegate.swift in Sources */,

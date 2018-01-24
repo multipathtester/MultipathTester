@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import os.log
 
 class Benchmark: NSObject, Codable {
     // MARK: Properties
@@ -153,6 +154,29 @@ class Benchmark: NSObject, Codable {
             "software_name": softwareName,
             "software_version": softwareVersion,
         ]
+    }
+    
+    // MARK: Save
+    func save() {
+        var benchmarks: [Benchmark] = [Benchmark]()
+        if let benchmarksOk = Benchmark.loadBenchmarks() {
+            benchmarks = benchmarksOk
+        }
+        // Add the new result at the top of the list
+        benchmarks = [self] + benchmarks
+        // And save the results
+        do {
+            let data = try PropertyListEncoder().encode(benchmarks)
+            let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(data, toFile: Benchmark.ArchiveURL.path)
+            if isSuccessfulSave {
+                os_log("Benchmarks successfully saved.", log: OSLog.default, type: .debug)
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "UpdateResult"), object: nil)
+            } else {
+                os_log("Failed to save benchmarks...", log: OSLog.default, type: .error)
+            }
+        } catch {
+            os_log("Failed to save benchmarks...", log: OSLog.default, type: .error)
+        }
     }
     
     // MARK: Utils

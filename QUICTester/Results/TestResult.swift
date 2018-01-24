@@ -15,6 +15,7 @@ enum TestResultType: String, Codable {
     case bulkDownload
     case reqRes
     case perf
+    case stream
     
     var metatype: TestResult.Type {
         switch self {
@@ -26,6 +27,8 @@ enum TestResultType: String, Codable {
             return ReqResResult.self
         case .perf:
             return PerfResult.self
+        case .stream:
+            return StreamResult.self
         }
     }
 }
