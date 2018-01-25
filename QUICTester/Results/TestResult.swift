@@ -47,4 +47,5 @@ protocol TestResult: Codable {
     func resultsToJSONDict() -> [String: Any]
     func toJSONDict(benchmarkUUID: String, order: Int, protoInfo: [[String: Any]], config: [String: Any]) -> [String: Any]
     func succeeded() -> Bool
+    func setFailedByNetworkChange()
 }

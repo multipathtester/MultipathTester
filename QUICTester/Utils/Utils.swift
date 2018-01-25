@@ -180,7 +180,7 @@ class Utils {
             connectivities.append(connectivity.toJSONDict(benchmarkUUID: benchmarkUUID))
         }
         Utils.sendConnectivitiesToServer(connectivities: connectivities)
-        for i in 0..<tests.count {
+        for i in 0..<benchmark.testResults.count {
             let testResult = benchmark.testResults[i]
             let test = tests[i]
             let protoInfo = test.getProtoInfo()

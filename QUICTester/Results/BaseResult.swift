@@ -82,4 +82,9 @@ class BaseResult: Codable {
     func succeeded() -> Bool {
         return success
     }
+    
+    func setFailedByNetworkChange() {
+        success = false
+        result = "Network changed during test"
+    }
 }

@@ -20,10 +20,16 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
     
     var tests: [Test] = [Test]()
     var runningIndex: Int = -1
+    var stoppedIndex: Int = -1
     
     var internetReachability: Reachability = Reachability.forInternetConnection()
     var locationTracker: LocationTracker = LocationTracker.sharedTracker()
     var locations: [Location] = []
+    
+    // Reachability does not warn about the cellular state if WiFi is on...
+    var wasCellularOn: Bool = false
+    var cellTimer: Timer?
+    var stoppedTests: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -72,12 +78,21 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
         // Dispose of any resources that can be recreated.
     }
     
+    func stopTests() {
+        self.stoppedTests = true
+        self.stoppedIndex = self.runningIndex
+        let alert = UIAlertController(title: "Test interrupted!", message: "The tests stopped because network conditions changed. If you want to evaluate mobile cases, please try mobile tests.", preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
     @objc
     func reachabilityChanged(note: Notification) {
         print("Reachability changed! In static tests, this should abort the test!")
         for i in 0..<tests.count {
             QuictrafficNotifyReachability(tests[i].getNotifyID())
         }
+        stopTests()
     }
     
     @objc
@@ -95,41 +110,58 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
     func startTests() {
         var connectivities = [Connectivity]()
         let reachabilityStatus = internetReachability.currentReachabilityStatus()
+        wasCellularOn = UIDevice.current.hasCellularConnectivity
         connectivities.append(Connectivity.getCurrentConnectivity(reachabilityStatus: reachabilityStatus))
         startTime = Date()
         self.navigationItem.hidesBackButton = true
+        cellTimer = Timer(timeInterval: 0.5, target: self, selector: #selector(StaticRunnerViewController.probeCellular), userInfo: nil, repeats: true)
+        RunLoop.current.add(cellTimer!, forMode: .commonModes)
         print("We start the tests")
         
         DispatchQueue.global(qos: .background).async {
             let nbTests = self.tests.count
+            var testDones = 0
             for i in 0..<nbTests {
                 let test = self.tests[i]
-                self.runningIndex = i
                 DispatchQueue.main.async {
                     self.progress.setProgress(value: CGFloat((Float(i) / Float(nbTests) * 100.0)), animationDuration: 0.0) {}
+                    self.runningIndex = i
                     self.testsTable.reloadData()
                     self.progress.setProgress(value: CGFloat((Float(i + 1) / Float(nbTests) * 100.0) - 1.0), animationDuration: 10.0) {
                         print("Done animating!")
                         // Do anything your heart desires...
                     }
                 }
+                if self.stoppedTests {
+                    break
+                }
                 _ = test.run()
+                testDones += 1
+                if self.stoppedTests {
+                    break
+                }
             }
             self.stopTime = Date()
-            self.runningIndex = nbTests
+            self.runningIndex = testDones
+            var testResults = [TestResult]()
+            for i in 0..<testDones {
+                let test = self.tests[i]
+                let result = test.getTestResult()
+                if self.stoppedTests && i == testDones - 1 {
+                    result.setFailedByNetworkChange()
+                }
+                testResults.append(result)
+            }
             DispatchQueue.main.async {
                 self.testsTable.reloadData()
-            }
-            var testResults = [TestResult]()
-            for i in 0..<nbTests {
-                let test = self.tests[i]
-                testResults.append(test.getTestResult())
             }
             let duration = self.stopTime.timeIntervalSince(self.startTime)
             // FIXME
             let benchmark = Benchmark(connectivities: connectivities, duration: duration, locations: self.locations, mobile: false, pingMean: 0.1, pingVar: 0.05, serverName: "FR", startTime: self.startTime, testResults: testResults)
             Utils.sendToServer(benchmark: benchmark, tests: self.tests)
             benchmark.save()
+            self.cellTimer?.invalidate()
+            self.cellTimer = nil
             print("Tests done")
             NotificationCenter.default.post(name: Utils.TestsLaunchedNotification, object: nil, userInfo: ["startNewTestsEnabled": true])
             DispatchQueue.main.async {
@@ -166,20 +198,28 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
         let runningTest = UIImage(named: "running_test", in: bundle, compatibleWith: self.traitCollection)
         let comingTest = UIImage(named: "blank", in: bundle, compatibleWith: self.traitCollection)
         
-        if indexPath.row == self.runningIndex {
+        if indexPath.row == self.runningIndex && !stoppedTests {
             cell.resultImageView.image = runningTest
         } else if indexPath.row < self.runningIndex {
             let result = test.getTestResult()
-            if result.getResult() == "Failed" {
-                cell.resultImageView.image = failedTest
-            } else {
+            if result.succeeded() && indexPath.row != stoppedIndex {
                 cell.resultImageView.image = okTest
+            } else {
+                cell.resultImageView.image = failedTest
             }
         } else {
             cell.resultImageView.image = comingTest
         }
         
         return cell
+    }
+    
+    @objc
+    func probeCellular() {
+        let cellStatus = UIDevice.current.hasCellularConnectivity
+        if cellStatus != wasCellularOn {
+            stopTests()
+        }
     }
     
 

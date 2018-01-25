@@ -22,6 +22,10 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
     var stopTime: Date = Date()
     var timer: Timer?
     
+    // Reachability does not warn about the cellular state if WiFi is on...
+    var wasCellularOn: Bool = false
+    var cellTimer: Timer?
+    
     var internetReachability: Reachability = Reachability.forInternetConnection()
     var locationTracker: LocationTracker = LocationTracker.sharedTracker()
     var connectivities: [Connectivity] = [Connectivity]()
@@ -115,12 +119,15 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
     
     func startTests() {
         let reachabilityStatus = internetReachability.currentReachabilityStatus()
+        wasCellularOn = UIDevice.current.hasCellularConnectivity
         connectivities.append(Connectivity.getCurrentConnectivity(reachabilityStatus: reachabilityStatus))
         startTime = Date()
         self.userLabel.text = "Please move away from your WiFi Access Point."
         self.navigationItem.hidesBackButton = true
         timer = Timer(timeInterval: 0.2, target: self, selector: #selector(MobileRunnerViewController.getDelays), userInfo: nil, repeats: true)
         RunLoop.current.add(timer!, forMode: .commonModes)
+        cellTimer = Timer(timeInterval: 0.5, target: self, selector: #selector(MobileRunnerViewController.probeCellular), userInfo: nil, repeats: true)
+        RunLoop.current.add(cellTimer!, forMode: .commonModes)
         print("We start mobility!")
         upDelays = []
         downDelays = []
@@ -147,6 +154,8 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
             let benchmark = Benchmark(connectivities: self.connectivities, duration: duration, locations: self.locations, mobile: true, pingMean: 0.1, pingVar: 0.05, serverName: "FR", startTime: self.startTime, testResults: testResults)
             Utils.sendToServer(benchmark: benchmark, tests: self.tests)
             benchmark.save()
+            self.cellTimer?.invalidate()
+            self.cellTimer = nil
             NotificationCenter.default.post(name: Utils.TestsLaunchedNotification, object: nil, userInfo: ["startNewTestsEnabled": true])
 
             DispatchQueue.main.async {
@@ -173,6 +182,17 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
         downDelays += newDownValues
         
         self.updateDelays()
+    }
+    
+    @objc
+    func probeCellular() {
+        let cellStatus = UIDevice.current.hasCellularConnectivity
+        if cellStatus != wasCellularOn {
+            wasCellularOn = cellStatus
+            let reachabilityStatus = internetReachability.currentReachabilityStatus()
+            let conn = Connectivity.getCurrentConnectivity(reachabilityStatus: reachabilityStatus)
+            connectivities.append(conn)
+        }
     }
     
 
