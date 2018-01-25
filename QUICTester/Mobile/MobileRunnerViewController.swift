@@ -21,6 +21,7 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
     var startTime: Date = Date()
     var stopTime: Date = Date()
     var timer: Timer?
+    var completed: Bool = false
     
     // Reachability does not warn about the cellular state if WiFi is on...
     var wasCellularOn: Bool = false
@@ -29,7 +30,11 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
     var internetReachability: Reachability = Reachability.forInternetConnection()
     var locationTracker: LocationTracker = LocationTracker.sharedTracker()
     var connectivities: [Connectivity] = [Connectivity]()
+    
     var locations: [Location] = [Location]()
+    var initialLocation: CLLocation?
+    
+    var distances: [ChartDataEntry] = [ChartDataEntry]()
     
     var upDelays: [ChartDataEntry] = [ChartDataEntry]()
     var downDelays: [ChartDataEntry] = [ChartDataEntry]()
@@ -40,9 +45,6 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
         // Do any additional setup after loading the view.
         LineChartHelper.initialize(chartView: distanceChartView, delegate: self, xValueFormatter: DateValueFormatter())
         LineChartHelper.initialize(chartView: delaysChartView, delegate: self, xValueFormatter: DateValueFormatter())
-        
-        self.updateChartData()
-        distanceChartView.animate(xAxisDuration: 0.01 * Double(distanceChartView.data!.entryCount))
         
         tests = [
             QUICStreamTest(maxPathID: 255, ipVer: .any, runTime: 5)
@@ -55,6 +57,8 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
         
         NotificationCenter.default.addObserver(self, selector: #selector(MobileRunnerViewController.locationChanged(note:)), name: LocationTracker.LocationTrackerNotification, object: nil)
         
+        // This starts here, for avoiding old location info
+        startTime = Date()
         locationTracker.forceUpdate()
         
         startTests()
@@ -76,37 +80,38 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
             return
         }
         for cl in locations {
+            if cl.timestamp.compare(startTime) == .orderedAscending {
+                // Old info, don't retain it
+                continue
+            }
+            if self.locations.count == 0 {
+                self.initialLocation = cl
+            }
+            let meters = cl.distance(from: self.initialLocation!)
+            self.distances.append(ChartDataEntry(x: cl.timestamp.timeIntervalSince1970, y: meters))
             let location = Location(lon: cl.coordinate.longitude, lat: cl.coordinate.latitude, timestamp: cl.timestamp, accuracy: cl.horizontalAccuracy, altitude: cl.altitude, speed: cl.speed)
             self.locations.append(location)
         }
-    }
-    
-    func updateChartData() {
-        self.setDataCount(Int(3), range: 30)
-    }
-    
-    func setDataCount(_ count: Int, range: UInt32) {
-        let now = Date().timeIntervalSince1970
-        let minuteSeconds: TimeInterval = 60
-        
-        let from = now - (Double(count) / 2) * minuteSeconds
-        let to = now + (Double(count) / 2) * minuteSeconds
-        
-        let values2 = stride(from: from, to: to, by: 1).map { (x) -> ChartDataEntry in
-            let y = arc4random_uniform(range) + 50
-            return ChartDataEntry(x: x, y: Double(y))
+        if !completed {
+            self.updateDistances()
         }
-        
-        LineChartHelper.setData(to: distanceChartView, with: values2, label: "Distance", color: UIColor(red: 51/255, green: 181/255, blue: 229/255, alpha: 1))
+    }
+    
+    func updateDistances() {
+        LineChartHelper.clearData(to: distanceChartView)
+        if distances.count > 0 {
+            LineChartHelper.setData(to: distanceChartView, with: distances, label: "Distance from starting point (m)", color: UIColor(red: 0.0, green: 0.0, blue: 1.0, alpha: 1.0), mode: .cubicBezier)
+        }
+        distanceChartView.notifyDataSetChanged()
     }
     
     func updateDelays() {
         LineChartHelper.clearData(to: delaysChartView)
         if upDelays.count > 0 {
-            LineChartHelper.setData(to: delaysChartView, with: upDelays, label: "Delays upload (ms)", color: UIColor(red: 0.0, green: 0.0, blue: 1.0, alpha: 1.0))
+            LineChartHelper.setData(to: delaysChartView, with: upDelays, label: "Delays upload (ms)", color: UIColor(red: 0.0, green: 0.0, blue: 1.0, alpha: 1.0), mode: .linear)
         }
         if downDelays.count > 0 {
-            LineChartHelper.setData(to: delaysChartView, with: downDelays, label: "Delays download (ms)", color: UIColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0))
+            LineChartHelper.setData(to: delaysChartView, with: downDelays, label: "Delays download (ms)", color: UIColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0), mode: .linear)
         }
         
         delaysChartView.notifyDataSetChanged()
@@ -148,6 +153,7 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
                 let test = self.tests[i]
                 testResults.append(test.getTestResult())
             }
+            self.completed = true
             self.stopTime = Date()
             let duration = self.stopTime.timeIntervalSince(self.startTime)
             // FIXME

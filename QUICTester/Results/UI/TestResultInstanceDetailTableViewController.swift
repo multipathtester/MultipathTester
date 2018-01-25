@@ -77,7 +77,7 @@ class TestResultInstanceDetailTableViewController: UITableViewController, ChartV
             case .lineChartEntries:
                 let lineChartEntries = chartValues[indexPath.row] as! LineChartEntries
                 LineChartHelper.initialize(chartView: cell.chart, delegate: self, xValueFormatter: lineChartEntries.xValueFormatter)
-                LineChartHelper.setData(to: cell.chart, with: lineChartEntries.data, label: lineChartEntries.dataLabel, color: UIColor(red: 51/255, green: 181/255, blue: 229/255, alpha: 1))
+                LineChartHelper.setData(to: cell.chart, with: lineChartEntries.data, label: lineChartEntries.dataLabel, color: UIColor(red: 51/255, green: 181/255, blue: 229/255, alpha: 1), mode: .linear)
                 cell.chart.animate(xAxisDuration: 2)
                 cell.xAxisTitleLabel.text = lineChartEntries.xLabel
                 // Rotate Y axis
@@ -92,7 +92,7 @@ class TestResultInstanceDetailTableViewController: UITableViewController, ChartV
                 let multiLineChartEntries = chartValues[indexPath.row] as! MultiLineChartEntries
                 LineChartHelper.initialize(chartView: cell.chart, delegate: self, xValueFormatter: DateValueFormatter())
                 for (index, k) in multiLineChartEntries.dataLines.keys.enumerated() {
-                    LineChartHelper.setData(to: cell.chart, with: multiLineChartEntries.dataLines[k]!, label: k, color: colors[index])
+                    LineChartHelper.setData(to: cell.chart, with: multiLineChartEntries.dataLines[k]!, label: k, color: colors[index], mode: .linear)
                 }
                 cell.chart.animate(xAxisDuration: 2)
                 cell.xAxisTitleLabel.text = multiLineChartEntries.xLabel

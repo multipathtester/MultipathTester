@@ -68,8 +68,9 @@ class LineChartHelper {
         chartView.data = data
     }
     
-    static func setData(to chartView: LineChartView, with values: [ChartDataEntry], label: String, color: UIColor) {
+    static func setData(to chartView: LineChartView, with values: [ChartDataEntry], label: String, color: UIColor, mode: LineChartDataSet.Mode) {
         let set1 = LineChartDataSet(values: values, label: label)
+        set1.mode = mode
         set1.axisDependency = .left
         set1.setColor(color)
         set1.lineWidth = 1.5
