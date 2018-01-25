@@ -854,7 +854,8 @@
                                     <outlet property="pingResultsLabel" destination="ARW-WZ-SBn" id="vOz-WB-WIX"/>
                                     <outlet property="quicResultsLabel" destination="pVi-od-VrU" id="sKm-Ii-AaI"/>
                                     <outlet property="startTimeLabel" destination="N7d-EN-kYk" id="dJz-o4-syg"/>
-                                    <outlet property="tcpResultsLabel" destination="LEj-UG-C8D" id="vzf-il-d3m"/>
+                                    <outlet property="tcpLabel" destination="a5b-2g-ciP" id="jsW-DJ-dYU"/>
+                                    <outlet property="tcpResultsLabel" destination="LEj-UG-C8D" id="bYs-QF-fX5"/>
                                     <outlet property="testTypeLabel" destination="e9L-0Y-OcN" id="Zj9-mb-1aQ"/>
                                     <segue destination="teT-Yb-cvg" kind="show" identifier="ShowBenchmarkSummary" id="1nL-Lu-9Pr"/>
                                 </connections>

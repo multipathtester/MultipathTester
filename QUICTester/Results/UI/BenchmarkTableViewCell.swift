@@ -16,6 +16,7 @@ class BenchmarkTableViewCell: UITableViewCell {
     @IBOutlet weak var tcpResultsLabel: UILabel!
     @IBOutlet weak var quicResultsLabel: UILabel!
     @IBOutlet weak var pingResultsLabel: UILabel!
+    @IBOutlet weak var tcpLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()

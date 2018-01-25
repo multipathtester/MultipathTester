@@ -62,6 +62,10 @@ class TestResultsTableViewController: UITableViewController {
         guard let _ = testResults else {
             return 0
         }
+        if items.keys.count == 1 {
+            let key = items.keys.first
+            return items[key!]!.count
+        }
         return items[sortedSections[section]]!.count
     }
 
@@ -71,7 +75,13 @@ class TestResultsTableViewController: UITableViewController {
             fatalError("The dequeued cell is not an instance of TestResultsTableViewCell.")
         }
         
-        let sectionName = sortedSections[indexPath.section]
+        var sectionName: String = ""
+        if items.keys.count == 1 {
+            sectionName = items.keys.first!
+        } else {
+            sectionName = sortedSections[indexPath.section]
+        }
+        
         let tableItem = items[sectionName]![indexPath.row]
         
         // Fetches the appropriate testResult for the data source layout
@@ -92,6 +102,9 @@ class TestResultsTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if items.keys.count == 1 {
+            return items.keys.first
+        }
         return sortedSections[section]
     }
     
@@ -161,7 +174,12 @@ class TestResultsTableViewController: UITableViewController {
                 fatalError("The selected cell is not being displayed by the table")
             }
             
-            let sectionName = sortedSections[indexPath.section]
+            var sectionName: String = ""
+            if items.keys.count == 1 {
+                sectionName = items.keys.first!
+            } else {
+                sectionName = sortedSections[indexPath.section]
+            }
             let tableItem = items[sectionName]![indexPath.row]
             
             var detailText: String = ""
@@ -190,10 +208,7 @@ class TestResultsTableViewController: UITableViewController {
     
     // MARK: Private
     func getTableDict() -> [String: [String: [TestResult]]] {
-        var dict = [
-            "TCP": [String: [TestResult]](),
-            "QUIC": [String: [TestResult]](),
-        ]
+        var dict = [String: [String: [TestResult]]]()
         for k in dict.keys {
             dict[k] = [
                 ConnectivityResult.getTestName(): [TestResult](),
@@ -206,20 +221,14 @@ class TestResultsTableViewController: UITableViewController {
         
         for t in testResults! {
             let proto = t.getProtocol().main
-            switch t {
-            case let cr as ConnectivityResult:
-                dict[proto]![ConnectivityResult.getTestName()]?.append(cr)
-            case let bd as BulkDownloadResult:
-                dict[proto]![BulkDownloadResult.getTestName()]?.append(bd)
-            case let rr as ReqResResult:
-                dict[proto]![ReqResResult.getTestName()]?.append(rr)
-            case let p as PerfResult:
-                dict[proto]![PerfResult.getTestName()]?.append(p)
-            case let s as StreamResult:
-                dict[proto]![StreamResult.getTestName()]?.append(s)
-            default:
-                fatalError("Unknown type for TestResult...")
+            if dict[proto] == nil {
+                dict[proto] = [String: [TestResult]]()
             }
+            let testName = type(of: t).getTestName()
+            if dict[proto]![testName] == nil {
+                dict[proto]![testName] = [TestResult]()
+            }
+            dict[proto]![testName]!.append(t)
         }
 
         return dict

@@ -99,7 +99,9 @@ class BenchmarkTableViewController: UITableViewController {
             cell.networkImageView.image = blank
         }
         
-        cell.tcpResultsLabel.text = "0/0"
+        // TODO when TCP tests will be present
+        cell.tcpLabel.text = ""
+        cell.tcpResultsLabel.text = ""
         
         let testCount = benchmark.testResults.count
         var testSucceeded = 0
