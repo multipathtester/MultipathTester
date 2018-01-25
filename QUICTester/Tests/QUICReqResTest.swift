@@ -81,12 +81,16 @@ class QUICReqResTest: BaseTest, Test {
         if delays.count > 0 {
             maxDelay = delays.max()!
         }
-        // FIXME
-        // TODO
         let duration = Double(result["duration"] as! String)!
         let missed = result["missed"] as! Int64
-        let resultText = "Maximum delay of " + String(maxDelay) + " ms, " + String(missed) + " missed"
-        return ReqResResult(name: getDescription(), proto: getProtocol(), success: true, result: resultText, duration: duration, startTime: startTime, waitTime: 0.0, missed: missed, maxDelay: maxDelay, delays: delays)
+        let success = result["success"] as! Bool
+        var resultText = ""
+        if success {
+            resultText = "Maximum delay of " + String(maxDelay) + " ms."
+        } else {
+            resultText = result["error_msg"] as! String
+        }
+        return ReqResResult(name: getDescription(), proto: getProtocol(), success: success, result: resultText, duration: duration, startTime: startTime, waitTime: 0.0, missed: missed, maxDelay: maxDelay, delays: delays)
     }
     
     func run() -> [String : Any] {
@@ -100,6 +104,8 @@ class QUICReqResTest: BaseTest, Test {
                 "delays": [],
                 "missed": Int64(35),
                 "duration": "-1.0",
+                "error_msg": lines[0],
+                "success": false,
             ]
             return result
         }
@@ -110,7 +116,8 @@ class QUICReqResTest: BaseTest, Test {
         result = [
             "delays": delays,
             "missed": Int64(missed),
-            "duration": String(format: "%.9f", 14.0),
+            "duration": String(format: "%.9f", 14.0), // FIXME
+            "success": true,
         ]
         return result
     }

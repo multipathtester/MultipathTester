@@ -63,14 +63,13 @@ class QUICConnectivityTest: BaseTest, Test {
     }
     
     func getTestResult() -> TestResult {
-        // FIXME should check if result is ready
-        // TODO update
-        return ConnectivityResult(name: getDescription(), proto: getProtocol(), success: result["success"] as! Bool, duration: Double(result["duration"] as! String)!, startTime: startTime, waitTime: 0.0)
+        return ConnectivityResult(name: getDescription(), proto: getProtocol(), success: result["success"] as! Bool, result: result["error_msg"] as! String, duration: Double(result["duration"] as! String)!, startTime: startTime, waitTime: 0.0)
     }
     
     func run() -> [String:Any] {
         startTime = Date()
         var success = false
+        var resultMsg = ""
         let durationString = QuictrafficRun(runCfg)
         do {
             let text = try String(contentsOf: outFileURL, encoding: .utf8)
@@ -78,11 +77,16 @@ class QUICConnectivityTest: BaseTest, Test {
             for line in lines {
                 if line.contains("It works!") {
                     success = true
+                    resultMsg = "The server is reachable."
+                }
+                if line.contains("ERROR") {
+                    resultMsg = line.components(separatedBy: "ERROR: ")[1]
                 }
             }
         } catch { print("Nope...") }
         result = [
             "duration": String(format: "%.9f", Utils.parse(durationString: durationString!)),
+            "error_msg": resultMsg,
             "success": success,
         ]
         return result

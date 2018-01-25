@@ -90,23 +90,34 @@ class QUICBulkDownloadTest: BaseTest, Test {
                 rcvBytesDatas.append(RcvBytesData(time: time, rcvBytes: rcvbytes))
             }
         }
-        // FIXME
-        // TODO
-        return BulkDownloadResult(name: getDescription(), proto: getProtocol(), duration: Double(result["duration"] as! String)!, startTime: startTime, waitTime: 0.0, rcvBytesDatas: rcvBytesDatas)
+        var resultMsg = result["error_msg"] as! String
+        let duration = Double(result["duration"] as! String)!
+        let success = result["success"] as! Bool
+        if success {
+            resultMsg = String(format: "Completed in %.3f s", duration)
+        }
+        return BulkDownloadResult(name: getDescription(), proto: getProtocol(), success: success, result: resultMsg, duration: duration, startTime: startTime, waitTime: 0.0, rcvBytesDatas: rcvBytesDatas)
     }
     
     func run() -> [String : Any] {
         startTime = Date()
+        var success = true
+        var errorMsg = ""
         let durationString = QuictrafficRun(runCfg)
         do {
             let text = try String(contentsOf: outFileURL, encoding: .utf8)
             let lines = text.components(separatedBy: .newlines)
             for line in lines {
-                print(line)
+                if line.contains("ERROR") {
+                    success = false
+                    errorMsg = line.components(separatedBy: "ERROR: ")[1]
+                }
             }
         } catch { print("Nope...") }
         result = [
             "duration": String(format: "%.9f", Utils.parse(durationString: durationString!)),
+            "error_msg": errorMsg,
+            "success": success,
         ]
         return result
     }

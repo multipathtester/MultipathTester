@@ -35,11 +35,6 @@ class BulkDownloadResult: BaseResult, TestResult {
         super.init(name: name, proto: proto, success: success, result: result, duration: duration, startTime: startTime, waitTime: waitTime)
     }
     
-    convenience init(name: String, proto: NetProtocol, duration: Double, startTime: Date, waitTime: Double, rcvBytesDatas: [RcvBytesData]) {
-        let result = "Completed in " + String(describing: duration) + " s"
-        self.init(name: name, proto: proto, success: true, result: result, duration: duration, startTime: startTime, waitTime: waitTime, rcvBytesDatas: rcvBytesDatas)
-    }
-    
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let superdecoder = try container.superDecoder()
@@ -71,5 +66,13 @@ class BulkDownloadResult: BaseResult, TestResult {
             return ChartDataEntry(x: d.time, y: Double(d.rcvBytes))
         }
         return [LineChartEntries(xLabel: "Time", yLabel: "Bytes", data: values, dataLabel: "Bytes received", xValueFormatter: DateValueFormatter())]
+    }
+    
+    override func resultsToJSONDict() -> [String : Any] {
+        var res = super.resultsToJSONDict()
+        if !success {
+            res["error_msg"] = result
+        }
+        return res
     }
 }

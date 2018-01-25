@@ -22,12 +22,6 @@ class ConnectivityResult: BaseResult, TestResult {
     static let DocumentsDirectory = FileManager().urls(for: .documentDirectory, in: .userDomainMask).first!
     static let ArchiveURL = DocumentsDirectory.appendingPathComponent("connectivityResults")
     
-    // MARK: Initializers    
-    convenience init(name: String, proto: NetProtocol, success: Bool, duration: Double, startTime: Date, waitTime: Double) {
-        let result = "Succeeded in " + String(duration) + " s"
-        self.init(name: name, proto: proto, success: success, result: result, duration: duration, startTime: startTime, waitTime: waitTime)
-    }
-    
     // MARK: TestResult
     static func getTestName() -> String {
         return "Connectivity"
@@ -39,5 +33,13 @@ class ConnectivityResult: BaseResult, TestResult {
     
     func getChartData() -> [ChartEntries] {
         return []
+    }
+    
+    override func resultsToJSONDict() -> [String: Any] {
+        var res = super.resultsToJSONDict()
+        if !success {
+            res["error_msg"] = result
+        }
+        return res
     }
 }

@@ -59,7 +59,11 @@ class TestResultInstanceDetailTableViewController: UITableViewController, ChartV
             let screenSize: CGRect = UIScreen.main.bounds
             return screenSize.width - 10
         }
-        return 60.0
+        if indexPath.section == 0 { // Test description
+            return CGFloat(20.0 * (Double(testResult!.getDescription().count) / 40.0)) + 20.0
+        }
+        // section 1, result
+        return CGFloat(20.0 * (Double(testResult!.getResult().count) / 40.0)) + 40.0
     }
     
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

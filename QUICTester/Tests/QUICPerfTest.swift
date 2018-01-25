@@ -106,14 +106,17 @@ class QUICPerfTest: BaseTest, Test {
                 intervals.append(interval)
             }
         }
-        // TODO intervals
-        // TODO FIXME
-        // TODO
         let duration = Double(result["duration"] as! String)!
         let totalRetrans = UInt64(result["total_retrans"] as! String)!
         let totalSent = UInt64(result["total_sent"] as! String)!
-        let resultText = "Transferred " + String(totalSent) + " B in " + String(duration) + " s"
-        return PerfResult(name: getDescription(), proto: getProtocol(), success: true, result: resultText, duration: duration, startTime: startTime, waitTime: 0.0, totalRetrans: totalRetrans, totalSent: totalSent, intervals: intervals, cwins: cwinData)
+        let success = result["success"] as! Bool
+        var resultText = ""
+        if success {
+            resultText = "Achieved a mean goodput of " + String(format: "%.3f", Double(intervals[intervals.count-1].globalBandwidth * 8) / 1000000.0) + " Mbps."
+        } else {
+            resultText = result["error_msg"] as! String
+        }
+        return PerfResult(name: getDescription(), proto: getProtocol(), success: success, result: resultText, duration: duration, startTime: startTime, waitTime: 0.0, totalRetrans: totalRetrans, totalSent: totalSent, intervals: intervals, cwins: cwinData)
     }
     
     func run() -> [String : Any] {
@@ -125,6 +128,8 @@ class QUICPerfTest: BaseTest, Test {
             result = [
                 "intervals": [],
                 "duration": "-1.0",
+                "error_msg": lines[0],
+                "success": false,
                 "total_retrans": "0",
                 "total_sent": "0",
             ]
@@ -144,6 +149,7 @@ class QUICPerfTest: BaseTest, Test {
         result = [
             "intervals": intervals,
             "duration": String(format: "%.9f", Utils.parse(durationString: splitted_line[3])),
+            "success": true,
             "total_retrans": splitted_line[5],
             "total_sent": splitted_line[1],
         ]
