@@ -24,6 +24,12 @@ class Utils {
         }
     }
     
+    static func parseSeveral(durationsString: [String]) -> [Double] {
+        return durationsString.map { (ds) -> Double in
+            return parse(durationString: ds)
+        }
+    }
+    
     static func collectQUICInfo(logFileURL: URL) -> [[String: Any]] {
         var array = [[String: Any]]()
         do {

@@ -19,6 +19,8 @@ class RunConfig: NSObject, QuictrafficRunConfigProtocol {
     var maxPathIDVar: Int = 0
     var notifyIDVar: String = ""
     var outputVar: String = ""
+    var pingCountVar: Int = 0
+    var pingWaitMsVar: Int = 0
     var printBodyVar: Bool = false
     var runTimeVar: Int = 30
     var urlVar: String
@@ -54,6 +56,14 @@ class RunConfig: NSObject, QuictrafficRunConfigProtocol {
     
     func output() -> String! {
         return outputVar
+    }
+    
+    func pingCount() -> Int {
+        return pingCountVar
+    }
+    
+    func pingWaitMs() -> Int {
+        return pingWaitMsVar
     }
     
     func printBody() -> Bool {

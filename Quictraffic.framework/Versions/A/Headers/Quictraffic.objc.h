@@ -20,6 +20,8 @@
 - (long)maxPathID;
 - (NSString*)notifyID;
 - (NSString*)output;
+- (long)pingCount;
+- (long)pingWaitMs;
 - (BOOL)printBody;
 - (long)runTime;
 - (NSString*)traffic;
@@ -57,6 +59,8 @@ FOUNDATION_EXPORT NSString* QuictrafficRun(id<QuictrafficRunConfig> runcfg);
 - (long)maxPathID;
 - (NSString*)notifyID;
 - (NSString*)output;
+- (long)pingCount;
+- (long)pingWaitMs;
 - (BOOL)printBody;
 - (long)runTime;
 - (NSString*)traffic;

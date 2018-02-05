@@ -32,6 +32,7 @@
 		CE29B9E51FD802FD0049A105 /* CWinData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE29B9E41FD802FD0049A105 /* CWinData.swift */; };
 		CE29B9E91FD833610049A105 /* QUICReqResTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE29B9E81FD833610049A105 /* QUICReqResTest.swift */; };
 		CE29B9EB1FD838340049A105 /* ReqResResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE29B9EA1FD838340049A105 /* ReqResResult.swift */; };
+		CE4894F72028AF0100CBEED5 /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4894F62028AF0100CBEED5 /* Array.swift */; };
 		CE4B90472018711100E71C5E /* StreamResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4B90462018711100E71C5E /* StreamResult.swift */; };
 		CE58F46B1FC3463F009EA08F /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = CE58F46A1FC34631009EA08F /* libxml2.tbd */; };
 		CE58F46D1FC34651009EA08F /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE58F46C1FC3464A009EA08F /* CFNetwork.framework */; };
@@ -172,6 +173,7 @@
 		CE29B9E41FD802FD0049A105 /* CWinData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CWinData.swift; sourceTree = "<group>"; };
 		CE29B9E81FD833610049A105 /* QUICReqResTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QUICReqResTest.swift; sourceTree = "<group>"; };
 		CE29B9EA1FD838340049A105 /* ReqResResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReqResResult.swift; sourceTree = "<group>"; };
+		CE4894F62028AF0100CBEED5 /* Array.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Array.swift; sourceTree = "<group>"; };
 		CE4B90462018711100E71C5E /* StreamResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamResult.swift; sourceTree = "<group>"; };
 		CE58F46A1FC34631009EA08F /* libxml2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.tbd; path = usr/lib/libxml2.tbd; sourceTree = SDKROOT; };
 		CE58F46C1FC3464A009EA08F /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
@@ -308,6 +310,7 @@
 		CE268517200DED3200462C6E /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				CE4894F62028AF0100CBEED5 /* Array.swift */,
 				CE268518200DED5200462C6E /* UIDevice.swift */,
 			);
 			path = Extensions;
@@ -763,6 +766,7 @@
 				CE8E284D1F696334004F1558 /* TCPClientBulk.swift in Sources */,
 				CE26850B2008BC3300462C6E /* TestResultInstanceDetailLineChartTableViewCell.swift in Sources */,
 				CE2685052008A54C00462C6E /* TestResultInstancesTableViewController.swift in Sources */,
+				CE4894F72028AF0100CBEED5 /* Array.swift in Sources */,
 				CEA702F22003DB4D00FDFB89 /* DayAxisValueFormatter.swift in Sources */,
 				CE268519200DED5200462C6E /* UIDevice.swift in Sources */,
 				CEA702F62003E10E00FDFB89 /* BalloonMarker.swift in Sources */,
