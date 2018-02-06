@@ -11,10 +11,13 @@ import Quictraffic
 
 class QUICConnectivityTest: BaseTest, Test {
     // MARK: Properties
-    var pingCount: Int = 5
-    var pingWaitMs: Int = 200
+    var pingCount: Int
+    var pingWaitMs: Int
     
-    init(ipVer: IPVersion, port: UInt16, testServer: TestServer) {
+    init(ipVer: IPVersion, port: UInt16, testServer: TestServer, pingCount: Int, pingWaitMs: Int) {
+        self.pingCount = pingCount
+        self.pingWaitMs = pingWaitMs
+        
         let filePrefix = "quictraffic_connectivity_" + String(port) + "_" + ipVer.rawValue
         super.init(traffic: "bulk", ipVer: ipVer, port: port, urlPath: "/connectivityTest", filePrefix: filePrefix)
         setTestServer(testServer: testServer)
@@ -23,6 +26,10 @@ class QUICConnectivityTest: BaseTest, Test {
         runCfg.printBodyVar = true
         runCfg.pingCountVar = pingCount
         runCfg.pingWaitMsVar = pingWaitMs
+    }
+    
+    convenience init(ipVer: IPVersion, port: UInt16, testServer: TestServer) {
+        self.init(ipVer: ipVer, port: port, testServer: testServer, pingCount: 5, pingWaitMs: 200)
     }
     
     convenience init(ipVer: IPVersion, port: UInt16) {
@@ -76,7 +83,6 @@ class QUICConnectivityTest: BaseTest, Test {
         let durations = Utils.parseSeveral(durationsString: durationsArray)
         do {
             let text = try String(contentsOf: outFileURL, encoding: .utf8)
-            print(text)
             let lines = text.components(separatedBy: .newlines)
             for line in lines {
                 if line.contains("It works!") {

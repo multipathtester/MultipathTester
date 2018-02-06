@@ -627,7 +627,7 @@
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="36"/>
                                         <state key="normal" title="Start"/>
                                         <connections>
-                                            <segue destination="qC0-TW-1dg" kind="show" id="luP-lj-yTR"/>
+                                            <segue destination="qC0-TW-1dg" kind="show" identifier="RunMobileTests" id="luP-lj-yTR"/>
                                         </connections>
                                     </button>
                                 </subviews>

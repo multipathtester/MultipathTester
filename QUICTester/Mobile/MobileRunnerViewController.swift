@@ -16,6 +16,11 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
     @IBOutlet weak var delaysChartView: LineChartView!
     @IBOutlet weak var userLabel: UILabel!
     
+    // Provided by MobileMainViewController
+    var testServer: TestServer?
+    var avgPing: Double?
+    var varPing: Double?
+    
     var tests: [QUICStreamTest] = [QUICStreamTest]()
     var runningTest: QUICStreamTest?
     var startTime: Date = Date()
@@ -49,6 +54,11 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
         tests = [
             QUICStreamTest(ipVer: .any, maxPathID: 255, runTime: 5)
         ]
+        
+        for i in 0..<tests.count {
+            let test = tests[i]
+            test.setTestServer(testServer: testServer!)
+        }
         
         NotificationCenter.default.post(name: Utils.TestsLaunchedNotification, object: nil, userInfo: ["startNewTestsEnabled": false])
         
@@ -156,8 +166,7 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
             self.completed = true
             self.stopTime = Date()
             let duration = self.stopTime.timeIntervalSince(self.startTime)
-            // FIXME
-            let benchmark = Benchmark(connectivities: self.connectivities, duration: duration, locations: self.locations, mobile: true, pingMean: 0.1, pingVar: 0.05, serverName: .fr, startTime: self.startTime, testResults: testResults)
+            let benchmark = Benchmark(connectivities: self.connectivities, duration: duration, locations: self.locations, mobile: true, pingMean: self.avgPing!, pingVar: self.varPing!, serverName: self.testServer!, startTime: self.startTime, testResults: testResults)
             Utils.sendToServer(benchmark: benchmark, tests: self.tests)
             benchmark.save()
             self.cellTimer?.invalidate()

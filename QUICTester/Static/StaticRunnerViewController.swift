@@ -152,7 +152,7 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
                 let durations = res["durations"] as! [Double]
                 let avgDuration = durations.averaged()
                 print("avg duration of", test.getTestServer(), "is", avgDuration)
-                if success && avgDuration < bestAvgDuration {
+                if success && avgDuration >= 0.0 && avgDuration < bestAvgDuration {
                     bestServer = test.getTestServer()
                     bestAvgDuration = avgDuration
                     bestVarianceDuration = durations.variance()
