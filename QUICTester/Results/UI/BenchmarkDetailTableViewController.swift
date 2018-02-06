@@ -32,7 +32,7 @@ class BenchmarkDetailTableViewController: UITableViewController {
             TableItem(title: "Test time", detail: dateFormatter.string(from: bench.startTime)),
             TableItem(title: "Timezone", detail: bench.timezone.abbreviation() ?? bench.timezone.description),
             TableItem(title: "Ping", detail: String.init(format: "%.1f ms", bench.pingMean * 1000.0)),
-            TableItem(title: "Ping variance", detail: String.init(format: "%.1f ms", bench.pingVar * 1000.0)),
+            TableItem(title: "Ping variance", detail: String.init(format: "%.1f ms", bench.pingVar * 1000000.0)),
         ]
         if bench.locations.count > 0 {
             let loc = bench.locations[bench.locations.count - 1]

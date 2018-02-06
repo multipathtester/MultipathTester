@@ -58,7 +58,7 @@ class ConnectivityResult: BaseResult, TestResult {
     }
     
     static func getTestDescription() -> String {
-        return "This test checks if a connection can be established"
+        return "This test checks if a connection can be established and estimate the latency."
     }
     
     func getChartData() -> [ChartEntries] {

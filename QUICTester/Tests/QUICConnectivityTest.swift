@@ -32,11 +32,14 @@ class QUICConnectivityTest: BaseTest, Test {
     func getDescription() -> String {
         switch ipVer {
         case .v4:
-            return "QUIC IPv4 Connectivity"
+            return "QUIC Ping IPv4"
         case .v6:
-            return "QUIC IPv6 Connectivity"
+            return "QUIC Ping IPv6"
         default:
-            return "QUIC Connectivity port " + String(port)
+            if port != 443 {
+                return "QUIC Ping port " + String(port)
+            }
+            return "QUIC Ping " + testServer.rawValue
         }
     }
     
