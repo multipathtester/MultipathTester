@@ -18,7 +18,9 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
     var startTime: Date = Date()
     var stopTime: Date = Date()
     
+    var pingTests: [QUICConnectivityTest] = [QUICConnectivityTest]()
     var tests: [Test] = [Test]()
+    var allTests: [Test] = [Test]()
     var runningIndex: Int = -1
     var stoppedIndex: Int = -1
     
@@ -37,23 +39,29 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
         _ = locationTracker.startIfAuthorized()
         self.progress.value = 0.0
         
+        pingTests = [
+            QUICConnectivityTest(ipVer: .any, port: 443, testServer: .fr),
+            QUICConnectivityTest(ipVer: .any, port: 443, testServer: .ca),
+        ]
+        
         // Do any additional setup after loading the view.
         tests = [
             // TODO add tests to check gQUIC vs. IETF QUIC,...
-            QUICConnectivityTest(port: 443, ipVer: .any),
-            QUICConnectivityTest(port: 6121, ipVer: .any),
-            QUICConnectivityTest(port: 443, ipVer: .v4),
-            QUICConnectivityTest(port: 443, ipVer: .v6),
-            QUICBulkDownloadTest(urlPath: "10MB", maxPathID: 0, ipVer: .v4),
-            QUICBulkDownloadTest(urlPath: "10MB", maxPathID: 0, ipVer: .v6),
-            QUICBulkDownloadTest(urlPath: "10MB", maxPathID: 255, ipVer: .any),
-            QUICReqResTest(maxPathID: 0, ipVer: .v4),
-            QUICReqResTest(maxPathID: 0, ipVer: .v6),
-            QUICReqResTest(maxPathID: 255, ipVer: .any),
-            QUICPerfTest(maxPathID: 0, ipVer: .v4),
-            QUICPerfTest(maxPathID: 0, ipVer: .v6),
-            QUICPerfTest(maxPathID: 255, ipVer: .any),
+            QUICConnectivityTest(ipVer: .any, port: 6121),
+            QUICConnectivityTest(ipVer: .v4, port: 443),
+            QUICConnectivityTest(ipVer: .v6, port: 443),
+            QUICBulkDownloadTest(ipVer: .v4, urlPath: "/10MB", maxPathID: 0),
+            QUICBulkDownloadTest(ipVer: .v6, urlPath: "/10MB", maxPathID: 0),
+            QUICBulkDownloadTest(ipVer: .any, urlPath: "/10MB", maxPathID: 255),
+            QUICReqResTest(ipVer: .v4, maxPathID: 0),
+            QUICReqResTest(ipVer: .v6, maxPathID: 0),
+            QUICReqResTest(ipVer: .any, maxPathID: 255),
+            QUICPerfTest(ipVer: .v4, maxPathID: 0),
+            QUICPerfTest(ipVer: .v6, maxPathID: 0),
+            QUICPerfTest(ipVer: .any, maxPathID: 255),
         ]
+        
+        allTests = pingTests + tests
         
         locations = []
         
@@ -66,7 +74,6 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
         
         locationTracker.forceUpdate()
         
-        Utils.traceroute(toIP: "coucou")
         testsTable.dataSource = self
         testsTable.delegate = self
         
@@ -119,15 +126,50 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
         print("We start the tests")
         
         DispatchQueue.global(qos: .background).async {
-            let nbTests = self.tests.count
+            let nbTests = self.pingTests.count + self.tests.count
             var testDones = 0
-            for i in 0..<nbTests {
-                let test = self.tests[i]
+            var bestServer: TestServer = .fr
+            var bestDuration: Double = Double.greatestFiniteMagnitude
+            for i in 0..<self.pingTests.count {
+                let test = self.pingTests[i]
                 DispatchQueue.main.async {
                     self.progress.setProgress(value: CGFloat((Float(i) / Float(nbTests) * 100.0)), animationDuration: 0.0) {}
                     self.runningIndex = i
                     self.testsTable.reloadData()
                     self.progress.setProgress(value: CGFloat((Float(i + 1) / Float(nbTests) * 100.0) - 1.0), animationDuration: 10.0) {
+                        print("Done animating!")
+                        // Do anything your heart desires...
+                    }
+                }
+                if self.stoppedTests {
+                    break
+                }
+                let res = test.run()
+                testDones += 1
+                let success = res["success"] as! Bool
+                let durations = res["durations"] as! [Double]
+                let avgDuration = durations.averaged()
+                print("avg duration of", test.getTestServer(), "is", avgDuration)
+                if success && avgDuration < bestDuration {
+                    bestServer = test.getTestServer()
+                    bestDuration = avgDuration
+                }
+                if self.stoppedTests {
+                    break
+                }
+            }
+            print("Best server is", bestServer)
+            for i in 0..<self.tests.count {
+                let test = self.tests[i]
+                test.setTestServer(testServer: bestServer)
+            }
+            for i in 0..<self.tests.count {
+                let test = self.tests[i]
+                DispatchQueue.main.async {
+                    self.progress.setProgress(value: CGFloat((Float(i + self.pingTests.count) / Float(nbTests) * 100.0)), animationDuration: 0.0) {}
+                    self.runningIndex = i + self.pingTests.count
+                    self.testsTable.reloadData()
+                    self.progress.setProgress(value: CGFloat((Float(i + 1 + self.pingTests.count) / Float(nbTests) * 100.0) - 1.0), animationDuration: 10.0) {
                         print("Done animating!")
                         // Do anything your heart desires...
                     }
@@ -145,7 +187,7 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
             self.runningIndex = testDones
             var testResults = [TestResult]()
             for i in 0..<testDones {
-                let test = self.tests[i]
+                let test = self.allTests[i]
                 let result = test.getTestResult()
                 if self.stoppedTests && i == testDones - 1 {
                     result.setFailedByNetworkChange()
@@ -156,9 +198,9 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
                 self.testsTable.reloadData()
             }
             let duration = self.stopTime.timeIntervalSince(self.startTime)
-            // FIXME
-            let benchmark = Benchmark(connectivities: connectivities, duration: duration, locations: self.locations, mobile: false, pingMean: 0.1, pingVar: 0.05, serverName: "FR", startTime: self.startTime, testResults: testResults)
-            Utils.sendToServer(benchmark: benchmark, tests: self.tests)
+            
+            let benchmark = Benchmark(connectivities: connectivities, duration: duration, locations: self.locations, mobile: false, pingMean: 0.1, pingVar: 0.05, serverName: bestServer, startTime: self.startTime, testResults: testResults)
+            Utils.sendToServer(benchmark: benchmark, tests: self.allTests)
             benchmark.save()
             self.cellTimer?.invalidate()
             self.cellTimer = nil
@@ -177,7 +219,7 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return tests.count
+        return allTests.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -188,7 +230,7 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
         }
         
         // Fetches the appropriate meal for the data source layout.
-        let test = tests[indexPath.row]
+        let test = allTests[indexPath.row]
         
         cell.nameLabel.text = test.getDescription()
         // Load images

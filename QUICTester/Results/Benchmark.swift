@@ -17,7 +17,7 @@ class Benchmark: NSObject, Codable {
     var mobile: Bool
     var pingMean: Double
     var pingVar: Double
-    var serverName: String
+    var serverName: TestServer
     var startTime: Date
     var testResults: [TestResult]
     
@@ -58,7 +58,7 @@ class Benchmark: NSObject, Codable {
     static let ArchiveURL = DocumentsDirectory.appendingPathComponent("benchmarks")
     
     // MARK: Initializers
-    init(connectivities: [Connectivity], duration: Double, locations: [Location], mobile: Bool, pingMean: Double, pingVar: Double, serverName: String, startTime: Date, testResults: [TestResult]) {
+    init(connectivities: [Connectivity], duration: Double, locations: [Location], mobile: Bool, pingMean: Double, pingVar: Double, serverName: TestServer, startTime: Date, testResults: [TestResult]) {
         // Initilialize stored properties
         self.connectivities = connectivities
         self.duration = duration
@@ -115,7 +115,7 @@ class Benchmark: NSObject, Codable {
         mobile = try container.decode(Bool.self, forKey: .mobile)
         pingMean = try container.decode(Double.self, forKey: .pingMean)
         pingVar = try container.decode(Double.self, forKey: .pingVar)
-        serverName = try container.decode(String.self, forKey: .serverName)
+        serverName = try container.decode(TestServer.self, forKey: .serverName)
         startTime = try container.decode(Date.self, forKey: .startTime)
         testResults = try container.decode([AnyTestResult].self, forKey: .testResults).map { $0.base }
         
@@ -144,7 +144,7 @@ class Benchmark: NSObject, Codable {
             "mobile": mobile,
             "ping_mean": String.init(format: "%.6f", pingMean),
             "ping_var": String.init(format: "%.6f", pingVar),
-            "server_name": serverName,
+            "server_name": serverName.rawValue,
             "platform": platform,
             "platform_version_name": platformVersion,
             "platform_version_code": platformVersionCode,

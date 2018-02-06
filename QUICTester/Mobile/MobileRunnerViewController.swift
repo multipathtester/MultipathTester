@@ -47,7 +47,7 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
         LineChartHelper.initialize(chartView: delaysChartView, delegate: self, xValueFormatter: DateValueFormatter())
         
         tests = [
-            QUICStreamTest(maxPathID: 255, ipVer: .any, runTime: 5)
+            QUICStreamTest(ipVer: .any, maxPathID: 255, runTime: 5)
         ]
         
         NotificationCenter.default.post(name: Utils.TestsLaunchedNotification, object: nil, userInfo: ["startNewTestsEnabled": false])
@@ -157,7 +157,7 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
             self.stopTime = Date()
             let duration = self.stopTime.timeIntervalSince(self.startTime)
             // FIXME
-            let benchmark = Benchmark(connectivities: self.connectivities, duration: duration, locations: self.locations, mobile: true, pingMean: 0.1, pingVar: 0.05, serverName: "FR", startTime: self.startTime, testResults: testResults)
+            let benchmark = Benchmark(connectivities: self.connectivities, duration: duration, locations: self.locations, mobile: true, pingMean: 0.1, pingVar: 0.05, serverName: .fr, startTime: self.startTime, testResults: testResults)
             Utils.sendToServer(benchmark: benchmark, tests: self.tests)
             benchmark.save()
             self.cellTimer?.invalidate()

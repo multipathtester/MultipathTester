@@ -11,33 +11,15 @@ import Quictraffic
 
 class QUICStreamTest: BaseTest, Test {
     // MARK: Properties
-    var ipVer: IPVersion
     var maxPathID: UInt8
     var runTime: Int
-    var url: String
     
-    init(maxPathID: UInt8, ipVer: IPVersion, runTime: Int) {
-        self.ipVer = ipVer
+    init(ipVer: IPVersion, maxPathID: UInt8, runTime: Int) {
         self.maxPathID = maxPathID
         self.runTime = runTime
-        var baseURL: String = "traffic.multipath-quic.org"
-        var suffix: String
-        switch ipVer {
-        case .v4:
-            baseURL = "v4.traffic.multipath-quic.org"
-            suffix = "4"
-        case .v6:
-            baseURL = "v6.traffic.multipath-quic.org"
-            suffix = "6"
-        default:
-            baseURL = "traffic.multipath-quic.org"
-            suffix = "any"
-        }
-        
-        url = baseURL + ":5202"
-        let filePrefix = "quictraffic_stream_" + suffix
-        
-        super.init(traffic: "stream", url: url, filePrefix: filePrefix)
+
+        let filePrefix = "quictraffic_stream_" + ipVer.rawValue
+        super.init(traffic: "stream", ipVer: ipVer, port: 5202, urlPath: nil, filePrefix: filePrefix)
         
         // Prepare the run configuration
         runCfg.maxPathIDVar = Int(maxPathID)
@@ -60,8 +42,8 @@ class QUICStreamTest: BaseTest, Test {
     
     func getConfigDict() -> [String : Any] {
         return [
-            "url": url,
-            "port": "5202",
+            "url": getURL(),
+            "port": self.port,
             "upload_chunk_size": "2000",
             "download_chunk_size": "2000",
             "duration": String(runTime) + ".0",

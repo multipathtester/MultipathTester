@@ -11,33 +11,13 @@ import Quictraffic
 
 class QUICPerfTest: BaseTest, Test {
     // MARK: Properties
-    var ipVer: IPVersion
     var maxPathID: UInt8
-    var port: Int
-    var url: String
     
-    init(maxPathID: UInt8, ipVer: IPVersion) {
-        self.ipVer = ipVer
+    init(ipVer: IPVersion, maxPathID: UInt8) {
         self.maxPathID = maxPathID
-        var baseURL: String = "traffic.multipath-quic.org"
-        var suffix: String
-        switch ipVer {
-        case .v4:
-            baseURL = "v4.traffic.multipath-quic.org"
-            suffix = "4"
-        case .v6:
-            baseURL = "v6.traffic.multipath-quic.org"
-            suffix = "6"
-        default:
-            baseURL = "traffic.multipath-quic.org"
-            suffix = "any"
-        }
-        
-        port = 5201
-        url = baseURL + ":" + String(port)
-        let filePrefix = "quictraffic_qperf_" + suffix
-        
-        super.init(traffic: "qperf", url: url, filePrefix: filePrefix)
+
+        let filePrefix = "quictraffic_qperf_" + ipVer.rawValue
+        super.init(traffic: "qperf", ipVer: ipVer, port: 5201, urlPath: nil, filePrefix: filePrefix)
         
         // Prepare the run configuration
         runCfg.maxPathIDVar = Int(maxPathID)
@@ -59,8 +39,8 @@ class QUICPerfTest: BaseTest, Test {
     func getConfigDict() -> [String : Any] {
         return [
             "duration": 10,
-            "port": port,
-            "url": url,
+            "port": self.port,
+            "url": getURL(),
         ]
     }
     

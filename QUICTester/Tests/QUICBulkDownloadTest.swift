@@ -11,33 +11,13 @@ import Quictraffic
 
 class QUICBulkDownloadTest: BaseTest, Test {
     // MARK: Properties
-    var ipVer: IPVersion
     var maxPathID: UInt8
-    var url: String
-    var urlPath: String
     
-    init(urlPath: String, maxPathID: UInt8, ipVer: IPVersion) {
-        self.ipVer = ipVer
+    init(ipVer: IPVersion, urlPath: String, maxPathID: UInt8) {
         self.maxPathID = maxPathID
-        self.urlPath = urlPath
-        var baseURL: String = "traffic.multipath-quic.org"
-        var suffix: String
-        switch ipVer {
-        case .v4:
-            baseURL = "v4.traffic.multipath-quic.org"
-            suffix = "4"
-        case .v6:
-            baseURL = "v6.traffic.multipath-quic.org"
-            suffix = "6"
-        default:
-            baseURL = "traffic.multipath-quic.org"
-            suffix = "any"
-        }
+        let filePrefix = "quictraffic_bulk_" + urlPath.dropFirst() + "_" + ipVer.rawValue
         
-        url = "https://" + baseURL + ":443/" + urlPath
-        let filePrefix = "quictraffic_bulk_" + urlPath + "_" + suffix
-        
-        super.init(traffic: "bulk", url: url, filePrefix: filePrefix)
+        super.init(traffic: "bulk", ipVer: ipVer, port: 443, urlPath: urlPath, filePrefix: filePrefix)
         
         // Prepare the run configuration
         runCfg.maxPathIDVar = Int(maxPathID)
@@ -58,7 +38,7 @@ class QUICBulkDownloadTest: BaseTest, Test {
     
     func getConfigDict() -> [String : Any] {
         return [
-            "url": url,
+            "url": getURL(),
         ]
     }
     
@@ -99,12 +79,19 @@ class QUICBulkDownloadTest: BaseTest, Test {
         return BulkDownloadResult(name: getDescription(), proto: getProtocol(), success: success, result: resultMsg, duration: duration, startTime: startTime, waitTime: 0.0, rcvBytesDatas: rcvBytesDatas)
     }
     
+    // Because QUIC cannot do GET without the https:// ...
+    override func getURL() -> String {
+        let url = super.getURL()
+        return "https://" + url
+    }
+    
     func run() -> [String : Any] {
         startTime = Date()
         var success = true
         var errorMsg = ""
         let durationString = QuictrafficRun(runCfg)
         do {
+            print("Opening", outFileURL)
             let text = try String(contentsOf: outFileURL, encoding: .utf8)
             let lines = text.components(separatedBy: .newlines)
             for line in lines {

@@ -23,11 +23,10 @@ class RunConfig: NSObject, QuictrafficRunConfigProtocol {
     var pingWaitMsVar: Int = 0
     var printBodyVar: Bool = false
     var runTimeVar: Int = 30
-    var urlVar: String
+    var urlVar: String = ""
     
-    init(traffic: String, url: String) {
+    init(traffic: String) {
         self.trafficVar = traffic
-        self.urlVar = url
     }
     
     func traffic() -> String! {

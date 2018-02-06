@@ -11,31 +11,13 @@ import Quictraffic
 
 class QUICReqResTest: BaseTest, Test {
     // MARK: Properties
-    var ipVer: IPVersion
     var maxPathID: UInt8
-    var url: String
     
-    init(maxPathID: UInt8, ipVer: IPVersion) {
-        self.ipVer = ipVer
+    init(ipVer: IPVersion, maxPathID: UInt8) {
         self.maxPathID = maxPathID
-        var baseURL: String = "traffic.multipath-quic.org"
-        var suffix: String
-        switch ipVer {
-        case .v4:
-            baseURL = "v4.traffic.multipath-quic.org"
-            suffix = "4"
-        case .v6:
-            baseURL = "v6.traffic.multipath-quic.org"
-            suffix = "6"
-        default:
-            baseURL = "traffic.multipath-quic.org"
-            suffix = "any"
-        }
         
-        url = baseURL + ":8080"
-        let filePrefix = "quictraffic_reqres_" + suffix
-        
-        super.init(traffic: "reqres", url: url, filePrefix: filePrefix)
+        let filePrefix = "quictraffic_reqres_" + ipVer.rawValue
+        super.init(traffic: "reqres", ipVer: ipVer, port: 8080, urlPath: nil, filePrefix: filePrefix)
         
         // Prepare the run configuration
         runCfg.maxPathIDVar = Int(maxPathID)
@@ -57,8 +39,8 @@ class QUICReqResTest: BaseTest, Test {
     
     func getConfigDict() -> [String : Any] {
         return [
-            "url": url,
-            "port": "8080",
+            "url": getURL(),
+            "port": self.port,
             "query_size": "750",
             "response_size": "750",
             "start_delay_query_response": "0",
@@ -96,6 +78,7 @@ class QUICReqResTest: BaseTest, Test {
     func run() -> [String : Any] {
         startTime = Date()
         let reqresString = QuictrafficRun(runCfg)
+        let elapsed = startTime.timeIntervalSinceNow
         var delays = [Int64]()
         let lines = reqresString!.components(separatedBy: .newlines)
         if lines[0] != "Exiting client main with error deadline exceeded" && lines[0] != "Exiting client main with error nil" {
@@ -116,7 +99,7 @@ class QUICReqResTest: BaseTest, Test {
         result = [
             "delays": delays,
             "missed": Int64(missed),
-            "duration": String(format: "%.9f", 14.0), // FIXME
+            "duration": String(format: "%.9f", elapsed),
             "success": true,
         ]
         return result

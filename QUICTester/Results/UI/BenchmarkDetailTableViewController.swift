@@ -74,7 +74,7 @@ class BenchmarkDetailTableViewController: UITableViewController {
             TableItem(title: "Test duration", detail: Utils.stringSecondsToMinutesSeconds(seconds: Int(bench.duration))),
             TableItem(title: "Data amount WiFi interface", detail: "40 MB"),
             TableItem(title: "Data amount cellular interface", detail: "34 MB"),
-            TableItem(title: "Server name", detail: bench.serverName),
+            TableItem(title: "Server name", detail: bench.serverName.rawValue),
             TableItem(title: "Platform", detail: bench.platform),
             TableItem(title: "Platform version", detail: bench.platformVersion),
             TableItem(title: "Model", detail: bench.model),

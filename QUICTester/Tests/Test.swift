@@ -8,10 +8,16 @@
 
 import Foundation
 
-enum IPVersion {
+enum IPVersion: String, Codable {
     case v4
     case v6
     case any
+}
+
+enum TestServer: String, Codable {
+    case fr
+    case ca
+    case jp
 }
 
 enum NetProtocol: String, Codable {
@@ -42,5 +48,9 @@ protocol Test {
     func getProtoInfo() -> [[String: Any]]
     func getStartTime() -> Date
     func getTestResult() -> TestResult
+    func getTestServer() -> TestServer
+    func getURL() -> String
+    func setTestServer(testServer: TestServer)
+    func updateURL()
     func run() -> [String:Any]
 }

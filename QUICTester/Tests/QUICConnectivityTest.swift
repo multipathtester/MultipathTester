@@ -11,38 +11,22 @@ import Quictraffic
 
 class QUICConnectivityTest: BaseTest, Test {
     // MARK: Properties
-    var ipVer: IPVersion
-    var port: Int16
-    var url: String
-    
     var pingCount: Int = 5
     var pingWaitMs: Int = 200
     
-    init(port: Int16, ipVer: IPVersion) {
-        self.port = port
-        self.ipVer = ipVer
-        var baseURL: String = "traffic.multipath-quic.org"
-        var suffix: String
-        switch ipVer {
-        case .v4:
-            baseURL = "v4.traffic.multipath-quic.org"
-            suffix = "4"
-        case .v6:
-            baseURL = "v6.traffic.multipath-quic.org"
-            suffix = "6"
-        default:
-            baseURL = "traffic.multipath-quic.org"
-            suffix = "any"
-        }
-        
-        url = "https://" + baseURL + ":" + String(self.port) + "/connectivityTest"
-        let filePrefix = "quictraffic_connectivity_" + String(self.port) + "_" + suffix
-        super.init(traffic: "bulk", url: url, filePrefix: filePrefix)
+    init(ipVer: IPVersion, port: UInt16, testServer: TestServer) {
+        let filePrefix = "quictraffic_connectivity_" + String(port) + "_" + ipVer.rawValue
+        super.init(traffic: "bulk", ipVer: ipVer, port: port, urlPath: "/connectivityTest", filePrefix: filePrefix)
+        setTestServer(testServer: testServer)
         
         // Prepare the run configuration
         runCfg.printBodyVar = true
         runCfg.pingCountVar = pingCount
         runCfg.pingWaitMsVar = pingWaitMs
+    }
+    
+    convenience init(ipVer: IPVersion, port: UInt16) {
+        self.init(ipVer: ipVer, port: port, testServer: .fr)
     }
     
     func getDescription() -> String {
@@ -61,7 +45,7 @@ class QUICConnectivityTest: BaseTest, Test {
             "ping_count": pingCount,
             "ping_wait_ms": pingWaitMs,
             "port": self.port,
-            "url": self.url,
+            "url": getURL(),
         ]
     }
     
@@ -71,6 +55,12 @@ class QUICConnectivityTest: BaseTest, Test {
     
     func getTestResult() -> TestResult {
         return ConnectivityResult(name: getDescription(), proto: getProtocol(), success: result["success"] as! Bool, result: result["error_msg"] as! String, duration: result["duration"] as! Double, startTime: startTime, waitTime: 0.0, durations: result["durations"] as! [Double])
+    }
+    
+    // Because QUIC cannot do GET without the https:// ...
+    override func getURL() -> String {
+        let url = super.getURL()
+        return "https://" + url
     }
     
     func run() -> [String:Any] {
@@ -83,13 +73,14 @@ class QUICConnectivityTest: BaseTest, Test {
         let durations = Utils.parseSeveral(durationsString: durationsArray)
         do {
             let text = try String(contentsOf: outFileURL, encoding: .utf8)
+            print(text)
             let lines = text.components(separatedBy: .newlines)
             for line in lines {
                 if line.contains("It works!") {
                     success = true
                     let mean = durations.averaged()
                     let variance = durations.variance()
-                    resultMsg = String(format: "The server is reachable with mean %.1f ms and variance %.1f ms.", mean * 1000.0, variance * 1000000.0)
+                    resultMsg = String(format: "The server %@ is reachable with mean %.1f ms and variance %.1f ms.", testServer.rawValue, mean * 1000.0, variance * 1000000.0)
                 }
                 if line.contains("ERROR") {
                     resultMsg = line.components(separatedBy: "ERROR: ")[1]
