@@ -50,18 +50,18 @@ class BenchmarkDetailTableViewController: UITableViewController {
                 benchmarkDetails += [
                     TableItem(title: "WiFi SSID", detail: conn.wifiNetworkName ?? "No WiFi SSID"),
                     TableItem(title: "WiFi BSSID", detail: conn.wifiBSSID ?? "No BSSID"),
-                    TableItem(title: "Country of WiFi AS", detail: "BE"),
-                    TableItem(title: "Country of WiFI IP", detail: "BE"),
-                    TableItem(title: "WiFi IP network (AS)", detail: "2611"),
-                    TableItem(title: "WiFi IP network name", detail: "BELNET, BE"),
+                    // TableItem(title: "Country of WiFi AS", detail: "BE"),
+                    // TableItem(title: "Country of WiFI IP", detail: "BE"),
+                    // TableItem(title: "WiFi IP network (AS)", detail: "2611"),
+                    // TableItem(title: "WiFi IP network name", detail: "BELNET, BE"),
                 ]
             }
             if conn.networkType == .Cellular || conn.networkType == .WiFiCellular {
                 benchmarkDetails += [
                     TableItem(title: "Cellular operator", detail: conn.cellularNetworkName ?? "No network name"),
                     TableItem(title: "Country of cellular AS", detail: conn.telephonyNetworkSimCountry ?? "No cellular country"),
-                    TableItem(title: "Country of cellular IP", detail: "BE"),
-                    TableItem(title: "Cellular IP network (AS)", detail: "2611"),
+                    // TableItem(title: "Country of cellular IP", detail: "BE"),
+                    // TableItem(title: "Cellular IP network (AS)", detail: "2611"),
                     TableItem(title: "Cellular IP network name", detail: conn.telephonyNetworkSimOperator ?? "No cellular name"),
                 ]
             }

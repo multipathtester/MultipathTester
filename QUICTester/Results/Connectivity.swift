@@ -17,6 +17,7 @@ class Connectivity: Codable {
         case WiFi
         case Cellular
         case WiFiCellular
+        case CellularWifi
     }
     
     // MARK: Properties
@@ -63,6 +64,8 @@ class Connectivity: Codable {
             return cellularCodeDescription ?? "No cellular code"
         case .WiFiCellular:
             return "WiFi + " + (cellularCodeDescription ?? "No cellular code")
+        case .CellularWifi:
+            return (cellularCodeDescription ?? "No cellular code") + " + WiFi"
         }
     }
     
@@ -78,6 +81,8 @@ class Connectivity: Codable {
             return "cell"
         case .WiFiCellular:
             return "wificell"
+        case .CellularWifi:
+            return "cellwifi"
         }
     }
     
@@ -191,6 +196,13 @@ class Connectivity: Codable {
             conn.cellularCode = netInfo.currentRadioAccessTechnology ?? "None"
             conn.cellularCodeDescription = Connectivity.getCellularCodeDescriptionFor(conn.cellularCode) ?? "None"
             conn.cellularAddresses = UIDevice.current.cellularAddresses
+            if UIDevice.current.hasWiFiConnectivity {
+                conn.networkType = .CellularWifi
+                let (netName, bssid) = Connectivity.getWiFiSSID()
+                conn.wifiNetworkName = netName ?? "None"
+                conn.wifiBSSID = bssid ?? "None"
+                conn.wifiAddresses = UIDevice.current.wifiAddresses
+            }
         }
         return conn
     }

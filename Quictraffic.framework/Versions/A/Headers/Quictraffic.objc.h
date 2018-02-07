@@ -43,6 +43,11 @@ FOUNDATION_EXPORT void QuictrafficNotifyReachability(NSString* notifyID);
  */
 FOUNDATION_EXPORT NSString* QuictrafficRun(id<QuictrafficRunConfig> runcfg);
 
+/**
+ * StopStream stops the current stream traffic
+ */
+FOUNDATION_EXPORT void QuictrafficStopStream(NSString* notifyID);
+
 @class QuictrafficRunConfig;
 
 /**

@@ -44,15 +44,18 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
     var upDelays: [ChartDataEntry] = [ChartDataEntry]()
     var downDelays: [ChartDataEntry] = [ChartDataEntry]()
     
+    var wifiBSSID: String = ""
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationItem.hidesBackButton = true
         
         // Do any additional setup after loading the view.
         LineChartHelper.initialize(chartView: distanceChartView, delegate: self, xValueFormatter: DateValueFormatter())
         LineChartHelper.initialize(chartView: delaysChartView, delegate: self, xValueFormatter: DateValueFormatter())
         
         tests = [
-            QUICStreamTest(ipVer: .any, maxPathID: 255, runTime: 5)
+            QUICStreamTest(ipVer: .any, maxPathID: 255, runTime: 0, waitTime: 0.0)
         ]
         
         for i in 0..<tests.count {
@@ -80,7 +83,16 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
         for i in 0..<tests.count {
             QuictrafficNotifyReachability(tests[i].getNotifyID())
         }
-        connectivities.append(Connectivity.getCurrentConnectivity(reachabilityStatus: reachabilityStatus))
+        let connectivity = Connectivity.getCurrentConnectivity(reachabilityStatus: reachabilityStatus)
+        connectivities.append(connectivity)
+        if (connectivity.networkType != .WiFiCellular && connectivity.networkType != .CellularWifi) || connectivity.wifiBSSID != wifiBSSID {
+            print("stooooop")
+            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
+                for i in 0..<self.tests.count {
+                    QuictrafficStopStream(self.tests[i].getNotifyID())
+                }
+            }
+        }
     }
     
     @objc
@@ -135,7 +147,9 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
     func startTests() {
         let reachabilityStatus = internetReachability.currentReachabilityStatus()
         wasCellularOn = UIDevice.current.hasCellularConnectivity
-        connectivities.append(Connectivity.getCurrentConnectivity(reachabilityStatus: reachabilityStatus))
+        let connectivity = Connectivity.getCurrentConnectivity(reachabilityStatus: reachabilityStatus)
+        wifiBSSID = connectivity.wifiBSSID!
+        connectivities.append(connectivity)
         let wifiInfoStart = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
         let cellInfoStart = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
         startTime = Date()
@@ -200,6 +214,12 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
         }
         let newDownValues = stride(from: 0, to: newDownDelays.count, by: 1).map { (x) -> ChartDataEntry in
             return ChartDataEntry(x: newDownDelays[x].time, y: Double(newDownDelays[x].delayUs) / 1000.0)
+        }
+        for i in newUpDelays {
+            print(i.time, i.delayUs)
+        }
+        for i in newDownDelays {
+            print(i.time, i.delayUs)
         }
         upDelays += newUpValues
         downDelays += newDownValues

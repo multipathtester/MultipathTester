@@ -126,7 +126,6 @@ class QUICPerfTest: BaseTest, Test {
             ]
             return result
         }
-        print(lines)
         var intervals = [[String: Any]]()
         for i in 1...runCfg.runTimeVar {
             let splitted_line = lines[i].components(separatedBy: " ")

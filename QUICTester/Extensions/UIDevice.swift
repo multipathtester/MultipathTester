@@ -91,7 +91,33 @@ public extension UIDevice {
                     cursor = cursor?.pointee.ifa_next
                     continue
             }
-            return true
+            return cellularAddresses.count > 0
+        }
+        return false
+    }
+    
+    /// A Boolean value indicating whether the device has wifi connectivity (true) or not (false).
+    var hasWiFiConnectivity: Bool {
+        var addrs: UnsafeMutablePointer<ifaddrs>?
+        var cursor: UnsafeMutablePointer<ifaddrs>?
+        
+        defer { freeifaddrs(addrs) }
+        
+        guard getifaddrs(&addrs) == 0 else { return false }
+        cursor = addrs
+        
+        while cursor != nil {
+            guard
+                let utf8String = cursor?.pointee.ifa_name,
+                let name = NSString(utf8String: utf8String),
+                // Is the interface UP and resources allocated?
+                let flags = cursor?.pointee.ifa_flags,
+                name == "en0" && Int32(flags) & IFF_UP > 0 && Int32(flags) & IFF_RUNNING > 0
+                else {
+                    cursor = cursor?.pointee.ifa_next
+                    continue
+            }
+            return wifiAddresses.count > 0
         }
         return false
     }

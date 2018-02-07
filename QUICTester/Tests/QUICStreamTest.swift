@@ -14,17 +14,21 @@ class QUICStreamTest: BaseTest, Test {
     var maxPathID: UInt8
     var runTime: Int
     
-    init(ipVer: IPVersion, maxPathID: UInt8, runTime: Int) {
+    init(ipVer: IPVersion, maxPathID: UInt8, runTime: Int, waitTime: Double) {
         self.maxPathID = maxPathID
         self.runTime = runTime
 
         let filePrefix = "quictraffic_stream_" + ipVer.rawValue
-        super.init(traffic: "stream", ipVer: ipVer, port: 5202, urlPath: nil, filePrefix: filePrefix, waitTime: 3.0)
+        super.init(traffic: "stream", ipVer: ipVer, port: 5202, urlPath: nil, filePrefix: filePrefix, waitTime: waitTime)
         
         // Prepare the run configuration
         runCfg.maxPathIDVar = Int(maxPathID)
         runCfg.logPeriodMsVar = 100
         runCfg.runTimeVar = runTime
+    }
+    
+    convenience init(ipVer: IPVersion, maxPathID: UInt8, runTime: Int) {
+        self.init(ipVer: ipVer, maxPathID: maxPathID, runTime: runTime, waitTime: 3.0)
     }
     
     
@@ -130,7 +134,7 @@ class QUICStreamTest: BaseTest, Test {
         }
         
         var success = false
-        if errorMsg.contains("nil") || errorMsg.contains("deadline exceeded") {
+        if errorMsg.contains("nil") || errorMsg.contains("deadline exceeded") || errorMsg.contains("PeerGoingAway") {
             success = true
         }
 
