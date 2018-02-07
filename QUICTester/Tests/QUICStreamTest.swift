@@ -79,13 +79,19 @@ class QUICStreamTest: BaseTest, Test {
             resultText = result["error_msg"] as! String
         }
         let duration = Double(result["duration"] as! String)!
-        return StreamResult(name: getDescription(), proto: getProtocol(), success: success, result: resultText, duration: duration, startTime: startTime, waitTime: 0.0, upDelays: upDelays, downDelays: downDelays, errorMsg: result["error_msg"] as! String)
+        let wifiBytesSent = result["wifi_bytes_sent"] as! UInt32
+        let wifiBytesReceived = result["wifi_bytes_received"] as! UInt32
+        let cellBytesSent = result["cell_bytes_sent"] as! UInt32
+        let cellBytesReceived = result["cell_bytes_received"] as! UInt32
+        return StreamResult(name: getDescription(), proto: getProtocol(), success: success, result: resultText, duration: duration, startTime: startTime, waitTime: waitTime, wifiBytesReceived: wifiBytesReceived, wifiBytesSent: wifiBytesSent, cellBytesReceived: cellBytesReceived, cellBytesSent: cellBytesSent, upDelays: upDelays, downDelays: downDelays, errorMsg: result["error_msg"] as! String)
     }
     
     override func run() -> [String : Any] {
         _ = super.run()
         let streamString = QuictrafficRun(runCfg)
         let duration = Date().timeIntervalSince(startTime)
+        wifiInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
+        cellInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
         let lines = streamString!.components(separatedBy: .newlines)
         let errorMsg = lines[0]
         if lines.count < 3 {
@@ -93,6 +99,10 @@ class QUICStreamTest: BaseTest, Test {
                 "duration": String(format: "%.9f", duration),
                 "error_msg": errorMsg,
                 "success": false,
+                "wifi_bytes_sent": wifiInfoEnd.bytesSent - wifiInfoStart.bytesSent,
+                "wifi_bytes_received": wifiInfoEnd.bytesReceived - wifiInfoStart.bytesReceived,
+                "cell_bytes_sent": cellInfoEnd.bytesSent - cellInfoStart.bytesSent,
+                "cell_bytes_received": cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived,
             ]
             return result
         }
@@ -130,6 +140,10 @@ class QUICStreamTest: BaseTest, Test {
             "down_delays": downDelays,
             "up_delays": upDelays,
             "success": success,
+            "wifi_bytes_sent": wifiInfoEnd.bytesSent - wifiInfoStart.bytesSent,
+            "wifi_bytes_received": wifiInfoEnd.bytesReceived - wifiInfoStart.bytesReceived,
+            "cell_bytes_sent": cellInfoEnd.bytesSent - cellInfoStart.bytesSent,
+            "cell_bytes_received": cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived,
         ]
         return result
     }

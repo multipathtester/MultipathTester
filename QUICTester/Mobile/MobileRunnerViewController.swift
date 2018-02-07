@@ -136,6 +136,8 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
         let reachabilityStatus = internetReachability.currentReachabilityStatus()
         wasCellularOn = UIDevice.current.hasCellularConnectivity
         connectivities.append(Connectivity.getCurrentConnectivity(reachabilityStatus: reachabilityStatus))
+        let wifiInfoStart = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
+        let cellInfoStart = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
         startTime = Date()
         self.userLabel.text = "Please move away from your WiFi Access Point."
         self.navigationItem.hidesBackButton = true
@@ -165,8 +167,14 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
             }
             self.completed = true
             self.stopTime = Date()
+            let wifiInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
+            let cellInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
+            let wifiBytesSent = wifiInfoEnd.bytesSent - wifiInfoStart.bytesSent
+            let wifiBytesReceived = wifiInfoEnd.bytesReceived - wifiInfoStart.bytesReceived
+            let cellBytesSent = cellInfoEnd.bytesSent - cellInfoStart.bytesSent
+            let cellBytesReceived = cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived
             let duration = self.stopTime.timeIntervalSince(self.startTime)
-            let benchmark = Benchmark(connectivities: self.connectivities, duration: duration, locations: self.locations, mobile: true, pingMed: self.medPing!, pingStd: self.stdPing!, serverName: self.testServer!, startTime: self.startTime, testResults: testResults)
+            let benchmark = Benchmark(connectivities: self.connectivities, duration: duration, locations: self.locations, mobile: true, pingMed: self.medPing!, pingStd: self.stdPing!, wifiBytesReceived: wifiBytesReceived, wifiBytesSent: wifiBytesSent, cellBytesReceived: cellBytesReceived, cellBytesSent: cellBytesSent, serverName: self.testServer!, startTime: self.startTime, testResults: testResults)
             Utils.sendToServer(benchmark: benchmark, tests: self.tests)
             benchmark.save()
             self.cellTimer?.invalidate()

@@ -97,12 +97,18 @@ class QUICPerfTest: BaseTest, Test {
         } else {
             resultText = result["error_msg"] as! String
         }
-        return PerfResult(name: getDescription(), proto: getProtocol(), success: success, result: resultText, duration: duration, startTime: startTime, waitTime: 0.0, totalRetrans: totalRetrans, totalSent: totalSent, intervals: intervals, cwins: cwinData)
+        let wifiBytesSent = result["wifi_bytes_sent"] as! UInt32
+        let wifiBytesReceived = result["wifi_bytes_received"] as! UInt32
+        let cellBytesSent = result["cell_bytes_sent"] as! UInt32
+        let cellBytesReceived = result["cell_bytes_received"] as! UInt32
+        return PerfResult(name: getDescription(), proto: getProtocol(), success: success, result: resultText, duration: duration, startTime: startTime, waitTime: waitTime, wifiBytesReceived: wifiBytesReceived, wifiBytesSent: wifiBytesSent, cellBytesReceived: cellBytesReceived, cellBytesSent: cellBytesSent, totalRetrans: totalRetrans, totalSent: totalSent, intervals: intervals, cwins: cwinData)
     }
     
     override func run() -> [String : Any] {
         _ = super.run()
         let qperfString = QuictrafficRun(runCfg)
+        wifiInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
+        cellInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
         let lines = qperfString!.components(separatedBy: .newlines)
         if lines.count < 2 || lines[lines.count - 1] != "" {
             // An error occurred: the string does not end with a '\n'
@@ -113,6 +119,10 @@ class QUICPerfTest: BaseTest, Test {
                 "success": false,
                 "total_retrans": "0",
                 "total_sent": "0",
+                "wifi_bytes_sent": wifiInfoEnd.bytesSent - wifiInfoStart.bytesSent,
+                "wifi_bytes_received": wifiInfoEnd.bytesReceived - wifiInfoStart.bytesReceived,
+                "cell_bytes_sent": cellInfoEnd.bytesSent - cellInfoStart.bytesSent,
+                "cell_bytes_received": cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived,
             ]
             return result
         }
@@ -134,6 +144,10 @@ class QUICPerfTest: BaseTest, Test {
             "success": true,
             "total_retrans": splitted_line[5],
             "total_sent": splitted_line[1],
+            "wifi_bytes_sent": wifiInfoEnd.bytesSent - wifiInfoStart.bytesSent,
+            "wifi_bytes_received": wifiInfoEnd.bytesReceived - wifiInfoStart.bytesReceived,
+            "cell_bytes_sent": cellInfoEnd.bytesSent - cellInfoStart.bytesSent,
+            "cell_bytes_received": cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived,
         ]
         return result
     }

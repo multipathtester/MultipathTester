@@ -44,6 +44,10 @@ protocol TestResult: Codable {
     func getProtocol() -> NetProtocol
     func getResult() -> String
     func getWaitTime() -> Double
+    func getWifiBytesReceived() -> UInt32
+    func getWifiBytesSent() -> UInt32
+    func getCellBytesReceived() -> UInt32
+    func getCellBytesSent() -> UInt32
     func resultsToJSONDict() -> [String: Any]
     func toJSONDict(benchmarkUUID: String, order: Int, protoInfo: [[String: Any]], config: [String: Any]) -> [String: Any]
     func succeeded() -> Bool

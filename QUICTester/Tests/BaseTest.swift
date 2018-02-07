@@ -21,6 +21,11 @@ class BaseTest {
     var urlPath: String = "" // If not empty, it MUST start with a '/' character
     var waitTime: Double  // In seconds
     
+    var wifiInfoStart = InterfaceInfo()
+    var wifiInfoEnd = InterfaceInfo()
+    var cellInfoStart = InterfaceInfo()
+    var cellInfoEnd = InterfaceInfo()
+    
     init(traffic: String, ipVer: IPVersion, port: UInt16, urlPath: String?, filePrefix: String, waitTime: Double) {
         self.ipVer = ipVer
         self.port = port
@@ -113,6 +118,8 @@ class BaseTest {
         // This is why this MUST be run in background
         usleep(UInt32(waitTime * 1000000))
         startTime = Date()
+        wifiInfoStart = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
+        cellInfoStart = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
         // This MUST be overriden
         return [:]
     }

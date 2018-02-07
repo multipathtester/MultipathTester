@@ -33,6 +33,7 @@
 		CE29B9E91FD833610049A105 /* QUICReqResTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE29B9E81FD833610049A105 /* QUICReqResTest.swift */; };
 		CE29B9EB1FD838340049A105 /* ReqResResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE29B9EA1FD838340049A105 /* ReqResResult.swift */; };
 		CE4894F72028AF0100CBEED5 /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4894F62028AF0100CBEED5 /* Array.swift */; };
+		CE4894FA202B2BE300CBEED5 /* InterfaceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4894F9202B2BE300CBEED5 /* InterfaceInfo.swift */; };
 		CE4B90472018711100E71C5E /* StreamResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4B90462018711100E71C5E /* StreamResult.swift */; };
 		CE58F46B1FC3463F009EA08F /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = CE58F46A1FC34631009EA08F /* libxml2.tbd */; };
 		CE58F46D1FC34651009EA08F /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE58F46C1FC3464A009EA08F /* CFNetwork.framework */; };
@@ -174,6 +175,7 @@
 		CE29B9E81FD833610049A105 /* QUICReqResTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QUICReqResTest.swift; sourceTree = "<group>"; };
 		CE29B9EA1FD838340049A105 /* ReqResResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReqResResult.swift; sourceTree = "<group>"; };
 		CE4894F62028AF0100CBEED5 /* Array.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Array.swift; sourceTree = "<group>"; };
+		CE4894F9202B2BE300CBEED5 /* InterfaceInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterfaceInfo.swift; sourceTree = "<group>"; };
 		CE4B90462018711100E71C5E /* StreamResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamResult.swift; sourceTree = "<group>"; };
 		CE58F46A1FC34631009EA08F /* libxml2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.tbd; path = usr/lib/libxml2.tbd; sourceTree = SDKROOT; };
 		CE58F46C1FC3464A009EA08F /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
@@ -387,6 +389,7 @@
 				CE29B9E21FD6FD660049A105 /* IntervalData.swift */,
 				CE58F4A71FD68D36009EA08F /* RcvBytesData.swift */,
 				CE26853220175EFB00462C6E /* DelayData.swift */,
+				CE4894F9202B2BE300CBEED5 /* InterfaceInfo.swift */,
 			);
 			path = HelperObject;
 			sourceTree = "<group>";
@@ -778,6 +781,7 @@
 				CE58F4A11FD57C58009EA08F /* QUICBulkDownloadTest.swift in Sources */,
 				CED4B5201F97972500E6F86E /* TCPFileDescriptorFinder.swift in Sources */,
 				CED4B5221F9F7FE300E6F86E /* TCPInfoConverter.swift in Sources */,
+				CE4894FA202B2BE300CBEED5 /* InterfaceInfo.swift in Sources */,
 				CE58F4801FCEA594009EA08F /* QUICConnectivityTest.swift in Sources */,
 				CE58F4951FD188DE009EA08F /* BenchmarkTableViewCell.swift in Sources */,
 				CEA702FC2004CD4200FDFB89 /* MultiLineChartHelper.swift in Sources */,

@@ -64,7 +64,11 @@ class QUICConnectivityTest: BaseTest, Test {
     }
     
     func getTestResult() -> TestResult {
-        return ConnectivityResult(name: getDescription(), proto: getProtocol(), success: result["success"] as! Bool, result: result["error_msg"] as! String, duration: result["duration"] as! Double, startTime: startTime, waitTime: 0.0, durations: result["durations"] as! [Double])
+        let wifiBytesSent = result["wifi_bytes_sent"] as! UInt32
+        let wifiBytesReceived = result["wifi_bytes_received"] as! UInt32
+        let cellBytesSent = result["cell_bytes_sent"] as! UInt32
+        let cellBytesReceived = result["cell_bytes_received"] as! UInt32
+        return ConnectivityResult(name: getDescription(), proto: getProtocol(), success: result["success"] as! Bool, result: result["error_msg"] as! String, duration: result["duration"] as! Double, startTime: startTime, waitTime: waitTime, wifiBytesReceived: wifiBytesReceived, wifiBytesSent: wifiBytesSent, cellBytesReceived: cellBytesReceived, cellBytesSent: cellBytesSent, durations: result["durations"] as! [Double])
     }
     
     override func getRunTime() -> Double {
@@ -83,6 +87,8 @@ class QUICConnectivityTest: BaseTest, Test {
         var resultMsg = ""
         let durationString = QuictrafficRun(runCfg)
         let elapsed = startTime.timeIntervalSinceNow
+        wifiInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
+        cellInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
         let durationsArray = durationString!.components(separatedBy: .newlines)
         let durations = Utils.parseSeveralInMs(durationsString: durationsArray)
         do {
@@ -106,6 +112,10 @@ class QUICConnectivityTest: BaseTest, Test {
             "durations": durations,
             "error_msg": resultMsg,
             "success": success,
+            "wifi_bytes_sent": wifiInfoEnd.bytesSent - wifiInfoStart.bytesSent,
+            "wifi_bytes_received": wifiInfoEnd.bytesReceived - wifiInfoStart.bytesReceived,
+            "cell_bytes_sent": cellInfoEnd.bytesSent - cellInfoStart.bytesSent,
+            "cell_bytes_received": cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived,
         ]
         return result
     }

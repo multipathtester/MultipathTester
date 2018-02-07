@@ -72,13 +72,19 @@ class QUICReqResTest: BaseTest, Test {
         } else {
             resultText = result["error_msg"] as! String
         }
-        return ReqResResult(name: getDescription(), proto: getProtocol(), success: success, result: resultText, duration: duration, startTime: startTime, waitTime: 0.0, missed: missed, maxDelay: maxDelay, delays: delays)
+        let wifiBytesSent = result["wifi_bytes_sent"] as! UInt32
+        let wifiBytesReceived = result["wifi_bytes_received"] as! UInt32
+        let cellBytesSent = result["cell_bytes_sent"] as! UInt32
+        let cellBytesReceived = result["cell_bytes_received"] as! UInt32
+        return ReqResResult(name: getDescription(), proto: getProtocol(), success: success, result: resultText, duration: duration, startTime: startTime, waitTime: waitTime, wifiBytesReceived: wifiBytesReceived, wifiBytesSent: wifiBytesSent, cellBytesReceived: cellBytesReceived, cellBytesSent: cellBytesSent, missed: missed, maxDelay: maxDelay, delays: delays)
     }
     
     override func run() -> [String : Any] {
         _ = super.run()
         let reqresString = QuictrafficRun(runCfg)
         let elapsed = startTime.timeIntervalSinceNow
+        wifiInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
+        cellInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
         var delays = [Int64]()
         let lines = reqresString!.components(separatedBy: .newlines)
         if lines[0] != "Exiting client main with error deadline exceeded" && lines[0] != "Exiting client main with error nil" {
@@ -89,6 +95,10 @@ class QUICReqResTest: BaseTest, Test {
                 "duration": "-1.0",
                 "error_msg": lines[0],
                 "success": false,
+                "wifi_bytes_sent": wifiInfoEnd.bytesSent - wifiInfoStart.bytesSent,
+                "wifi_bytes_received": wifiInfoEnd.bytesReceived - wifiInfoStart.bytesReceived,
+                "cell_bytes_sent": cellInfoEnd.bytesSent - cellInfoStart.bytesSent,
+                "cell_bytes_received": cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived,
             ]
             return result
         }
@@ -101,6 +111,10 @@ class QUICReqResTest: BaseTest, Test {
             "missed": Int64(missed),
             "duration": String(format: "%.9f", elapsed),
             "success": true,
+            "wifi_bytes_sent": wifiInfoEnd.bytesSent - wifiInfoStart.bytesSent,
+            "wifi_bytes_received": wifiInfoEnd.bytesReceived - wifiInfoStart.bytesReceived,
+            "cell_bytes_sent": cellInfoEnd.bytesSent - cellInfoStart.bytesSent,
+            "cell_bytes_received": cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived,
         ]
         return result
     }

@@ -72,8 +72,10 @@ class BenchmarkDetailTableViewController: UITableViewController {
         }
         benchmarkDetails += [
             TableItem(title: "Test duration", detail: Utils.stringSecondsToMinutesSeconds(seconds: Int(bench.duration))),
-            TableItem(title: "Data amount WiFi interface", detail: "40 MB"),
-            TableItem(title: "Data amount cellular interface", detail: "34 MB"),
+            TableItem(title: "Data sent on WiFi interface", detail: String(format: "%.1f MB", Double(bench.wifiBytesSent) / 1000000.0)),
+            TableItem(title: "Data received on WiFi interface", detail: String(format: "%.1f MB", Double(bench.wifiBytesReceived) / 1000000.0)),
+            TableItem(title: "Data sent on cellular interface", detail: String(format: "%.1f MB", Double(bench.cellBytesSent) / 1000000.0)),
+            TableItem(title: "Data received on cellular interface", detail: String(format: "%.1f MB", Double(bench.cellBytesReceived) / 1000000.0)),
             TableItem(title: "Server name", detail: bench.serverName.rawValue),
             TableItem(title: "Platform", detail: bench.platform),
             TableItem(title: "Platform version", detail: bench.platformVersion),

@@ -17,6 +17,10 @@ class Benchmark: NSObject, Codable {
     var mobile: Bool
     var pingMed: Double  // Stored in milliseconds
     var pingStd: Double  // Stored in milliseconds
+    var wifiBytesReceived: UInt32
+    var wifiBytesSent: UInt32
+    var cellBytesReceived: UInt32
+    var cellBytesSent: UInt32
     var serverName: TestServer
     var startTime: Date
     var testResults: [TestResult]
@@ -38,6 +42,10 @@ class Benchmark: NSObject, Codable {
         case mobile
         case pingMed
         case pingStd
+        case wifiBytesReceived
+        case wifiBytesSent
+        case cellBytesReceived
+        case cellBytesSent
         case serverName
         case startTime
         case testResults
@@ -58,7 +66,7 @@ class Benchmark: NSObject, Codable {
     static let ArchiveURL = DocumentsDirectory.appendingPathComponent("benchmarks")
     
     // MARK: Initializers
-    init(connectivities: [Connectivity], duration: Double, locations: [Location], mobile: Bool, pingMed: Double, pingStd: Double, serverName: TestServer, startTime: Date, testResults: [TestResult]) {
+    init(connectivities: [Connectivity], duration: Double, locations: [Location], mobile: Bool, pingMed: Double, pingStd: Double, wifiBytesReceived: UInt32, wifiBytesSent: UInt32, cellBytesReceived: UInt32, cellBytesSent: UInt32, serverName: TestServer, startTime: Date, testResults: [TestResult]) {
         // Initilialize stored properties
         self.connectivities = connectivities
         self.duration = duration
@@ -66,6 +74,10 @@ class Benchmark: NSObject, Codable {
         self.mobile = mobile
         self.pingMed = pingMed
         self.pingStd = pingStd
+        self.wifiBytesReceived = wifiBytesReceived
+        self.wifiBytesSent = wifiBytesSent
+        self.cellBytesReceived = cellBytesReceived
+        self.cellBytesSent = cellBytesSent
         self.serverName = serverName
         self.startTime = startTime
         self.testResults = testResults
@@ -92,6 +104,10 @@ class Benchmark: NSObject, Codable {
         try container.encode(mobile, forKey: .mobile)
         try container.encode(pingMed, forKey: .pingMed)
         try container.encode(pingStd, forKey: .pingStd)
+        try container.encode(wifiBytesReceived, forKey: .wifiBytesReceived)
+        try container.encode(wifiBytesSent, forKey: .wifiBytesSent)
+        try container.encode(cellBytesReceived, forKey: .cellBytesReceived)
+        try container.encode(cellBytesSent, forKey: .cellBytesSent)
         try container.encode(serverName, forKey: .serverName)
         try container.encode(startTime, forKey: .startTime)
         try container.encode(testResults.map(AnyTestResult.init), forKey: .testResults)
@@ -115,6 +131,10 @@ class Benchmark: NSObject, Codable {
         mobile = try container.decode(Bool.self, forKey: .mobile)
         pingMed = try container.decode(Double.self, forKey: .pingMed)
         pingStd = try container.decode(Double.self, forKey: .pingStd)
+        wifiBytesReceived = try container.decode(UInt32.self, forKey: .wifiBytesReceived)
+        wifiBytesSent = try container.decode(UInt32.self, forKey: .wifiBytesSent)
+        cellBytesReceived = try container.decode(UInt32.self, forKey: .cellBytesReceived)
+        cellBytesSent = try container.decode(UInt32.self, forKey: .cellBytesSent)
         serverName = try container.decode(TestServer.self, forKey: .serverName)
         startTime = try container.decode(Date.self, forKey: .startTime)
         testResults = try container.decode([AnyTestResult].self, forKey: .testResults).map { $0.base }
@@ -144,6 +164,10 @@ class Benchmark: NSObject, Codable {
             "mobile": mobile,
             "ping_med": String.init(format: "%.3f", pingMed),
             "ping_std": String.init(format: "%.3f", pingStd),
+            "wifi_bytes_received": wifiBytesReceived,
+            "wifi_bytes_sent": wifiBytesSent,
+            "cell_bytes_received": cellBytesReceived,
+            "cell_bytes_sent": cellBytesSent,
             "server_name": serverName.rawValue,
             "platform": platform,
             "platform_version_name": platformVersion,

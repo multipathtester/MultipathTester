@@ -22,8 +22,13 @@ class BaseResult: Codable {
     var startTime: Date
     var waitTime: Double
     
+    var wifiBytesReceived: UInt32
+    var wifiBytesSent: UInt32
+    var cellBytesReceived: UInt32
+    var cellBytesSent: UInt32
+    
     // MARK: Initializers
-    init(name: String, proto: NetProtocol, success: Bool, result: String, duration: Double, startTime: Date, waitTime: Double) {
+    init(name: String, proto: NetProtocol, success: Bool, result: String, duration: Double, startTime: Date, waitTime: Double, wifiBytesReceived: UInt32, wifiBytesSent: UInt32, cellBytesReceived: UInt32, cellBytesSent: UInt32) {
         self.name = name
         self.proto = proto
         self.success = success
@@ -31,6 +36,10 @@ class BaseResult: Codable {
         self.duration = duration
         self.startTime = startTime
         self.waitTime = waitTime
+        self.wifiBytesReceived = wifiBytesReceived
+        self.wifiBytesSent = wifiBytesSent
+        self.cellBytesReceived = cellBytesReceived
+        self.cellBytesSent = cellBytesSent
     }
     
     // MARK: JSON serialization to collect server
@@ -48,6 +57,10 @@ class BaseResult: Codable {
             "start_time": Utils.getDateFormatter().string(from: startTime),
             "wait_time": String(format: "%.6f", waitTime),
             "duration": String(format: "%.6f", duration),
+            "wifi_bytes_received": wifiBytesReceived,
+            "wifi_bytes_sent": wifiBytesSent,
+            "cell_bytes_received": cellBytesReceived,
+            "cell_bytes_sent": cellBytesSent,
             "protocol": proto.rawValue,
             "config": config,
             "result": resultsToJSONDict(),
@@ -77,6 +90,22 @@ class BaseResult: Codable {
     
     func getWaitTime() -> Double {
         return waitTime
+    }
+    
+    func getWifiBytesReceived() -> UInt32 {
+        return wifiBytesReceived
+    }
+    
+    func getWifiBytesSent() -> UInt32 {
+        return wifiBytesSent
+    }
+    
+    func getCellBytesReceived() -> UInt32 {
+        return cellBytesReceived
+    }
+    
+    func getCellBytesSent() -> UInt32 {
+        return cellBytesSent
     }
     
     func succeeded() -> Bool {

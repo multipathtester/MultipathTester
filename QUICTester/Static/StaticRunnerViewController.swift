@@ -120,6 +120,8 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
         let reachabilityStatus = internetReachability.currentReachabilityStatus()
         wasCellularOn = UIDevice.current.hasCellularConnectivity
         connectivities.append(Connectivity.getCurrentConnectivity(reachabilityStatus: reachabilityStatus))
+        let wifiInfoStart = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
+        let cellInfoStart = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
         startTime = Date()
         self.navigationItem.hidesBackButton = true
         cellTimer = Timer(timeInterval: 0.5, target: self, selector: #selector(StaticRunnerViewController.probeCellular), userInfo: nil, repeats: true)
@@ -193,6 +195,12 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
                 }
             }
             self.stopTime = Date()
+            let wifiInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
+            let cellInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
+            let wifiBytesSent = wifiInfoEnd.bytesSent - wifiInfoStart.bytesSent
+            let wifiBytesReceived = wifiInfoEnd.bytesReceived - wifiInfoStart.bytesReceived
+            let cellBytesSent = cellInfoEnd.bytesSent - cellInfoStart.bytesSent
+            let cellBytesReceived = cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived
             self.runningIndex = testDones
             var testResults = [TestResult]()
             for i in 0..<testDones {
@@ -208,7 +216,7 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
             }
             let duration = self.stopTime.timeIntervalSince(self.startTime)
             
-            let benchmark = Benchmark(connectivities: connectivities, duration: duration, locations: self.locations, mobile: false, pingMed: bestMed, pingStd: bestStd, serverName: bestServer, startTime: self.startTime, testResults: testResults)
+            let benchmark = Benchmark(connectivities: connectivities, duration: duration, locations: self.locations, mobile: false, pingMed: bestMed, pingStd: bestStd, wifiBytesReceived: wifiBytesReceived, wifiBytesSent: wifiBytesSent, cellBytesReceived: cellBytesReceived, cellBytesSent: cellBytesSent, serverName: bestServer, startTime: self.startTime, testResults: testResults)
             Utils.sendToServer(benchmark: benchmark, tests: self.allTests)
             benchmark.save()
             self.cellTimer?.invalidate()

@@ -34,12 +34,12 @@ class ReqResResult: BaseResult, TestResult {
     static let ArchiveURL = DocumentsDirectory.appendingPathComponent("reqResResults")
     
     // MARK: Initializers
-    init(name: String, proto: NetProtocol, success: Bool, result: String, duration: Double, startTime: Date, waitTime: Double, missed: Int64, maxDelay: Int64, delays: [Int64]) {
+    init(name: String, proto: NetProtocol, success: Bool, result: String, duration: Double, startTime: Date, waitTime: Double, wifiBytesReceived: UInt32, wifiBytesSent: UInt32, cellBytesReceived: UInt32, cellBytesSent: UInt32, missed: Int64, maxDelay: Int64, delays: [Int64]) {
         self.missed = missed
         self.maxDelay = maxDelay
         self.delays = delays
         
-        super.init(name: name, proto: proto, success: success, result: result, duration: duration, startTime: startTime, waitTime: waitTime)
+        super.init(name: name, proto: proto, success: success, result: result, duration: duration, startTime: startTime, waitTime: waitTime, wifiBytesReceived: wifiBytesReceived, wifiBytesSent: wifiBytesSent, cellBytesReceived: cellBytesReceived, cellBytesSent: cellBytesSent)
     }
     
     required init(from decoder: Decoder) throws {
