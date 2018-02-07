@@ -17,7 +17,7 @@ class QUICReqResTest: BaseTest, Test {
         self.maxPathID = maxPathID
         
         let filePrefix = "quictraffic_reqres_" + ipVer.rawValue
-        super.init(traffic: "reqres", ipVer: ipVer, port: 8080, urlPath: nil, filePrefix: filePrefix)
+        super.init(traffic: "reqres", ipVer: ipVer, port: 8080, urlPath: nil, filePrefix: filePrefix, waitTime: 3.0)
         
         // Prepare the run configuration
         runCfg.maxPathIDVar = Int(maxPathID)
@@ -75,8 +75,8 @@ class QUICReqResTest: BaseTest, Test {
         return ReqResResult(name: getDescription(), proto: getProtocol(), success: success, result: resultText, duration: duration, startTime: startTime, waitTime: 0.0, missed: missed, maxDelay: maxDelay, delays: delays)
     }
     
-    func run() -> [String : Any] {
-        startTime = Date()
+    override func run() -> [String : Any] {
+        _ = super.run()
         let reqresString = QuictrafficRun(runCfg)
         let elapsed = startTime.timeIntervalSinceNow
         var delays = [Int64]()

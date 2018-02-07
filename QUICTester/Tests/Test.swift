@@ -46,10 +46,12 @@ protocol Test {
     func getNotifyID() -> String
     func getProtocol() -> NetProtocol
     func getProtoInfo() -> [[String: Any]]
+    func getRunTime() -> Double
     func getStartTime() -> Date
     func getTestResult() -> TestResult
     func getTestServer() -> TestServer
     func getURL() -> String
+    func getWaitTime() -> Double
     func setTestServer(testServer: TestServer)
     func updateURL()
     func run() -> [String:Any]

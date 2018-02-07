@@ -54,9 +54,9 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
             QUICBulkDownloadTest(ipVer: .v4, urlPath: "/10MB", maxPathID: 0),
             QUICBulkDownloadTest(ipVer: .v6, urlPath: "/10MB", maxPathID: 0),
             QUICBulkDownloadTest(ipVer: .any, urlPath: "/10MB", maxPathID: 255),
-            QUICReqResTest(ipVer: .v4, maxPathID: 0),
-            QUICReqResTest(ipVer: .v6, maxPathID: 0),
-            QUICReqResTest(ipVer: .any, maxPathID: 255),
+            QUICStreamTest(ipVer: .v4, maxPathID: 0, runTime: 7),
+            QUICStreamTest(ipVer: .v6, maxPathID: 0, runTime: 7),
+            QUICStreamTest(ipVer: .any, maxPathID: 255, runTime: 7),
             QUICPerfTest(ipVer: .v4, maxPathID: 0),
             QUICPerfTest(ipVer: .v6, maxPathID: 0),
             QUICPerfTest(ipVer: .any, maxPathID: 255),
@@ -138,9 +138,10 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
                     self.progress.setProgress(value: CGFloat((Float(i) / Float(nbTests) * 100.0)), animationDuration: 0.0) {}
                     self.runningIndex = i
                     self.testsTable.reloadData()
-                    self.progress.setProgress(value: CGFloat((Float(i + 1) / Float(nbTests) * 100.0) - 1.0), animationDuration: 10.0) {
-                        print("Done animating!")
+                    self.progress.setProgress(value: CGFloat((Float(i) / Float(nbTests) * 100.0) + Float(test.getWaitTime())), animationDuration: test.getWaitTime()) {
                         // Do anything your heart desires...
+                        print("wait completed")
+                        self.progress.setProgress(value: CGFloat((Float(i + 1) / Float(nbTests) * 100.0) - 1.0), animationDuration: test.getRunTime()) {print("test completed")}
                     }
                 }
                 if self.stoppedTests {
@@ -172,9 +173,14 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
                     self.progress.setProgress(value: CGFloat((Float(i + self.pingTests.count) / Float(nbTests) * 100.0)), animationDuration: 0.0) {}
                     self.runningIndex = i + self.pingTests.count
                     self.testsTable.reloadData()
-                    self.progress.setProgress(value: CGFloat((Float(i + 1 + self.pingTests.count) / Float(nbTests) * 100.0) - 1.0), animationDuration: 10.0) {
-                        print("Done animating!")
+                    let waitTime = test.getWaitTime()
+                    let runTime = test.getRunTime()
+                    let increment = waitTime / (waitTime + runTime)
+                    let percentage = (Float(i) + Float(self.pingTests.count) + Float(increment)) / Float(nbTests) * 100.0
+                    self.progress.setProgress(value: CGFloat(percentage), animationDuration: waitTime) {
                         // Do anything your heart desires...
+                        print("wait completed")
+                        self.progress.setProgress(value: CGFloat((Float(i + 1 + self.pingTests.count) / Float(nbTests) * 100.0) - 1.0), animationDuration: runTime) {print("test completed")}
                     }
                 }
                 if self.stoppedTests {

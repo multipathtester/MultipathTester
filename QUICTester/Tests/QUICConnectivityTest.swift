@@ -19,7 +19,7 @@ class QUICConnectivityTest: BaseTest, Test {
         self.pingWaitMs = pingWaitMs
         
         let filePrefix = "quictraffic_connectivity_" + String(port) + "_" + ipVer.rawValue
-        super.init(traffic: "bulk", ipVer: ipVer, port: port, urlPath: "/connectivityTest", filePrefix: filePrefix)
+        super.init(traffic: "bulk", ipVer: ipVer, port: port, urlPath: "/connectivityTest", filePrefix: filePrefix, waitTime: 0.0)
         setTestServer(testServer: testServer)
         
         // Prepare the run configuration
@@ -67,14 +67,18 @@ class QUICConnectivityTest: BaseTest, Test {
         return ConnectivityResult(name: getDescription(), proto: getProtocol(), success: result["success"] as! Bool, result: result["error_msg"] as! String, duration: result["duration"] as! Double, startTime: startTime, waitTime: 0.0, durations: result["durations"] as! [Double])
     }
     
+    override func getRunTime() -> Double {
+        return 2.0
+    }
+    
     // Because QUIC cannot do GET without the https:// ...
     override func getURL() -> String {
         let url = super.getURL()
         return "https://" + url
     }
     
-    func run() -> [String:Any] {
-        startTime = Date()
+    override func run() -> [String:Any] {
+        _ = super.run()
         var success = false
         var resultMsg = ""
         let durationString = QuictrafficRun(runCfg)

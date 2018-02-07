@@ -19,7 +19,7 @@ class QUICStreamTest: BaseTest, Test {
         self.runTime = runTime
 
         let filePrefix = "quictraffic_stream_" + ipVer.rawValue
-        super.init(traffic: "stream", ipVer: ipVer, port: 5202, urlPath: nil, filePrefix: filePrefix)
+        super.init(traffic: "stream", ipVer: ipVer, port: 5202, urlPath: nil, filePrefix: filePrefix, waitTime: 3.0)
         
         // Prepare the run configuration
         runCfg.maxPathIDVar = Int(maxPathID)
@@ -79,11 +79,11 @@ class QUICStreamTest: BaseTest, Test {
             resultText = result["error_msg"] as! String
         }
         let duration = Double(result["duration"] as! String)!
-        return StreamResult(name: getDescription(), proto: getProtocol(), success: true, result: resultText, duration: duration, startTime: startTime, waitTime: 0.0, upDelays: upDelays, downDelays: downDelays, errorMsg: result["error_msg"] as! String)
+        return StreamResult(name: getDescription(), proto: getProtocol(), success: success, result: resultText, duration: duration, startTime: startTime, waitTime: 0.0, upDelays: upDelays, downDelays: downDelays, errorMsg: result["error_msg"] as! String)
     }
     
-    func run() -> [String : Any] {
-        startTime = Date()
+    override func run() -> [String : Any] {
+        _ = super.run()
         let streamString = QuictrafficRun(runCfg)
         let duration = Date().timeIntervalSince(startTime)
         let lines = streamString!.components(separatedBy: .newlines)

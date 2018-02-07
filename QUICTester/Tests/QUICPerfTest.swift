@@ -17,11 +17,12 @@ class QUICPerfTest: BaseTest, Test {
         self.maxPathID = maxPathID
 
         let filePrefix = "quictraffic_qperf_" + ipVer.rawValue
-        super.init(traffic: "qperf", ipVer: ipVer, port: 5201, urlPath: nil, filePrefix: filePrefix)
+        super.init(traffic: "qperf", ipVer: ipVer, port: 5201, urlPath: nil, filePrefix: filePrefix, waitTime: 3.0)
         
         // Prepare the run configuration
         runCfg.maxPathIDVar = Int(maxPathID)
         runCfg.logPeriodMsVar = 25
+        runCfg.runTimeVar = 7
     }
     
     func getDescription() -> String {
@@ -99,8 +100,8 @@ class QUICPerfTest: BaseTest, Test {
         return PerfResult(name: getDescription(), proto: getProtocol(), success: success, result: resultText, duration: duration, startTime: startTime, waitTime: 0.0, totalRetrans: totalRetrans, totalSent: totalSent, intervals: intervals, cwins: cwinData)
     }
     
-    func run() -> [String : Any] {
-        startTime = Date()
+    override func run() -> [String : Any] {
+        _ = super.run()
         let qperfString = QuictrafficRun(runCfg)
         let lines = qperfString!.components(separatedBy: .newlines)
         if lines.count < 2 || lines[lines.count - 1] != "" {
@@ -115,8 +116,9 @@ class QUICPerfTest: BaseTest, Test {
             ]
             return result
         }
+        print(lines)
         var intervals = [[String: Any]]()
-        for i in 1...10 {
+        for i in 1...runCfg.runTimeVar {
             let splitted_line = lines[i].components(separatedBy: " ")
             intervals.append([
                 "intervalInSec": splitted_line[0],

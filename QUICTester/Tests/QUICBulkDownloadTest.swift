@@ -17,7 +17,7 @@ class QUICBulkDownloadTest: BaseTest, Test {
         self.maxPathID = maxPathID
         let filePrefix = "quictraffic_bulk_" + urlPath.dropFirst() + "_" + ipVer.rawValue
         
-        super.init(traffic: "bulk", ipVer: ipVer, port: 443, urlPath: urlPath, filePrefix: filePrefix)
+        super.init(traffic: "bulk", ipVer: ipVer, port: 443, urlPath: urlPath, filePrefix: filePrefix, waitTime: 2.0)
         
         // Prepare the run configuration
         runCfg.maxPathIDVar = Int(maxPathID)
@@ -85,8 +85,12 @@ class QUICBulkDownloadTest: BaseTest, Test {
         return "https://" + url
     }
     
-    func run() -> [String : Any] {
-        startTime = Date()
+    override func getRunTime() -> Double {
+        return 5.0
+    }
+    
+    override func run() -> [String : Any] {
+        _ = super.run()
         var success = true
         var errorMsg = ""
         let durationString = QuictrafficRun(runCfg)

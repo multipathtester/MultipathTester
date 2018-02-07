@@ -19,13 +19,15 @@ class BaseTest {
     var startTime: Date = Date()
     var testServer: TestServer = .fr
     var urlPath: String = "" // If not empty, it MUST start with a '/' character
+    var waitTime: Double  // In seconds
     
-    init(traffic: String, ipVer: IPVersion, port: UInt16, urlPath: String?, filePrefix: String) {
+    init(traffic: String, ipVer: IPVersion, port: UInt16, urlPath: String?, filePrefix: String, waitTime: Double) {
         self.ipVer = ipVer
         self.port = port
         if let argURLPath = urlPath {
             self.urlPath = argURLPath
         }
+        self.waitTime = waitTime
         
         // Notify ID
         let now = Date().timeIntervalSince1970
@@ -97,5 +99,21 @@ class BaseTest {
     
     func updateURL() {
         runCfg.urlVar = getURL()
+    }
+    
+    func getRunTime() -> Double {
+        return Double(runCfg.runTime())
+    }
+    
+    func getWaitTime() -> Double {
+        return waitTime
+    }
+    
+    func run() -> [String:Any] {
+        // This is why this MUST be run in background
+        usleep(UInt32(waitTime * 1000000))
+        startTime = Date()
+        // This MUST be overriden
+        return [:]
     }
 }
