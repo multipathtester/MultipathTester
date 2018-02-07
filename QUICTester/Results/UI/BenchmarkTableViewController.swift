@@ -112,7 +112,7 @@ class BenchmarkTableViewController: UITableViewController {
             }
         }
         cell.quicResultsLabel.text = String(testSucceeded) + "/" + String(testCount)
-        cell.pingResultsLabel.text = String.init(format: "%.0f ms", benchmark.pingMean * 1000.0)
+        cell.pingResultsLabel.text = String.init(format: "%.0f ms", benchmark.pingMed)
         
         return cell
     }

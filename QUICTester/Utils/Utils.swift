@@ -24,9 +24,9 @@ class Utils {
         }
     }
     
-    static func parseSeveral(durationsString: [String]) -> [Double] {
+    static func parseSeveralInMs(durationsString: [String]) -> [Double] {
         return durationsString.map { (ds) -> Double in
-            return parse(durationString: ds)
+            return parse(durationString: ds) * 1000.0
         }
     }
     

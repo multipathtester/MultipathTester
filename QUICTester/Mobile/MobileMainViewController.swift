@@ -30,8 +30,8 @@ class MobileMainViewController: UIViewController {
     
     var bestServer: TestServer = .fr
     var ready : Bool = false
-    var bestAvgPing: Double = Double.greatestFiniteMagnitude
-    var bestVarPing: Double = Double.greatestFiniteMagnitude
+    var bestMedPing: Double = Double.greatestFiniteMagnitude
+    var bestStdPing: Double = Double.greatestFiniteMagnitude
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -72,8 +72,8 @@ class MobileMainViewController: UIViewController {
                 QUICConnectivityTest(ipVer: .any, port: 443, testServer: .jp, pingCount: 5, pingWaitMs: 50),
             ]
             var currentBestServer: TestServer = .fr
-            self.bestAvgPing = Double.greatestFiniteMagnitude
-            self.bestVarPing = Double.greatestFiniteMagnitude
+            self.bestMedPing = Double.greatestFiniteMagnitude
+            self.bestStdPing = Double.greatestFiniteMagnitude
             let queue = OperationQueue()
             let group = DispatchGroup()
             for i in 0..<pingTests.count {
@@ -83,13 +83,13 @@ class MobileMainViewController: UIViewController {
                     let res = test.run()
                     let success = res["success"] as! Bool
                     let durations = res["durations"] as! [Double]
-                    let avgDuration = durations.averaged()
-                    print("avg duration of", test.getTestServer(), "is", avgDuration)
+                    let median = durations.median()
+                    print("median duration of", test.getTestServer(), "is", median)
                     OperationQueue.main.addOperation {
-                        if success && avgDuration >= 0.0 && avgDuration < self.bestAvgPing {
+                        if success && median >= 0.0 && median < self.bestMedPing {
                             currentBestServer = test.getTestServer()
-                            self.bestAvgPing = avgDuration
-                            self.bestVarPing = durations.variance()
+                            self.bestMedPing = median
+                            self.bestStdPing = durations.standardDeviation()
                         }
                         group.leave()
                     }
@@ -220,8 +220,8 @@ class MobileMainViewController: UIViewController {
             }
             
             mobileRunnerViewController.testServer = bestServer
-            mobileRunnerViewController.avgPing = bestAvgPing
-            mobileRunnerViewController.varPing = bestVarPing
+            mobileRunnerViewController.medPing = bestMedPing
+            mobileRunnerViewController.stdPing = bestStdPing
         default:
             fatalError("Unexpected Segue Identifier; \(String(describing: segue.identifier))")
         }

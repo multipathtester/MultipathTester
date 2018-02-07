@@ -29,4 +29,19 @@ extension Array where Element: FloatingPoint {
     func variance() -> Element {
         return self.squaredDeviations().averaged()
     }
+    
+    /// Returns the standard deviation of the Array
+    func standardDeviation() -> Element {
+        return sqrt(self.variance())
+    }
+    
+    /// Returns the median of the Array
+    func median() -> Element {
+        let sortedArray = sorted()
+        if count % 2 != 0 {
+            return sortedArray[count / 2]
+        } else {
+            return (sortedArray[count / 2] + sortedArray[count / 2 - 1]) / Element(2)
+        }
+    }
 }

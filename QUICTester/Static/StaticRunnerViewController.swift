@@ -130,8 +130,8 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
             let nbTests = self.pingTests.count + self.tests.count
             var testDones = 0
             var bestServer: TestServer = .fr
-            var bestAvgDuration: Double = Double.greatestFiniteMagnitude
-            var bestVarianceDuration: Double = Double.greatestFiniteMagnitude
+            var bestMed: Double = Double.greatestFiniteMagnitude
+            var bestStd: Double = Double.greatestFiniteMagnitude
             for i in 0..<self.pingTests.count {
                 let test = self.pingTests[i]
                 DispatchQueue.main.async {
@@ -150,12 +150,12 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
                 testDones += 1
                 let success = res["success"] as! Bool
                 let durations = res["durations"] as! [Double]
-                let avgDuration = durations.averaged()
-                print("avg duration of", test.getTestServer(), "is", avgDuration)
-                if success && avgDuration >= 0.0 && avgDuration < bestAvgDuration {
+                let median = durations.median()
+                print("median duration of", test.getTestServer(), "is", median)
+                if success && median >= 0.0 && median < bestMed {
                     bestServer = test.getTestServer()
-                    bestAvgDuration = avgDuration
-                    bestVarianceDuration = durations.variance()
+                    bestMed = median
+                    bestStd = durations.standardDeviation()
                 }
                 if self.stoppedTests {
                     break
@@ -202,7 +202,7 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
             }
             let duration = self.stopTime.timeIntervalSince(self.startTime)
             
-            let benchmark = Benchmark(connectivities: connectivities, duration: duration, locations: self.locations, mobile: false, pingMean: bestAvgDuration, pingVar: bestVarianceDuration, serverName: bestServer, startTime: self.startTime, testResults: testResults)
+            let benchmark = Benchmark(connectivities: connectivities, duration: duration, locations: self.locations, mobile: false, pingMed: bestMed, pingStd: bestStd, serverName: bestServer, startTime: self.startTime, testResults: testResults)
             Utils.sendToServer(benchmark: benchmark, tests: self.allTests)
             benchmark.save()
             self.cellTimer?.invalidate()

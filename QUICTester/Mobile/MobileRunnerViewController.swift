@@ -18,8 +18,8 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
     
     // Provided by MobileMainViewController
     var testServer: TestServer?
-    var avgPing: Double?
-    var varPing: Double?
+    var medPing: Double?
+    var stdPing: Double?
     
     var tests: [QUICStreamTest] = [QUICStreamTest]()
     var runningTest: QUICStreamTest?
@@ -166,7 +166,7 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
             self.completed = true
             self.stopTime = Date()
             let duration = self.stopTime.timeIntervalSince(self.startTime)
-            let benchmark = Benchmark(connectivities: self.connectivities, duration: duration, locations: self.locations, mobile: true, pingMean: self.avgPing!, pingVar: self.varPing!, serverName: self.testServer!, startTime: self.startTime, testResults: testResults)
+            let benchmark = Benchmark(connectivities: self.connectivities, duration: duration, locations: self.locations, mobile: true, pingMed: self.medPing!, pingStd: self.stdPing!, serverName: self.testServer!, startTime: self.startTime, testResults: testResults)
             Utils.sendToServer(benchmark: benchmark, tests: self.tests)
             benchmark.save()
             self.cellTimer?.invalidate()

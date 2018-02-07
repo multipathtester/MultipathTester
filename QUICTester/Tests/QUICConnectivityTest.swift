@@ -80,16 +80,16 @@ class QUICConnectivityTest: BaseTest, Test {
         let durationString = QuictrafficRun(runCfg)
         let elapsed = startTime.timeIntervalSinceNow
         let durationsArray = durationString!.components(separatedBy: .newlines)
-        let durations = Utils.parseSeveral(durationsString: durationsArray)
+        let durations = Utils.parseSeveralInMs(durationsString: durationsArray)
         do {
             let text = try String(contentsOf: outFileURL, encoding: .utf8)
             let lines = text.components(separatedBy: .newlines)
             for line in lines {
                 if line.contains("It works!") {
                     success = true
-                    let mean = durations.averaged()
-                    let variance = durations.variance()
-                    resultMsg = String(format: "The server %@ is reachable with mean %.1f ms and variance %.1f ms.", testServer.rawValue, mean * 1000.0, variance * 1000000.0)
+                    let median = durations.median()
+                    let standardDeviation = durations.standardDeviation()
+                    resultMsg = String(format: "The server %@ is reachable with median %.1f ms and standard deviation %.1f ms.", testServer.rawValue, median, standardDeviation)
                 }
                 if line.contains("ERROR") {
                     resultMsg = line.components(separatedBy: "ERROR: ")[1]

@@ -15,8 +15,8 @@ class Benchmark: NSObject, Codable {
     var duration: Double
     var locations: [Location]
     var mobile: Bool
-    var pingMean: Double
-    var pingVar: Double
+    var pingMed: Double  // Stored in milliseconds
+    var pingStd: Double  // Stored in milliseconds
     var serverName: TestServer
     var startTime: Date
     var testResults: [TestResult]
@@ -36,8 +36,8 @@ class Benchmark: NSObject, Codable {
         case duration
         case locations
         case mobile
-        case pingMean
-        case pingVar
+        case pingMed
+        case pingStd
         case serverName
         case startTime
         case testResults
@@ -58,14 +58,14 @@ class Benchmark: NSObject, Codable {
     static let ArchiveURL = DocumentsDirectory.appendingPathComponent("benchmarks")
     
     // MARK: Initializers
-    init(connectivities: [Connectivity], duration: Double, locations: [Location], mobile: Bool, pingMean: Double, pingVar: Double, serverName: TestServer, startTime: Date, testResults: [TestResult]) {
+    init(connectivities: [Connectivity], duration: Double, locations: [Location], mobile: Bool, pingMed: Double, pingStd: Double, serverName: TestServer, startTime: Date, testResults: [TestResult]) {
         // Initilialize stored properties
         self.connectivities = connectivities
         self.duration = duration
         self.locations = locations
         self.mobile = mobile
-        self.pingMean = pingMean
-        self.pingVar = pingVar
+        self.pingMed = pingMed
+        self.pingStd = pingStd
         self.serverName = serverName
         self.startTime = startTime
         self.testResults = testResults
@@ -90,8 +90,8 @@ class Benchmark: NSObject, Codable {
         try container.encode(duration, forKey: .duration)
         try container.encode(locations, forKey: .locations)
         try container.encode(mobile, forKey: .mobile)
-        try container.encode(pingMean, forKey: .pingMean)
-        try container.encode(pingVar, forKey: .pingVar)
+        try container.encode(pingMed, forKey: .pingMed)
+        try container.encode(pingStd, forKey: .pingStd)
         try container.encode(serverName, forKey: .serverName)
         try container.encode(startTime, forKey: .startTime)
         try container.encode(testResults.map(AnyTestResult.init), forKey: .testResults)
@@ -113,8 +113,8 @@ class Benchmark: NSObject, Codable {
         duration = try container.decode(Double.self, forKey: .duration)
         locations = try container.decode([Location].self, forKey: .locations)
         mobile = try container.decode(Bool.self, forKey: .mobile)
-        pingMean = try container.decode(Double.self, forKey: .pingMean)
-        pingVar = try container.decode(Double.self, forKey: .pingVar)
+        pingMed = try container.decode(Double.self, forKey: .pingMed)
+        pingStd = try container.decode(Double.self, forKey: .pingStd)
         serverName = try container.decode(TestServer.self, forKey: .serverName)
         startTime = try container.decode(Date.self, forKey: .startTime)
         testResults = try container.decode([AnyTestResult].self, forKey: .testResults).map { $0.base }
@@ -142,8 +142,8 @@ class Benchmark: NSObject, Codable {
             "duration": String.init(format: "%.6f", duration),
             "tz": timezone.identifier,
             "mobile": mobile,
-            "ping_mean": String.init(format: "%.6f", pingMean),
-            "ping_var": String.init(format: "%.6f", pingVar),
+            "ping_med": String.init(format: "%.3f", pingMed),
+            "ping_std": String.init(format: "%.3f", pingStd),
             "server_name": serverName.rawValue,
             "platform": platform,
             "platform_version_name": platformVersion,
