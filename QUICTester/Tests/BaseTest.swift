@@ -114,6 +114,10 @@ class BaseTest {
         return waitTime
     }
     
+    func setMultipathService(service: RunConfig.MultipathServiceType) {
+        runCfg.multipathServiceVar = service
+    }
+    
     func run() -> [String:Any] {
         // This is why this MUST be run in background
         usleep(UInt32(waitTime * 1000000))

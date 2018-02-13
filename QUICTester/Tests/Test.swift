@@ -53,6 +53,7 @@ protocol Test {
     func getURL() -> String
     func getWaitTime() -> Double
     func setTestServer(testServer: TestServer)
+    func setMultipathService(service: RunConfig.MultipathServiceType)
     func updateURL()
     func run() -> [String:Any]
 }

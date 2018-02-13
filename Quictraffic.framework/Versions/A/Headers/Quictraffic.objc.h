@@ -18,6 +18,7 @@
 - (NSString*)logFile;
 - (long)logPeriodMs;
 - (long)maxPathID;
+- (NSString*)multipathService;
 - (NSString*)notifyID;
 - (NSString*)output;
 - (long)pingCount;
@@ -31,7 +32,7 @@
 /**
  * GetStreamProgressResult gets ongoing stream delays
  */
-FOUNDATION_EXPORT NSString* QuictrafficGetStreamProgressResult(void);
+FOUNDATION_EXPORT NSString* QuictrafficGetStreamProgressResult(NSString* notifyID);
 
 /**
  * NotifyReachability change for the notifyID
@@ -62,6 +63,7 @@ FOUNDATION_EXPORT void QuictrafficStopStream(NSString* notifyID);
 - (NSString*)logFile;
 - (long)logPeriodMs;
 - (long)maxPathID;
+- (NSString*)multipathService;
 - (NSString*)notifyID;
 - (NSString*)output;
 - (long)pingCount;

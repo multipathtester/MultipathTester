@@ -87,7 +87,7 @@ class QUICStreamTest: BaseTest, Test {
         let wifiBytesReceived = result["wifi_bytes_received"] as! UInt32
         let cellBytesSent = result["cell_bytes_sent"] as! UInt32
         let cellBytesReceived = result["cell_bytes_received"] as! UInt32
-        return StreamResult(name: getDescription(), proto: getProtocol(), success: success, result: resultText, duration: duration, startTime: startTime, waitTime: waitTime, wifiBytesReceived: wifiBytesReceived, wifiBytesSent: wifiBytesSent, cellBytesReceived: cellBytesReceived, cellBytesSent: cellBytesSent, upDelays: upDelays, downDelays: downDelays, errorMsg: result["error_msg"] as! String)
+        return StreamResult(name: getDescription(), proto: getProtocol(), success: success, result: resultText, duration: duration, startTime: startTime, waitTime: waitTime, wifiBytesReceived: wifiBytesReceived, wifiBytesSent: wifiBytesSent, cellBytesReceived: cellBytesReceived, cellBytesSent: cellBytesSent, multipathService: runCfg.multipathServiceVar, upDelays: upDelays, downDelays: downDelays, errorMsg: result["error_msg"] as! String)
     }
     
     override func run() -> [String : Any] {
@@ -156,7 +156,7 @@ class QUICStreamTest: BaseTest, Test {
     func getProgressDelays() -> ([DelayData], [DelayData]) {
         var upDelays = [DelayData]()
         var downDelays = [DelayData]()
-        let delaysStr = QuictrafficGetStreamProgressResult()
+        let delaysStr = QuictrafficGetStreamProgressResult(getNotifyID())
         let lines = delaysStr!.components(separatedBy: .newlines)
         if lines.count < 2 {
             return ([], [])

@@ -26,9 +26,10 @@ class BaseResult: Codable {
     var wifiBytesSent: UInt32
     var cellBytesReceived: UInt32
     var cellBytesSent: UInt32
+    var multipathService: RunConfig.MultipathServiceType
     
     // MARK: Initializers
-    init(name: String, proto: NetProtocol, success: Bool, result: String, duration: Double, startTime: Date, waitTime: Double, wifiBytesReceived: UInt32, wifiBytesSent: UInt32, cellBytesReceived: UInt32, cellBytesSent: UInt32) {
+    init(name: String, proto: NetProtocol, success: Bool, result: String, duration: Double, startTime: Date, waitTime: Double, wifiBytesReceived: UInt32, wifiBytesSent: UInt32, cellBytesReceived: UInt32, cellBytesSent: UInt32, multipathService: RunConfig.MultipathServiceType) {
         self.name = name
         self.proto = proto
         self.success = success
@@ -40,6 +41,7 @@ class BaseResult: Codable {
         self.wifiBytesSent = wifiBytesSent
         self.cellBytesReceived = cellBytesReceived
         self.cellBytesSent = cellBytesSent
+        self.multipathService = multipathService
     }
     
     // MARK: JSON serialization to collect server
@@ -61,6 +63,7 @@ class BaseResult: Codable {
             "wifi_bytes_sent": wifiBytesSent,
             "cell_bytes_received": cellBytesReceived,
             "cell_bytes_sent": cellBytesSent,
+            "multipath_service": multipathService.rawValue,
             "protocol": proto.rawValue,
             "config": config,
             "result": resultsToJSONDict(),

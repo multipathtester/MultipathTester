@@ -10,6 +10,10 @@ import Foundation
 import Quictraffic
 
 class RunConfig: NSObject, QuictrafficRunConfigProtocol {
+    enum MultipathServiceType: String, Codable {
+        case aggregate
+        case handover
+    }
 
     // MARK: Properties
     var trafficVar: String
@@ -17,6 +21,7 @@ class RunConfig: NSObject, QuictrafficRunConfigProtocol {
     var logFileVar: String = ""
     var logPeriodMsVar: Int = 1000
     var maxPathIDVar: Int = 0
+    var multipathServiceVar: MultipathServiceType = .aggregate
     var notifyIDVar: String = ""
     var outputVar: String = ""
     var pingCountVar: Int = 0
@@ -47,6 +52,10 @@ class RunConfig: NSObject, QuictrafficRunConfigProtocol {
     
     func maxPathID() -> Int {
         return maxPathIDVar
+    }
+    
+    func multipathService() -> String {
+        return multipathServiceVar.rawValue
     }
     
     func notifyID() -> String! {

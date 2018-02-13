@@ -61,6 +61,14 @@ class Utils {
         return "\(m) m \(s) s"
     }
     
+    static func formatBytes(bytes: UInt32) -> String {
+        if Double(bytes) >= 100000.0 {
+            return String(format: "%.1f MB", Double(bytes) / 1000000.0)
+        }
+        // else
+        return String(format: "%.1f KB", Double(bytes) / 1000.0)
+    }
+    
     static func sendBenchmarkToServer(benchmark: Benchmark) -> String? {
         let json = benchmark.toJSONDict()
         let jsonData = try? JSONSerialization.data(withJSONObject: json)
@@ -175,10 +183,24 @@ class Utils {
     }
     
     static func sendToServer(benchmark: Benchmark, tests: [Test]) {
+        return sendToServer(benchmark: benchmark, tests: tests, tried: 0)
+    }
+    
+    static func sendToServer(benchmark: Benchmark, tests: [Test], tried: Int) {
         let uuid = Utils.sendBenchmarkToServer(benchmark: benchmark)
         guard let benchmarkUUID = uuid else {
-            print("Got error whem trying to save benchmark; abort")
-            return
+            if tried >= 10 {
+                print("Got", tried, "error whem trying to save benchmark; abort")
+                return
+            }
+            print("Got error whem trying to save benchmark; retry in 1 second")
+            let group = DispatchGroup()
+            group.enter()
+            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+                group.leave()
+            }
+            group.wait()
+            return sendToServer(benchmark:benchmark, tests:tests, tried: tried+1)
         }
         benchmark.uuid = UUID(uuidString: benchmarkUUID)!
         var connectivities = [[String: Any]]()

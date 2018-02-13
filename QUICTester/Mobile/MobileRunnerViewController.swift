@@ -46,6 +46,9 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
     
     var wifiBSSID: String = ""
     
+    // Currently fixed to handover
+    let multipathService: RunConfig.MultipathServiceType = .handover
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.hidesBackButton = true
@@ -61,6 +64,7 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
         for i in 0..<tests.count {
             let test = tests[i]
             test.setTestServer(testServer: testServer!)
+            test.setMultipathService(service: multipathService)
         }
         
         NotificationCenter.default.post(name: Utils.TestsLaunchedNotification, object: nil, userInfo: ["startNewTestsEnabled": false])
@@ -92,6 +96,7 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
                     QuictrafficStopStream(self.tests[i].getNotifyID())
                 }
             }
+            print("traffic stopped")
         }
     }
     
@@ -122,7 +127,7 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
     func updateDistances() {
         LineChartHelper.clearData(to: distanceChartView)
         if distances.count > 0 {
-            LineChartHelper.setData(to: distanceChartView, with: distances, label: "Distance from starting point (m)", color: UIColor(red: 0.0, green: 0.0, blue: 1.0, alpha: 1.0), mode: .cubicBezier)
+            LineChartHelper.setData(to: distanceChartView, with: distances, label: "Distance from starting point (m)", color: UIColor(red: 0.0, green: 0.0, blue: 1.0, alpha: 1.0), mode: .horizontalBezier)
         }
         distanceChartView.notifyDataSetChanged()
     }
@@ -173,6 +178,10 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
             self.timer?.invalidate()
             self.timer = nil
             print("Finished!")
+            
+            DispatchQueue.main.async {
+                self.userLabel.text = "Finalizing test, please wait..."
+            }
 
             var testResults = [TestResult]()
             for i in 0..<nbTests {
@@ -188,12 +197,13 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
             let cellBytesSent = cellInfoEnd.bytesSent - cellInfoStart.bytesSent
             let cellBytesReceived = cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived
             let duration = self.stopTime.timeIntervalSince(self.startTime)
-            let benchmark = Benchmark(connectivities: self.connectivities, duration: duration, locations: self.locations, mobile: true, pingMed: self.medPing!, pingStd: self.stdPing!, wifiBytesReceived: wifiBytesReceived, wifiBytesSent: wifiBytesSent, cellBytesReceived: cellBytesReceived, cellBytesSent: cellBytesSent, serverName: self.testServer!, startTime: self.startTime, testResults: testResults)
+            let benchmark = Benchmark(connectivities: self.connectivities, duration: duration, locations: self.locations, mobile: true, pingMed: self.medPing!, pingStd: self.stdPing!, wifiBytesReceived: wifiBytesReceived, wifiBytesSent: wifiBytesSent, cellBytesReceived: cellBytesReceived, cellBytesSent: cellBytesSent, multipathService: self.multipathService, serverName: self.testServer!, startTime: self.startTime, testResults: testResults)
             Utils.sendToServer(benchmark: benchmark, tests: self.tests)
             benchmark.save()
             self.cellTimer?.invalidate()
             self.cellTimer = nil
             NotificationCenter.default.post(name: Utils.TestsLaunchedNotification, object: nil, userInfo: ["startNewTestsEnabled": true])
+            NotificationCenter.default.removeObserver(self)
 
             DispatchQueue.main.async {
                 self.userLabel.text = "Test completed."
@@ -215,12 +225,6 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
         let newDownValues = stride(from: 0, to: newDownDelays.count, by: 1).map { (x) -> ChartDataEntry in
             return ChartDataEntry(x: newDownDelays[x].time, y: Double(newDownDelays[x].delayUs) / 1000.0)
         }
-        for i in newUpDelays {
-            print(i.time, i.delayUs)
-        }
-        for i in newDownDelays {
-            print(i.time, i.delayUs)
-        }
         upDelays += newUpValues
         downDelays += newDownValues
         
@@ -229,6 +233,8 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
     
     @objc
     func probeCellular() {
+        // This first instruction is not cellular probing here, but this will at least fill in location graph
+        locationTracker.forceUpdate()
         let cellStatus = UIDevice.current.hasCellularConnectivity
         if cellStatus != wasCellularOn {
             wasCellularOn = cellStatus

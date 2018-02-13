@@ -33,6 +33,7 @@ class BenchmarkDetailTableViewController: UITableViewController {
             TableItem(title: "Timezone", detail: bench.timezone.abbreviation() ?? bench.timezone.description),
             TableItem(title: "Ping", detail: String.init(format: "%.1f ms", bench.pingMed)),
             TableItem(title: "Ping standard deviation", detail: String.init(format: "%.1f ms", bench.pingStd)),
+            TableItem(title: "Multipath Service", detail: bench.multipathService.rawValue),
         ]
         if bench.locations.count > 0 {
             let loc = bench.locations[bench.locations.count - 1]
@@ -72,10 +73,10 @@ class BenchmarkDetailTableViewController: UITableViewController {
         }
         benchmarkDetails += [
             TableItem(title: "Test duration", detail: Utils.stringSecondsToMinutesSeconds(seconds: Int(bench.duration))),
-            TableItem(title: "Data sent on WiFi interface", detail: String(format: "%.1f MB", Double(bench.wifiBytesSent) / 1000000.0)),
-            TableItem(title: "Data received on WiFi interface", detail: String(format: "%.1f MB", Double(bench.wifiBytesReceived) / 1000000.0)),
-            TableItem(title: "Data sent on cellular interface", detail: String(format: "%.1f MB", Double(bench.cellBytesSent) / 1000000.0)),
-            TableItem(title: "Data received on cellular interface", detail: String(format: "%.1f MB", Double(bench.cellBytesReceived) / 1000000.0)),
+            TableItem(title: "Data sent on WiFi interface", detail: Utils.formatBytes(bytes: bench.wifiBytesSent)),
+            TableItem(title: "Data received on WiFi interface", detail: Utils.formatBytes(bytes: bench.wifiBytesReceived)),
+            TableItem(title: "Data sent on cellular interface", detail: Utils.formatBytes(bytes: bench.cellBytesSent)),
+            TableItem(title: "Data received on cellular interface", detail: Utils.formatBytes(bytes: bench.cellBytesReceived)),
             TableItem(title: "Server name", detail: bench.serverName.rawValue),
             TableItem(title: "Platform", detail: bench.platform),
             TableItem(title: "Platform version", detail: bench.platformVersion),

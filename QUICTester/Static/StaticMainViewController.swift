@@ -23,6 +23,7 @@ class StaticMainViewController: UIViewController {
     @IBOutlet weak var cellIPv4ImageView: UIImageView!
     @IBOutlet weak var cellIPv6ImageView: UIImageView!
     @IBOutlet weak var summaryLabel: UILabel!
+    @IBOutlet weak var aggregationSwitch: UISwitch!
     
     var internetReachability: Reachability = Reachability.forInternetConnection()
     // Reachability does not warn about the cellular state if WiFi is on...
@@ -38,6 +39,7 @@ class StaticMainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        aggregationSwitch.isOn = false
         startButton!.isEnabled = Utils.startNewTestsEnabled
         
         NotificationCenter.default.addObserver(self, selector: #selector(StaticMainViewController.reachabilityChanged(note:)), name: .reachabilityChanged, object: nil)
@@ -49,9 +51,17 @@ class StaticMainViewController: UIViewController {
         wasCellularOn = UIDevice.current.hasCellularConnectivity
         let conn = Connectivity.getCurrentConnectivity(reachabilityStatus: reachabilityStatus)
         updateUI(conn: conn)
-        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         timer = Timer(timeInterval: 0.5, target: self, selector: #selector(StaticMainViewController.probeCellular), userInfo: nil, repeats: true)
         RunLoop.current.add(timer!, forMode: .commonModes)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        timer?.invalidate()
+        super.viewWillDisappear(animated)
     }
 
     override func didReceiveMemoryWarning() {
@@ -170,22 +180,31 @@ class StaticMainViewController: UIViewController {
         let cellStatus = UIDevice.current.hasCellularConnectivity
         if cellStatus != wasCellularOn {
             wasCellularOn = cellStatus
-            let reachabilityStatus = internetReachability.currentReachabilityStatus()
-            let conn = Connectivity.getCurrentConnectivity(reachabilityStatus: reachabilityStatus)
-            DispatchQueue.main.async {
-                self.updateUI(conn: conn)
-            }
+        }
+        let reachabilityStatus = internetReachability.currentReachabilityStatus()
+        let conn = Connectivity.getCurrentConnectivity(reachabilityStatus: reachabilityStatus)
+        DispatchQueue.main.async {
+            self.updateUI(conn: conn)
         }
     }
 
-    /*
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
+        super.prepare(for: segue, sender: sender)
+        switch(segue.identifier ?? "") {
+        case "RunStaticTests":
+            guard let staticRunnerViewController = segue.destination as? StaticRunnerViewController else {
+                fatalError("Unexpected destination: \(segue.destination)")
+            }
+            
+            staticRunnerViewController.aggregate = aggregationSwitch.isOn
+        default:
+            fatalError("Unexpected Segue Identifier; \(String(describing: segue.identifier))")
+        }
     }
-    */
 
 }

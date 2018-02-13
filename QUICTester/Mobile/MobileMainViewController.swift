@@ -6,6 +6,7 @@
 //  Copyright © 2018 Universite Catholique de Louvain. All rights reserved.
 //
 
+import CoreLocation
 import UIKit
 import NetworkExtension
 
@@ -21,6 +22,8 @@ class MobileMainViewController: UIViewController {
     
     @IBOutlet weak var summaryLabel: UILabel!
     
+    var locationTracker: LocationTracker = LocationTracker.sharedTracker()
+    var goodAccuracy: Bool = false
     var locationAuthorized: Bool = false
     
     var internetReachability: Reachability = Reachability.forInternetConnection()
@@ -43,8 +46,7 @@ class MobileMainViewController: UIViewController {
         
         startButton!.isEnabled = Utils.startNewTestsEnabled
         print(NEHotspotHelper.supportedNetworkInterfaces())
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(MobileMainViewController.reachabilityChanged(note:)), name: .reachabilityChanged, object: nil)
+
         internetReachability.startNotifier()
         
         locationAuthorized = LocationTracker.sharedTracker().startIfAuthorized()
@@ -58,12 +60,39 @@ class MobileMainViewController: UIViewController {
         RunLoop.current.add(timer!, forMode: .commonModes)
         determineClosestServer()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        NotificationCenter.default.addObserver(self, selector: #selector(MobileMainViewController.locationChanged(note:)), name: LocationTracker.LocationTrackerNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(MobileMainViewController.reachabilityChanged(note:)), name: .reachabilityChanged, object: nil)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        NotificationCenter.default.removeObserver(self)
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
+    @objc
+    func locationChanged(note: Notification) {
+        let info = note.userInfo
+        guard let locations = info!["locations"] as? [CLLocation] else {
+            return
+        }
+        for cl in locations {
+            if cl.horizontalAccuracy <= 10.0 {
+                goodAccuracy = true
+            } else {
+                goodAccuracy = false
+            }
+        }
+        askForUIUpdate()
+    }
+
     func determineClosestServer() {
         DispatchQueue.global(qos: .background).async {
             let pingTests = [
@@ -118,13 +147,17 @@ class MobileMainViewController: UIViewController {
                 wifiImageView.image = no_wifi
                 wifiLabel.text = "Wifi has no addresses."
             }
+        } else if conn.networkType == .CellularWifi {
+            let no_wifi = UIImage(named: "no_wifi", in: bundle, compatibleWith: self.traitCollection)
+            wifiImageView.image = no_wifi
+            wifiLabel.text = "Wifi is not ready yet."
         } else {
             let no_wifi = UIImage(named: "no_wifi", in: bundle, compatibleWith: self.traitCollection)
             wifiImageView.image = no_wifi
-            wifiLabel.text = "Wifi is not ready."
+            wifiLabel.text = "Wifi is not available."
         }
         
-        if conn.networkType == .Cellular || conn.networkType == .WiFiCellular {
+        if conn.networkType == .Cellular || conn.networkType == .WiFiCellular || conn.networkType == .CellularWifi {
             if conn.cellularAddresses!.count > 0 {
                 let cellular = UIImage(named: "cellular", in: bundle, compatibleWith: self.traitCollection)
                 cellImageView.image = cellular
@@ -138,13 +171,18 @@ class MobileMainViewController: UIViewController {
         } else {
             let no_cellular = UIImage(named: "no_cellular", in: bundle, compatibleWith: self.traitCollection)
             cellImageView.image = no_cellular
-            cellLabel.text = "Cellular is not ready."
+            cellLabel.text = "Cellular is not available."
         }
         
         if locationAuthorized {
             let location = UIImage(named: "location", in: bundle, compatibleWith: self.traitCollection)
             locImageView.image = location
-            locLabel.text = "You can estimate how far your WiFi is reachable."
+            if goodAccuracy {
+                locLabel.text = "You can estimate how far your WiFi is reachable."
+            } else {
+                locLabel.text = "Location is enabled, please wait for more precise estimation..."
+            }
+            
         } else {
             let no_location = UIImage(named: "no_location", in: bundle, compatibleWith: self.traitCollection)
             locImageView.image = no_location
@@ -195,6 +233,8 @@ class MobileMainViewController: UIViewController {
     
     @objc
     func probeCellular() {
+        // This first instruction is not cellular probing here, but this will check location accuracy
+        locationTracker.forceUpdate()
         let cellStatus = UIDevice.current.hasCellularConnectivity
         if cellStatus != wasCellularOn {
             wasCellularOn = cellStatus

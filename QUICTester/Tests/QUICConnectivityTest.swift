@@ -68,7 +68,7 @@ class QUICConnectivityTest: BaseTest, Test {
         let wifiBytesReceived = result["wifi_bytes_received"] as! UInt32
         let cellBytesSent = result["cell_bytes_sent"] as! UInt32
         let cellBytesReceived = result["cell_bytes_received"] as! UInt32
-        return ConnectivityResult(name: getDescription(), proto: getProtocol(), success: result["success"] as! Bool, result: result["error_msg"] as! String, duration: result["duration"] as! Double, startTime: startTime, waitTime: waitTime, wifiBytesReceived: wifiBytesReceived, wifiBytesSent: wifiBytesSent, cellBytesReceived: cellBytesReceived, cellBytesSent: cellBytesSent, durations: result["durations"] as! [Double])
+        return ConnectivityResult(name: getDescription(), proto: getProtocol(), success: result["success"] as! Bool, result: result["error_msg"] as! String, duration: result["duration"] as! Double, startTime: startTime, waitTime: waitTime, wifiBytesReceived: wifiBytesReceived, wifiBytesSent: wifiBytesSent, cellBytesReceived: cellBytesReceived, cellBytesSent: cellBytesSent, multipathService: runCfg.multipathServiceVar, durations: result["durations"] as! [Double])
     }
     
     override func getRunTime() -> Double {

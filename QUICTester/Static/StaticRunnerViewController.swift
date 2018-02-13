@@ -27,11 +27,17 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
     var internetReachability: Reachability = Reachability.forInternetConnection()
     var locationTracker: LocationTracker = LocationTracker.sharedTracker()
     var locations: [Location] = []
+    var connectivities = [Connectivity]()
     
     // Reachability does not warn about the cellular state if WiFi is on...
     var wasCellularOn: Bool = false
     var cellTimer: Timer?
     var stoppedTests: Bool = false
+    
+    // Value come from StaticMainViewController
+    var aggregate: Bool = false
+    
+    var multipathService: RunConfig.MultipathServiceType = .aggregate
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -63,6 +69,14 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
         ]
         
         allTests = pingTests + tests
+        
+        multipathService = .handover
+        if aggregate {
+            multipathService = .aggregate
+        }
+        for t in allTests {
+            t.setMultipathService(service: multipathService)
+        }
         
         locations = []
         
@@ -96,11 +110,17 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
     
     @objc
     func reachabilityChanged(note: Notification) {
-        print("Reachability changed! In static tests, this should abort the test!")
-        for i in 0..<tests.count {
-            QuictrafficNotifyReachability(tests[i].getNotifyID())
+        let reachabilityStatus = internetReachability.currentReachabilityStatus()
+        let conn = Connectivity.getCurrentConnectivity(reachabilityStatus: reachabilityStatus)
+        if conn.networkType != connectivities[0].networkType || (conn.wifiBSSID != nil && conn.wifiBSSID != connectivities[0].wifiBSSID) {
+            connectivities.append(conn)
+            print("Reachability changed! In static tests, this should abort the test!")
+            for i in 0..<tests.count {
+                QuictrafficNotifyReachability(tests[i].getNotifyID())
+            }
+            stopTests()
         }
-        stopTests()
+        
     }
     
     @objc
@@ -116,7 +136,7 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
     }
     
     func startTests() {
-        var connectivities = [Connectivity]()
+        connectivities = [Connectivity]()
         let reachabilityStatus = internetReachability.currentReachabilityStatus()
         wasCellularOn = UIDevice.current.hasCellularConnectivity
         connectivities.append(Connectivity.getCurrentConnectivity(reachabilityStatus: reachabilityStatus))
@@ -216,13 +236,14 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
             }
             let duration = self.stopTime.timeIntervalSince(self.startTime)
             
-            let benchmark = Benchmark(connectivities: connectivities, duration: duration, locations: self.locations, mobile: false, pingMed: bestMed, pingStd: bestStd, wifiBytesReceived: wifiBytesReceived, wifiBytesSent: wifiBytesSent, cellBytesReceived: cellBytesReceived, cellBytesSent: cellBytesSent, serverName: bestServer, startTime: self.startTime, testResults: testResults)
+            let benchmark = Benchmark(connectivities: self.connectivities, duration: duration, locations: self.locations, mobile: false, pingMed: bestMed, pingStd: bestStd, wifiBytesReceived: wifiBytesReceived, wifiBytesSent: wifiBytesSent, cellBytesReceived: cellBytesReceived, cellBytesSent: cellBytesSent, multipathService: self.multipathService, serverName: bestServer, startTime: self.startTime, testResults: testResults)
             Utils.sendToServer(benchmark: benchmark, tests: self.allTests)
             benchmark.save()
             self.cellTimer?.invalidate()
             self.cellTimer = nil
             print("Tests done")
             NotificationCenter.default.post(name: Utils.TestsLaunchedNotification, object: nil, userInfo: ["startNewTestsEnabled": true])
+            NotificationCenter.default.removeObserver(self)
             DispatchQueue.main.async {
                 self.progress.setProgress(value: 100.0, animationDuration: 0.2) {}
                 self.navigationItem.hidesBackButton = false
@@ -277,6 +298,13 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
     func probeCellular() {
         let cellStatus = UIDevice.current.hasCellularConnectivity
         if cellStatus != wasCellularOn {
+            let reachabilityStatus = internetReachability.currentReachabilityStatus()
+            let conn = Connectivity.getCurrentConnectivity(reachabilityStatus: reachabilityStatus)
+            connectivities.append(conn)
+            print("Cellular changed! In static tests, this should abort the test!")
+            for i in 0..<tests.count {
+                QuictrafficNotifyReachability(tests[i].getNotifyID())
+            }
             stopTests()
         }
     }
