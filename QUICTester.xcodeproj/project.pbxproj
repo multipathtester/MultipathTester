@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CE09053D20333E9400B1445A /* ConsentFormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE09053C20333E9400B1445A /* ConsentFormViewController.swift */; };
 		CE23A8A41FD9534F00894CA7 /* Quictraffic.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE23A8A31FD9534F00894CA7 /* Quictraffic.framework */; };
 		CE2685002007B26E00462C6E /* BaseResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2684FF2007B26E00462C6E /* BaseResult.swift */; };
 		CE2685032008A50100462C6E /* TestResultInstancesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2685022008A50100462C6E /* TestResultInstancesTableViewCell.swift */; };
@@ -147,6 +148,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		CE09053C20333E9400B1445A /* ConsentFormViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsentFormViewController.swift; sourceTree = "<group>"; };
 		CE21D42B1F67ECF300056940 /* QUICTester.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = QUICTester.entitlements; sourceTree = "<group>"; };
 		CE23A8A31FD9534F00894CA7 /* Quictraffic.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Quictraffic.framework; sourceTree = "<group>"; };
 		CE2684FF2007B26E00462C6E /* BaseResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseResult.swift; sourceTree = "<group>"; };
@@ -277,6 +279,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		CE09053A20333E5800B1445A /* Initial */ = {
+			isa = PBXGroup;
+			children = (
+				CE09053C20333E9400B1445A /* ConsentFormViewController.swift */,
+			);
+			path = Initial;
+			sourceTree = "<group>";
+		};
 		CE2685012007B2C300462C6E /* UI */ = {
 			isa = PBXGroup;
 			children = (
@@ -513,6 +523,7 @@
 				CE58F47C1FCEA4EE009EA08F /* Tests */,
 				CEA702FD200506E900FDFB89 /* Static */,
 				CEA70314200673E800FDFB89 /* Mobile */,
+				CE09053A20333E5800B1445A /* Initial */,
 				CE21D42B1F67ECF300056940 /* QUICTester.entitlements */,
 				CEDAF24E1F5FE8E000310153 /* AppDelegate.swift */,
 				CEDAF2521F5FE8E000310153 /* Main.storyboard */,
@@ -781,6 +792,7 @@
 				CE58F4A11FD57C58009EA08F /* QUICBulkDownloadTest.swift in Sources */,
 				CED4B5201F97972500E6F86E /* TCPFileDescriptorFinder.swift in Sources */,
 				CED4B5221F9F7FE300E6F86E /* TCPInfoConverter.swift in Sources */,
+				CE09053D20333E9400B1445A /* ConsentFormViewController.swift in Sources */,
 				CE4894FA202B2BE300CBEED5 /* InterfaceInfo.swift in Sources */,
 				CE58F4801FCEA594009EA08F /* QUICConnectivityTest.swift in Sources */,
 				CE58F4951FD188DE009EA08F /* BenchmarkTableViewCell.swift in Sources */,
