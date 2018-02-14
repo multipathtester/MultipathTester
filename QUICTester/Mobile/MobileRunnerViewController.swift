@@ -27,6 +27,7 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
     var stopTime: Date = Date()
     var timer: Timer?
     var completed: Bool = false
+    var stopping: Bool = false
     
     // Reachability does not warn about the cellular state if WiFi is on...
     var wasCellularOn: Bool = false
@@ -40,6 +41,14 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
     var initialLocation: CLLocation?
     
     var distances: [ChartDataEntry] = [ChartDataEntry]()
+    var lastReceivedWiFiBytes: UInt32 = 0
+    var countNoWifi = 0
+    var nextWiFiBytesDistance: Double = 0.0
+    var nextWiFiBytesLostTime: Date = Date()
+    var computedWiFiBytesDistance: Double = 0.0
+    var computedWiFiBytesLostTime: Date = Date()
+    var computedWiFiSystemDistance: Double = 0.0
+    var computedWiFiSystemLostTime: Date = Date()
     
     var upDelays: [ChartDataEntry] = [ChartDataEntry]()
     var downDelays: [ChartDataEntry] = [ChartDataEntry]()
@@ -90,6 +99,11 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
         let connectivity = Connectivity.getCurrentConnectivity(reachabilityStatus: reachabilityStatus)
         connectivities.append(connectivity)
         if (connectivity.networkType != .WiFiCellular && connectivity.networkType != .CellularWifi) || connectivity.wifiBSSID != wifiBSSID {
+            stopping = true
+            if let lastDistance = distances.last {
+                computedWiFiSystemDistance = lastDistance.y
+                computedWiFiSystemLostTime = Date()
+            }
             print("stooooop")
             DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
                 for i in 0..<self.tests.count {
@@ -97,6 +111,9 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
                 }
             }
             print("traffic stopped")
+            DispatchQueue.main.async {
+                self.userLabel.text = "WiFi is lost."
+            }
         }
     }
     
@@ -118,6 +135,29 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
             self.distances.append(ChartDataEntry(x: cl.timestamp.timeIntervalSince1970, y: meters))
             let location = Location(lon: cl.coordinate.longitude, lat: cl.coordinate.latitude, timestamp: cl.timestamp, accuracy: cl.horizontalAccuracy, altitude: cl.altitude, speed: cl.speed)
             self.locations.append(location)
+            let wifiInfoStart = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
+            if !self.stopping && lastReceivedWiFiBytes < wifiInfoStart.bytesReceived {
+                // This idea to delay the assignation is to cover possible bytes exchanges when searching for another AP
+                self.computedWiFiBytesDistance = self.nextWiFiBytesDistance
+                self.computedWiFiBytesLostTime = self.nextWiFiBytesLostTime
+                print(lastReceivedWiFiBytes, wifiInfoStart.bytesReceived)
+                self.lastReceivedWiFiBytes = wifiInfoStart.bytesReceived
+                self.nextWiFiBytesDistance = meters
+                self.nextWiFiBytesLostTime = cl.timestamp
+                self.countNoWifi = 0
+                DispatchQueue.main.async {
+                    self.userLabel.text = "Please move away from your WiFi Access Point."
+                }
+            } else if !self.stopping {
+                self.computedWiFiBytesDistance = self.nextWiFiBytesDistance
+                self.computedWiFiBytesLostTime = self.nextWiFiBytesLostTime
+                self.countNoWifi += 1
+                if self.countNoWifi >= 3 {
+                    DispatchQueue.main.async {
+                        self.userLabel.text = "No more data seen on WiFi..."
+                    }
+                }
+            }
         }
         if !completed {
             self.updateDistances()
@@ -190,6 +230,7 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
             }
             self.completed = true
             self.stopTime = Date()
+            NotificationCenter.default.removeObserver(self)
             let wifiInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
             let cellInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
             let wifiBytesSent = wifiInfoEnd.bytesSent - wifiInfoStart.bytesSent
@@ -198,15 +239,18 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
             let cellBytesReceived = cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived
             let duration = self.stopTime.timeIntervalSince(self.startTime)
             let benchmark = Benchmark(connectivities: self.connectivities, duration: duration, locations: self.locations, mobile: true, pingMed: self.medPing!, pingStd: self.stdPing!, wifiBytesReceived: wifiBytesReceived, wifiBytesSent: wifiBytesSent, cellBytesReceived: cellBytesReceived, cellBytesSent: cellBytesSent, multipathService: self.multipathService, serverName: self.testServer!, startTime: self.startTime, testResults: testResults)
+            benchmark.wifiBytesDistance = self.computedWiFiBytesDistance
+            benchmark.wifiBytesLostTime = self.computedWiFiBytesLostTime
+            benchmark.wifiSystemDistance = self.computedWiFiSystemDistance
+            benchmark.wifiSystemLostTime = self.computedWiFiSystemLostTime
             Utils.sendToServer(benchmark: benchmark, tests: self.tests)
             benchmark.save()
             self.cellTimer?.invalidate()
             self.cellTimer = nil
             NotificationCenter.default.post(name: Utils.TestsLaunchedNotification, object: nil, userInfo: ["startNewTestsEnabled": true])
-            NotificationCenter.default.removeObserver(self)
 
             DispatchQueue.main.async {
-                self.userLabel.text = "Test completed."
+                self.userLabel.text = String(format: "Test completed. You lost WiFi after walking %.1f m and your system detected it after you walked %.1f m.", self.computedWiFiBytesDistance, self.computedWiFiSystemDistance)
                 self.navigationItem.hidesBackButton = false
             }
         }

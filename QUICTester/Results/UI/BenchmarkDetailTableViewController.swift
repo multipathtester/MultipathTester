@@ -35,6 +35,12 @@ class BenchmarkDetailTableViewController: UITableViewController {
             TableItem(title: "Ping standard deviation", detail: String.init(format: "%.1f ms", bench.pingStd)),
             TableItem(title: "Multipath Service", detail: bench.multipathService.rawValue),
         ]
+        if let wifiBytesDistance = bench.wifiBytesDistance, let wifiSystemDistance = bench.wifiSystemDistance {
+            benchmarkDetails += [
+                TableItem(title: "WiFi reachability", detail: String(format: "%.1f m", wifiBytesDistance)),
+                TableItem(title: "WiFi system reachability", detail: String(format: "%.1f m", wifiSystemDistance)),
+            ]
+        }
         if bench.locations.count > 0 {
             let loc = bench.locations[bench.locations.count - 1]
             benchmarkDetails += [TableItem(title: "Location", detail: loc.getDescription())]

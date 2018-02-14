@@ -26,6 +26,12 @@ class Benchmark: NSObject, Codable {
     var startTime: Date
     var testResults: [TestResult]
     
+    // This is specific to mobile tests
+    var wifiBytesDistance: Double?
+    var wifiBytesLostTime: Date?
+    var wifiSystemDistance: Double?
+    var wifiSystemLostTime: Date?
+    
     var model: String
     var modelCode: String
     var platform: String
@@ -51,6 +57,11 @@ class Benchmark: NSObject, Codable {
         case serverName
         case startTime
         case testResults
+        
+        case wifiBytesDistance
+        case wifiBytesLostTime
+        case wifiSystemDistance
+        case wifiSystemLostTime
 
         case model
         case modelCode
@@ -116,6 +127,11 @@ class Benchmark: NSObject, Codable {
         try container.encode(startTime, forKey: .startTime)
         try container.encode(testResults.map(AnyTestResult.init), forKey: .testResults)
         
+        try container.encode(wifiBytesDistance, forKey: .wifiBytesDistance)
+        try container.encode(wifiBytesLostTime, forKey: .wifiBytesLostTime)
+        try container.encode(wifiSystemDistance, forKey: .wifiSystemDistance)
+        try container.encode(wifiSystemLostTime, forKey: .wifiSystemLostTime)
+        
         try container.encode(model, forKey: .model)
         try container.encode(modelCode, forKey: .modelCode)
         try container.encode(platform, forKey: .platform)
@@ -143,6 +159,11 @@ class Benchmark: NSObject, Codable {
         serverName = try container.decode(TestServer.self, forKey: .serverName)
         startTime = try container.decode(Date.self, forKey: .startTime)
         testResults = try container.decode([AnyTestResult].self, forKey: .testResults).map { $0.base }
+        
+        wifiBytesDistance = try container.decode(Double?.self, forKey: .wifiBytesDistance)
+        wifiBytesLostTime = try container.decode(Date?.self, forKey: .wifiBytesLostTime)
+        wifiSystemDistance = try container.decode(Double?.self, forKey: .wifiSystemDistance)
+        wifiSystemLostTime = try container.decode(Date?.self, forKey: .wifiSystemLostTime)
         
         model = try container.decode(String.self, forKey: .model)
         modelCode = try container.decode(String.self, forKey: .modelCode)
