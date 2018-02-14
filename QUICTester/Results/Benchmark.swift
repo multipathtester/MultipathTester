@@ -182,12 +182,12 @@ class Benchmark: NSObject, Codable {
         for location in locations {
             locationsList.append(location.toJSONDict())
         }
-        return [
+
+        var json: [String: Any] = [
             "locations": locationsList,
             "start_time": Utils.getDateFormatter().string(from: startTime),
             "duration": String.init(format: "%.6f", duration),
             "tz": timezone.identifier,
-            "mobile": mobile,
             "ping_med": String.init(format: "%.3f", pingMed),
             "ping_std": String.init(format: "%.3f", pingStd),
             "wifi_bytes_received": wifiBytesReceived,
@@ -205,6 +205,17 @@ class Benchmark: NSObject, Codable {
             "software_name": softwareName,
             "software_version": softwareVersion,
         ]
+        
+        if mobile {
+            json["mobile"] = [
+                "wifi_bytes_distance": wifiBytesDistance!,
+                "wifi_bytes_lost_time": Utils.getDateFormatter().string(from: wifiBytesLostTime!),
+                "wifi_system_distance": wifiSystemDistance!,
+                "wifi_system_lost_time": Utils.getDateFormatter().string(from: wifiSystemLostTime!),
+            ]
+        }
+        
+        return json
     }
     
     // MARK: Save

@@ -258,7 +258,6 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
     
     // MARK: Timer function
     @objc func getDelays() {
-        // TODO
         guard let streamTest = runningTest else {
             return
         }

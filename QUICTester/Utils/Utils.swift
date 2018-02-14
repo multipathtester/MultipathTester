@@ -69,6 +69,46 @@ class Utils {
         return String(format: "%.1f KB", Double(bytes) / 1000.0)
     }
     
+    static func getMaxWifiDistance() -> Double {
+        // Create GET request
+        let url = URL(string: "https://ns387496.ip-176-31-249.eu/mptests/max_wifi_distance/")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        
+        var result = 0.0
+        
+        let group = DispatchGroup()
+        group.enter()
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let checkedData = data, error == nil else {
+                print(error?.localizedDescription ?? "No data")
+                if let checkedData = data {
+                    let responseJSON = try? JSONSerialization.jsonObject(with: checkedData, options: [])
+                    if let responseJSON = responseJSON as? [String: Any] {
+                        print(responseJSON)
+                    }
+                }
+                group.leave()
+                return
+            }
+            let responseJSON = try? JSONSerialization.jsonObject(with: checkedData, options: [])
+            if let responseJSON = responseJSON as? [String: Any] {
+                if let maxWifiDistance = responseJSON["max_wifi_distance"] as? Double {
+                    result = maxWifiDistance
+                }
+            }
+            group.leave()
+        }
+        
+        task.resume()
+        group.wait()
+        
+        return result
+    }
+    
     static func sendBenchmarkToServer(benchmark: Benchmark) -> String? {
         let json = benchmark.toJSONDict()
         let jsonData = try? JSONSerialization.data(withJSONObject: json)

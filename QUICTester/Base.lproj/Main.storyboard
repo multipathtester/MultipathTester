@@ -688,7 +688,7 @@
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="cUB-k8-ecg">
                                 <rect key="frame" x="2" y="66" width="371" height="550"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="How far can you reach your WiFi?" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wBv-7T-2OW">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="How far can you reach your WiFi?" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wBv-7T-2OW">
                                         <rect key="frame" x="0.0" y="0.0" width="371" height="100"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="100" id="ASc-J6-rbe"/>
@@ -786,6 +786,7 @@
                     <connections>
                         <outlet property="cellImageView" destination="RLh-Xo-co7" id="fEX-el-jzx"/>
                         <outlet property="cellLabel" destination="0Fx-8d-bk8" id="L5G-ey-iRA"/>
+                        <outlet property="descriptionLabel" destination="wBv-7T-2OW" id="6cZ-c9-m0Q"/>
                         <outlet property="locImageView" destination="PBM-7A-MSA" id="U2F-YQ-gGz"/>
                         <outlet property="locLabel" destination="lnp-TN-vlr" id="med-aH-afD"/>
                         <outlet property="startButton" destination="fcS-br-kVr" id="Ajf-Ke-38a"/>

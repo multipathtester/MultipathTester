@@ -11,6 +11,7 @@ import UIKit
 import NetworkExtension
 
 class MobileMainViewController: UIViewController {
+    @IBOutlet weak var descriptionLabel: UILabel!
     @IBOutlet weak var startButton: UIButton?
     
     @IBOutlet weak var wifiImageView: UIImageView!
@@ -55,6 +56,24 @@ class MobileMainViewController: UIViewController {
         wasCellularOn = UIDevice.current.hasCellularConnectivity
         let conn = Connectivity.getCurrentConnectivity(reachabilityStatus: reachabilityStatus)
         updateUI(conn: conn)
+        
+        descriptionLabel.text = """
+        How far can you reach your WiFi?
+        
+        Getting best recorded result...
+        """
+        
+        // Get the current best result for WiFi distance
+        DispatchQueue.global(qos: .background).async {
+            let maxWifiDistance = Utils.getMaxWifiDistance()
+            DispatchQueue.main.async {
+                self.descriptionLabel.text = String(format:"""
+                How far can you reach your WiFi?
+                
+                The record is %.1f m.
+                """, maxWifiDistance)
+            }
+        }
         
         timer = Timer(timeInterval: 0.5, target: self, selector: #selector(MobileMainViewController.probeCellular), userInfo: nil, repeats: true)
         RunLoop.current.add(timer!, forMode: .commonModes)
