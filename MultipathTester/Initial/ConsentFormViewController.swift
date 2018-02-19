@@ -16,7 +16,6 @@ class ConsentFormViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        // FIXME change the name of the app
         textView.text = """
         Thank you for downloading MultipathTester. This gives you the opportunity to take part in a research study. Our research aims to evaluate the benefits of simultaneously using several network paths such as WiFi and cellular on your iPhone. Today, most applications use either WiFi or cellular and switching from one to the other remains difficult. Our objective is to compare the performance of two different approaches to combine different networks : Multipath TCP and Multipath QUIC. Multipath TCP is included in iOS11. Multipath QUIC is an extension to the QUIC protocol that is being standardized. MultipathTester uses the Multipath TCP stack provided by iOS and its own implementation of Multipath QUIC.
         

@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="PuS-mM-DGt">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
@@ -28,7 +31,7 @@
         <!--Consent Form-->
         <scene sceneID="r23-xJ-3I9">
             <objects>
-                <viewController storyboardIdentifier="ConsentFormViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="GTd-K9-e4a" customClass="ConsentFormViewController" customModule="QUICTester" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ConsentFormViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="GTd-K9-e4a" customClass="ConsentFormViewController" customModule="MultipathTester" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="AcF-Qb-3Yt">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -116,18 +119,18 @@
                         <segue destination="Uwd-aA-2FZ" kind="relationship" relationship="viewControllers" id="pn6-py-HZE"/>
                         <segue destination="Nsh-Ev-Tcc" kind="relationship" relationship="viewControllers" id="iJf-I3-cJr"/>
                         <segue destination="UyM-My-vcZ" kind="relationship" relationship="viewControllers" id="UlI-R8-Djx"/>
-                        <segue destination="6Ox-tg-1Ol" kind="relationship" relationship="viewControllers" id="Ieh-fq-QNj"/>
+                        <segue destination="Mpv-wm-fBd" kind="relationship" relationship="viewControllers" id="uXg-TR-bTy"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dXe-lw-qlP" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-4766" y="839"/>
         </scene>
-        <!--Static Tests-->
+        <!--Multipath Tests-->
         <scene sceneID="Men-bX-3tC">
             <objects>
                 <navigationController id="Nsh-Ev-Tcc" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Static Tests" image="standing" id="nSL-AR-WzK"/>
+                    <tabBarItem key="tabBarItem" title="Multipath Tests" image="multiple" id="nSL-AR-WzK"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="EMY-p0-YIU">
                         <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -140,10 +143,10 @@
             </objects>
             <point key="canvasLocation" x="-3623" y="-439"/>
         </scene>
-        <!--Static Tests-->
+        <!--Multipath Tests-->
         <scene sceneID="OzA-gN-vRj">
             <objects>
-                <viewController id="BPV-zC-5n0" customClass="StaticMainViewController" customModule="QUICTester" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BPV-zC-5n0" customClass="StaticMainViewController" customModule="MultipathTester" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="bYZ-6g-kfl">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -405,7 +408,13 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Pw6-6V-ZBW"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Static Tests" id="KOD-c2-f8I"/>
+                    <navigationItem key="navigationItem" title="Multipath Tests" id="KOD-c2-f8I">
+                        <barButtonItem key="rightBarButtonItem" image="map_info" id="YU3-ca-K0k">
+                            <connections>
+                                <action selector="aboutTests:" destination="BPV-zC-5n0" id="YDZ-gU-UUW"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="aggregationSwitch" destination="iXZ-6U-e73" id="6nh-oW-98f"/>
                         <outlet property="cellIPv4ImageView" destination="cRu-mV-9o8" id="ivL-GF-DTM"/>
@@ -428,7 +437,7 @@
         <!--Static Runner View Controller-->
         <scene sceneID="NIC-oj-0pN">
             <objects>
-                <viewController id="FTM-ur-gzF" customClass="StaticRunnerViewController" customModule="QUICTester" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="FTM-ur-gzF" customClass="StaticRunnerViewController" customModule="MultipathTester" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="MaS-bg-Jp5">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -443,7 +452,7 @@
                                                 <rect key="frame" x="0.0" y="0.0" width="98.5" height="178"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             </view>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="M7P-Wm-a9L" customClass="UICircularProgressRingView" customModule="QUICTester" customModuleProvider="target">
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="M7P-Wm-a9L" customClass="UICircularProgressRingView" customModule="MultipathTester" customModuleProvider="target">
                                                 <rect key="frame" x="98.5" y="0.0" width="178" height="178"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
@@ -475,7 +484,7 @@
                                         <rect key="frame" x="0.0" y="198" width="375" height="356"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <prototypes>
-                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="StaticTestTableViewCell" rowHeight="50" id="3V2-xr-Eun" customClass="StaticTestTableViewCell" customModule="QUICTester" customModuleProvider="target">
+                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="StaticTestTableViewCell" rowHeight="50" id="3V2-xr-Eun" customClass="StaticTestTableViewCell" customModule="MultipathTester" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="28" width="375" height="50"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="3V2-xr-Eun" id="AW6-WP-3Ud">
@@ -557,57 +566,79 @@
             <point key="canvasLocation" x="-3623" y="1212"/>
         </scene>
         <!--About-->
+        <scene sceneID="ldU-IC-Ac8">
+            <objects>
+                <navigationController id="Mpv-wm-fBd" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="About" image="map_info" id="qve-e7-vep"/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="w4k-Rk-T7r">
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="6Ox-tg-1Ol" kind="relationship" relationship="rootViewController" id="htR-oh-yez"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="1fc-MI-y0w" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-3623" y="2651"/>
+        </scene>
+        <!--About-->
         <scene sceneID="jxs-k4-8Sg">
             <objects>
-                <viewController title="About" id="6Ox-tg-1Ol" sceneMemberID="viewController">
+                <viewController title="About" id="6Ox-tg-1Ol" customClass="AboutViewController" customModule="MultipathTester" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="mYV-Ab-M0s">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="25" translatesAutoresizingMaskIntoConstraints="NO" id="Io8-th-c3d">
-                                <rect key="frame" x="10" y="30" width="355" height="162"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="nJy-sF-ych">
+                                <rect key="frame" x="2" y="66" width="371" height="550"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="QUICTester" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" highlighted="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="U2r-uc-z3s">
-                                        <rect key="frame" x="117.5" y="0.0" width="120" height="29"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="24"/>
-                                        <nil key="textColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="justified" lineBreakMode="wordWrap" numberOfLines="9" baselineAdjustment="alignBaselines" highlighted="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kQg-9u-t8w">
-                                        <rect key="frame" x="-10" y="54" width="0.0" height="20.5"/>
-                                        <string key="text">This application performs various network tests with the QUIC protocol. The results of those tests (download completion time, bandwith and possibly graphes) can then be visible in the "Results" section of the application.</string>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <nil key="textColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="By using this application, you agree to share metadata only for research purposes." textAlignment="justified" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2Fz-jU-ufC">
-                                        <rect key="frame" x="-10" y="99.5" width="0.0" height="20.5"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <nil key="textColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Developed by Quentin De Coninck, working at Universite Catholique de Louvain. Contact:  &lt;quentin.deconinck@uclouvain.be&gt;" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VEV-vh-gcK">
-                                        <rect key="frame" x="-10" y="145" width="0.0" height="17"/>
+                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="justified" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="D8u-Ei-kw2">
+                                        <rect key="frame" x="0.0" y="0.0" width="371" height="413.5"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <nil key="textColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
+                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                    </textView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vHt-sq-SXH">
+                                        <rect key="frame" x="0.0" y="413.5" width="371" height="136.5"/>
+                                        <subviews>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="uclouvain" translatesAutoresizingMaskIntoConstraints="NO" id="GVV-Vu-u40">
+                                                <rect key="frame" x="0.0" y="0.0" width="123.5" height="136.5"/>
+                                            </imageView>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="fnrs" translatesAutoresizingMaskIntoConstraints="NO" id="DKv-8E-MAv">
+                                                <rect key="frame" x="123.5" y="0.0" width="247.5" height="136.5"/>
+                                            </imageView>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstItem="DKv-8E-MAv" firstAttribute="width" secondItem="GVV-Vu-u40" secondAttribute="width" multiplier="2" id="nR3-Qz-nc6"/>
+                                        </constraints>
+                                    </stackView>
                                 </subviews>
+                                <constraints>
+                                    <constraint firstItem="vHt-sq-SXH" firstAttribute="height" secondItem="D8u-Ei-kw2" secondAttribute="height" multiplier="0.33" id="xU1-Gu-UZp"/>
+                                </constraints>
                             </stackView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="Io8-th-c3d" firstAttribute="top" secondItem="gk1-jK-GjZ" secondAttribute="top" constant="10" id="7ty-Zh-Hbw"/>
-                            <constraint firstItem="Io8-th-c3d" firstAttribute="leading" secondItem="gk1-jK-GjZ" secondAttribute="leading" constant="10" id="dns-xQ-T7E"/>
-                            <constraint firstItem="gk1-jK-GjZ" firstAttribute="trailing" secondItem="Io8-th-c3d" secondAttribute="trailing" constant="10" id="kpa-fF-JTh"/>
+                            <constraint firstItem="nJy-sF-ych" firstAttribute="leading" secondItem="gk1-jK-GjZ" secondAttribute="leading" constant="2" id="2Qk-Ci-463"/>
+                            <constraint firstAttribute="trailing" secondItem="nJy-sF-ych" secondAttribute="trailing" constant="2" id="DBH-kh-qjl"/>
+                            <constraint firstItem="nJy-sF-ych" firstAttribute="top" secondItem="gk1-jK-GjZ" secondAttribute="top" constant="2" id="QFl-FD-L5k"/>
+                            <constraint firstAttribute="bottomMargin" secondItem="nJy-sF-ych" secondAttribute="bottom" constant="2" id="qC9-dp-zOf"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="gk1-jK-GjZ"/>
                     </view>
                     <tabBarItem key="tabBarItem" title="About" image="map_info" id="90j-Ng-gIP"/>
+                    <navigationItem key="navigationItem" title="About MultipathTester" id="dDS-Qk-EQO"/>
+                    <connections>
+                        <outlet property="textView" destination="D8u-Ei-kw2" id="0jT-se-P1j"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yf6-wy-JSa" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-3623" y="2168"/>
+            <point key="canvasLocation" x="-2786" y="2651"/>
         </scene>
         <!--Mobile Tests-->
         <scene sceneID="ZfN-Uq-kvx">
@@ -629,7 +660,7 @@
         <!--Mobile Tests-->
         <scene sceneID="PVe-lO-erH">
             <objects>
-                <viewController id="7Se-Oe-hML" customClass="MobileMainViewController" customModule="QUICTester" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="7Se-Oe-hML" customClass="MobileMainViewController" customModule="MultipathTester" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="7jo-Ck-QSW">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -728,7 +759,13 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Sl3-gD-MGB"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Mobile Tests" id="oU3-tW-uzW"/>
+                    <navigationItem key="navigationItem" title="Mobile Tests" id="oU3-tW-uzW">
+                        <barButtonItem key="rightBarButtonItem" image="map_info" id="cUi-bH-M8P">
+                            <connections>
+                                <action selector="aboutTests:" destination="7Se-Oe-hML" id="02l-2i-hbN"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="cellImageView" destination="RLh-Xo-co7" id="fEX-el-jzx"/>
                         <outlet property="cellLabel" destination="0Fx-8d-bk8" id="L5G-ey-iRA"/>
@@ -748,24 +785,24 @@
         <!--Mobile Runner View Controller-->
         <scene sceneID="kxa-se-zno">
             <objects>
-                <viewController id="qC0-TW-1dg" customClass="MobileRunnerViewController" customModule="QUICTester" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="qC0-TW-1dg" customClass="MobileRunnerViewController" customModule="MultipathTester" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="083-vx-kh3">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="8NG-P8-5qp">
-                                <rect key="frame" x="0.0" y="64" width="375" height="554"/>
+                                <rect key="frame" x="0.0" y="64" width="0.0" height="554"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" restorationIdentifier="timeGraph" translatesAutoresizingMaskIntoConstraints="NO" id="1wi-5k-Gvi" customClass="LineChartView" customModule="Charts">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="184.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="0.0" height="184.5"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0En-Uh-hLT" customClass="LineChartView" customModule="Charts">
-                                        <rect key="frame" x="0.0" y="184.5" width="375" height="185"/>
+                                        <rect key="frame" x="0.0" y="184.5" width="0.0" height="185"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </view>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ijp-F1-Uw7">
-                                        <rect key="frame" x="0.0" y="369.5" width="375" height="184.5"/>
+                                        <rect key="frame" x="0.0" y="369.5" width="0.0" height="184.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -801,13 +838,13 @@
         <!--Benchmarks-->
         <scene sceneID="ZtD-aG-Bzs">
             <objects>
-                <tableViewController id="seT-Je-qKQ" customClass="BenchmarkTableViewController" customModule="QUICTester" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="seT-Je-qKQ" customClass="BenchmarkTableViewController" customModule="MultipathTester" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="SYl-0f-tok">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="BenchmarkTableViewCell" rowHeight="60" id="S5A-PO-NSJ" customClass="BenchmarkTableViewCell" customModule="QUICTester" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="BenchmarkTableViewCell" rowHeight="60" id="S5A-PO-NSJ" customClass="BenchmarkTableViewCell" customModule="MultipathTester" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="28" width="375" height="60"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="S5A-PO-NSJ" id="HP7-fM-Tb5">
@@ -959,13 +996,13 @@
         <!--Results-->
         <scene sceneID="A80-6r-50i">
             <objects>
-                <tableViewController storyboardIdentifier="TestResultsTableViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="WmF-Kh-pGc" customClass="TestResultsTableViewController" customModule="QUICTester" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="TestResultsTableViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="WmF-Kh-pGc" customClass="TestResultsTableViewController" customModule="MultipathTester" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="testResultCell" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="70" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="4Lk-nA-HuX">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TestResultsTableViewCell" rowHeight="40" id="Bu1-Ti-zqf" customClass="TestResultsTableViewCell" customModule="QUICTester" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TestResultsTableViewCell" rowHeight="40" id="Bu1-Ti-zqf" customClass="TestResultsTableViewCell" customModule="MultipathTester" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="28" width="375" height="40"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Bu1-Ti-zqf" id="YgR-l8-WBs">
@@ -1027,13 +1064,13 @@
         <!--Benchmark-->
         <scene sceneID="91D-bk-d2n">
             <objects>
-                <tableViewController id="teT-Yb-cvg" customClass="BenchmarkSummaryTableViewController" customModule="QUICTester" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="teT-Yb-cvg" customClass="BenchmarkSummaryTableViewController" customModule="MultipathTester" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="O5y-f4-6AD">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="BenchmarkSummaryTableViewCell" id="VQC-2c-M28" customClass="BenchmarkSummaryTableViewCell" customModule="QUICTester" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="BenchmarkSummaryTableViewCell" id="VQC-2c-M28" customClass="BenchmarkSummaryTableViewCell" customModule="MultipathTester" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="VQC-2c-M28" id="1ur-AN-kA2">
@@ -1147,13 +1184,13 @@
         <!--Benchmark Detail Table View Controller-->
         <scene sceneID="mSd-eI-4Hp">
             <objects>
-                <tableViewController storyboardIdentifier="BenchmarkDetailTableViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="WV3-P6-HZ7" customClass="BenchmarkDetailTableViewController" customModule="QUICTester" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="BenchmarkDetailTableViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="WV3-P6-HZ7" customClass="BenchmarkDetailTableViewController" customModule="MultipathTester" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="RS2-3D-KxV">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="BenchmarkDetailTableViewCell" rowHeight="40" id="yaL-Kj-1qk" customClass="BenchmarkDetailTableViewCell" customModule="QUICTester" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="BenchmarkDetailTableViewCell" rowHeight="40" id="yaL-Kj-1qk" customClass="BenchmarkDetailTableViewCell" customModule="MultipathTester" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="28" width="375" height="40"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="yaL-Kj-1qk" id="k4A-Ph-4ba">
@@ -1190,7 +1227,7 @@
                                     <outlet property="titleLabel" destination="bg7-kB-AJF" id="b8W-yj-rJq"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="BenchmarkUUIDTableViewCell" id="iT9-dy-WPU" customClass="BenchmarkUUIDTableViewCell" customModule="QUICTester" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="BenchmarkUUIDTableViewCell" id="iT9-dy-WPU" customClass="BenchmarkUUIDTableViewCell" customModule="MultipathTester" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="68" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="iT9-dy-WPU" id="fX8-dg-Scb">
@@ -1244,13 +1281,13 @@
         <!--Test Name-->
         <scene sceneID="kSs-h2-ny9">
             <objects>
-                <tableViewController id="IlQ-92-kOz" customClass="TestResultInstancesTableViewController" customModule="QUICTester" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="IlQ-92-kOz" customClass="TestResultInstancesTableViewController" customModule="MultipathTester" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="gxd-kl-hpY">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TestResultDetailTableViewCell" id="49h-U3-U5Z" customClass="TestResultDetailTableViewCell" customModule="QUICTester" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TestResultDetailTableViewCell" id="49h-U3-U5Z" customClass="TestResultDetailTableViewCell" customModule="MultipathTester" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="49h-U3-U5Z" id="5Ig-de-wHI">
@@ -1280,7 +1317,7 @@
                                     <outlet property="detailLabel" destination="cZA-be-LfX" id="b9o-ap-Iz7"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TestResultInstancesTableViewCell" rowHeight="60" id="hQe-gg-dpQ" customClass="TestResultInstancesTableViewCell" customModule="QUICTester" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TestResultInstancesTableViewCell" rowHeight="60" id="hQe-gg-dpQ" customClass="TestResultInstancesTableViewCell" customModule="MultipathTester" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="72" width="375" height="60"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="hQe-gg-dpQ" id="OSr-Jv-tpi">
@@ -1348,13 +1385,13 @@
         <!--Test Result Instance Detail Table View Controller-->
         <scene sceneID="rIn-xH-BB4">
             <objects>
-                <tableViewController id="vHS-vn-z7h" customClass="TestResultInstanceDetailTableViewController" customModule="QUICTester" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="vHS-vn-z7h" customClass="TestResultInstanceDetailTableViewController" customModule="MultipathTester" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="1Le-Ts-KRP">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TestResultInstanceDetailTextTableViewCell" id="KpB-yY-GKv" customClass="TestResultInstanceDetailTextTableViewCell" customModule="QUICTester" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TestResultInstanceDetailTextTableViewCell" id="KpB-yY-GKv" customClass="TestResultInstanceDetailTextTableViewCell" customModule="MultipathTester" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="KpB-yY-GKv" id="TVb-Lt-gYV">
@@ -1384,7 +1421,7 @@
                                     <outlet property="detailLabel" destination="dBd-QK-SAn" id="IUe-9v-NNP"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TestResultInstanceDetailLineChartTableViewCell" rowHeight="300" id="bd2-nh-joi" customClass="TestResultInstanceDetailLineChartTableViewCell" customModule="QUICTester" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TestResultInstanceDetailLineChartTableViewCell" rowHeight="300" id="bd2-nh-joi" customClass="TestResultInstanceDetailLineChartTableViewCell" customModule="MultipathTester" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="72" width="375" height="300"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="bd2-nh-joi" id="DEo-QO-3nn">
@@ -1451,13 +1488,15 @@
     </scenes>
     <resources>
         <image name="cellular" width="128" height="128"/>
+        <image name="fnrs" width="80" height="60"/>
         <image name="map_info" width="22" height="22"/>
+        <image name="multiple" width="24" height="24"/>
         <image name="no_cellular" width="128" height="128"/>
         <image name="no_location" width="128" height="128"/>
         <image name="no_wifi" width="128" height="128"/>
         <image name="ok" width="48" height="48"/>
-        <image name="standing" width="24" height="24"/>
         <image name="tab_history" width="25" height="25"/>
+        <image name="uclouvain" width="427" height="590"/>
         <image name="walking" width="24" height="24"/>
         <image name="wifi" width="128" height="128"/>
     </resources>

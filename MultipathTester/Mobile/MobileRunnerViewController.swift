@@ -276,10 +276,17 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
             let cellBytesReceived = cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived
             let duration = self.stopTime.timeIntervalSince(self.startTime)
             let benchmark = Benchmark(connectivities: self.connectivities, duration: duration, locations: self.locations, mobile: true, pingMed: self.medPing!, pingStd: self.stdPing!, wifiBytesReceived: wifiBytesReceived, wifiBytesSent: wifiBytesSent, cellBytesReceived: cellBytesReceived, cellBytesSent: cellBytesSent, multipathService: self.multipathService, serverName: self.testServer!, startTime: self.startTime, testResults: testResults)
-            benchmark.wifiBytesDistance = self.computedWiFiBytesDistance
-            benchmark.wifiBytesLostTime = self.computedWiFiBytesLostTime
-            benchmark.wifiSystemDistance = self.computedWiFiSystemDistance
-            benchmark.wifiSystemLostTime = self.computedWiFiSystemLostTime
+            if self.backgrounded {
+                benchmark.wifiBytesDistance = 0
+                benchmark.wifiBytesLostTime = Date()
+                benchmark.wifiSystemDistance = 0
+                benchmark.wifiSystemLostTime = Date()
+            } else {
+                benchmark.wifiBytesDistance = self.computedWiFiBytesDistance
+                benchmark.wifiBytesLostTime = self.computedWiFiBytesLostTime
+                benchmark.wifiSystemDistance = self.computedWiFiSystemDistance
+                benchmark.wifiSystemLostTime = self.computedWiFiSystemLostTime
+            }
             Utils.sendToServer(benchmark: benchmark, tests: self.tests)
             benchmark.save()
             self.cellTimer?.invalidate()

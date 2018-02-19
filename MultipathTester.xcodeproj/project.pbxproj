@@ -58,6 +58,7 @@
 		CE58F4A31FD57FD7009EA08F /* BulkDownloadResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE58F4A21FD57FD7009EA08F /* BulkDownloadResult.swift */; };
 		CE58F4A51FD6895D009EA08F /* QUICPerfTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE58F4A41FD6895D009EA08F /* QUICPerfTest.swift */; };
 		CE58F4A81FD68D36009EA08F /* RcvBytesData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE58F4A71FD68D36009EA08F /* RcvBytesData.swift */; };
+		CE8980ED203AEC4400E64953 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8980EC203AEC4400E64953 /* AboutViewController.swift */; };
 		CE8E284B1F695450004F1558 /* TCPClientReqRes.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8E284A1F695450004F1558 /* TCPClientReqRes.swift */; };
 		CE8E284D1F696334004F1558 /* TCPClientBulk.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8E284C1F696334004F1558 /* TCPClientBulk.swift */; };
 		CE8E284F1F6966FC004F1558 /* TCPClientSiri.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8E284E1F6966FC004F1558 /* TCPClientSiri.swift */; };
@@ -203,6 +204,7 @@
 		CE58F4A21FD57FD7009EA08F /* BulkDownloadResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BulkDownloadResult.swift; sourceTree = "<group>"; };
 		CE58F4A41FD6895D009EA08F /* QUICPerfTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QUICPerfTest.swift; sourceTree = "<group>"; };
 		CE58F4A71FD68D36009EA08F /* RcvBytesData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RcvBytesData.swift; sourceTree = "<group>"; };
+		CE8980EC203AEC4400E64953 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		CE8E284A1F695450004F1558 /* TCPClientReqRes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClientReqRes.swift; sourceTree = "<group>"; };
 		CE8E284C1F696334004F1558 /* TCPClientBulk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClientBulk.swift; sourceTree = "<group>"; };
 		CE8E284E1F6966FC004F1558 /* TCPClientSiri.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClientSiri.swift; sourceTree = "<group>"; };
@@ -404,6 +406,14 @@
 			path = HelperObject;
 			sourceTree = "<group>";
 		};
+		CE8980EB203AEC2E00E64953 /* About */ = {
+			isa = PBXGroup;
+			children = (
+				CE8980EC203AEC4400E64953 /* AboutViewController.swift */,
+			);
+			path = About;
+			sourceTree = "<group>";
+		};
 		CEA702DA2003C66800FDFB89 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -524,6 +534,7 @@
 				CEA702FD200506E900FDFB89 /* Static */,
 				CEA70314200673E800FDFB89 /* Mobile */,
 				CE09053A20333E5800B1445A /* Initial */,
+				CE8980EB203AEC2E00E64953 /* About */,
 				CE21D42B1F67ECF300056940 /* MultipathTester.entitlements */,
 				CEDAF24E1F5FE8E000310153 /* AppDelegate.swift */,
 				CEDAF2521F5FE8E000310153 /* Main.storyboard */,
@@ -789,6 +800,7 @@
 				CEA703092005084C00FDFB89 /* UICircularProgressRingView.swift in Sources */,
 				CEA702E82003D67100FDFB89 /* MobileRunnerViewController.swift in Sources */,
 				CEA703072005084C00FDFB89 /* UICircularProgressRingStyle.swift in Sources */,
+				CE8980ED203AEC4400E64953 /* AboutViewController.swift in Sources */,
 				CE58F4A11FD57C58009EA08F /* QUICBulkDownloadTest.swift in Sources */,
 				CED4B5201F97972500E6F86E /* TCPFileDescriptorFinder.swift in Sources */,
 				CED4B5221F9F7FE300E6F86E /* TCPInfoConverter.swift in Sources */,

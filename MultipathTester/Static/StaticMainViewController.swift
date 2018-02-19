@@ -188,6 +188,17 @@ class StaticMainViewController: UIViewController {
         }
     }
 
+    // MARK: Actions
+    @IBAction func aboutTests(_ sender: Any) {
+        let alert = UIAlertController(title: "About multipath tests", message: """
+        This mode allows you to test how your device deals with multiple paths when conditions are stable. It prefers WiFi only by default, but you can enable the aggregation mode to benefit from the cellular.
+        
+        Some tests are bandwidth-intensive. Please do alter network connectivity during the tests.
+        """, preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation

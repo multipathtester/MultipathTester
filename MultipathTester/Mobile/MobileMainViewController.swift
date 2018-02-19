@@ -286,4 +286,15 @@ class MobileMainViewController: UIViewController {
         }
     }
 
+    @IBAction func aboutTests(_ sender: Any) {
+        let alert = UIAlertController(title: "About mobile tests", message: """
+        This mode allows you to test how your device deals with multiple paths when it is in mobility scenario. It studies when the WiFi starts to be lossy and when the cellular starts to be used.
+        
+        The test stops once the WiFi network is lost or changed. The transfer rate is about 80 KB/s.
+
+        This mode asks for location permission to estimate how far you can reach your WiFi. This estimation is not available if the permission is not granted.
+        """, preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
 }
