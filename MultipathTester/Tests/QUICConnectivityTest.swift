@@ -90,7 +90,7 @@ class QUICConnectivityTest: BaseTest, Test {
         var success = false
         var resultMsg = ""
         let durationString = QuictrafficRun(runCfg)
-        let elapsed = startTime.timeIntervalSinceNow
+        let elapsed = Date().timeIntervalSince(startTime)
         wifiInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
         cellInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
         let durationsArray = durationString!.components(separatedBy: .newlines)

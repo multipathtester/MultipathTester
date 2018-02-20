@@ -157,7 +157,10 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
             let meters = cl.distance(from: self.initialLocation!)
             self.distances.append(ChartDataEntry(x: cl.timestamp.timeIntervalSince1970, y: meters))
             let location = Location(lon: cl.coordinate.longitude, lat: cl.coordinate.latitude, timestamp: cl.timestamp, accuracy: cl.horizontalAccuracy, altitude: cl.altitude, speed: cl.speed)
-            self.locations.append(location)
+            // Avoid logging several times the same value
+            if self.locations.count == 0 || self.locations.last?.timestamp != location.timestamp {
+                self.locations.append(location)
+            }
             let wifiInfoStart = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
             let cellInfo = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
             if !self.stopping && lastReceivedWiFiBytes < wifiInfoStart.bytesReceived {

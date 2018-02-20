@@ -39,6 +39,7 @@ class QUICPerfTest: BaseTest, Test {
     
     func getConfigDict() -> [String : Any] {
         return [
+            "download": false,
             "duration": 10,
             "port": self.port,
             "url": getURL(),
