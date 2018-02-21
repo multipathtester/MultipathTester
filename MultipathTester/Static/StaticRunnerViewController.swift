@@ -42,7 +42,7 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
     
     var multipathService: RunConfig.MultipathServiceType = .aggregate
     
-    var debugCount = 0
+    //var debugCount = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -323,12 +323,12 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
     func probeCellular() {
         let cellStatus = UIDevice.current.hasCellularConnectivity
         // For debug
-        debugCount += 1
-        if debugCount >= 5 {
-            print("Will debug")
-            Utils.getDebug()
-            debugCount = 0
-        }
+        // debugCount += 1
+        //if debugCount >= 5 {
+        //    print("Will debug")
+        //    Utils.getDebug()
+        //    debugCount = 0
+        //}
         if cellStatus != wasCellularOn {
             let reachabilityStatus = internetReachability.currentReachabilityStatus()
             let conn = Connectivity.getCurrentConnectivity(reachabilityStatus: reachabilityStatus)

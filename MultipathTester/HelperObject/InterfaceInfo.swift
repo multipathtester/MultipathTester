@@ -23,7 +23,7 @@ class InterfaceInfo: Codable {
     
     // Get info about an interface
     static func getInterfaceInfo(netInterface: Connectivity.NetworkType) -> InterfaceInfo {
-        var res = InterfaceInfo()
+        let res = InterfaceInfo()
         // Get list of all interfaces of the local machine
         var ifaddr: UnsafeMutablePointer<ifaddrs>?
         guard getifaddrs(&ifaddr) == 0 else { return res }

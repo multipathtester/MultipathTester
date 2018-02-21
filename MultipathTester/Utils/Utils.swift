@@ -83,7 +83,7 @@ class Utils {
                 group.leave()
                 return
             }
-            let responseString = String(data: data!, encoding: String.Encoding(rawValue: String.Encoding.utf8.rawValue))
+            let responseString = String(data: checkedData, encoding: String.Encoding(rawValue: String.Encoding.utf8.rawValue))
             print(responseString!)
             group.leave()
         }
@@ -281,7 +281,7 @@ class Utils {
     }
     
     static func traceroute(toIP: String) {
-        var sock = socket(AF_INET6, SOCK_DGRAM, 0)
+        let sock = socket(AF_INET6, SOCK_DGRAM, 0)
         var ttl = 1
         setsockopt(sock, IPPROTO_IP, IP_TTL, &ttl, socklen_t(MemoryLayout<Int>.size))
         var buf = "Hello"

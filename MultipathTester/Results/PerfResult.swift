@@ -85,7 +85,7 @@ class PerfResult: BaseResult, TestResult {
         
         var dataDict = [String:[ChartDataEntry]]()
         for k in cwins.keys {
-            dataDict["Path " + k] = cwins[k]!.map { (c) -> ChartDataEntry in
+            dataDict[k] = cwins[k]!.map { (c) -> ChartDataEntry in
                 return ChartDataEntry(x: c.time, y: Double(c.cwin))
             }
         }

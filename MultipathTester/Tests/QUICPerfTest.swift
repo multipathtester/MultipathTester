@@ -56,6 +56,7 @@ class QUICPerfTest: BaseTest, Test {
     func getTestResult() -> TestResult {
         let quicInfos = getProtoInfo()
         var cwinData = [String: [CWinData]]()
+        var sawPaths = [String: String]()
         var cid: String = ""
         var paths: [String] = [String]()
         let df = DateFormatter()
@@ -74,14 +75,34 @@ class QUICPerfTest: BaseTest, Test {
             paths = Array(pathsDict.keys)
             for pth in paths {
                 let pthDict = pathsDict[pth] as! [String: Any]
+                if sawPaths[pth] == nil {
+                    var newLabel = "Path " + pth
+                    if let ifName = pthDict["InterfaceName"] as? String {
+                        if ifName.starts(with: "en") {
+                            newLabel += " (WiFi)"
+                        } else if ifName.starts(with: "pdp_ip") {
+                            newLabel += " (Cellular)"
+                        } else if ifName.count > 0 {
+                            newLabel += " (" + ifName + ")"
+                        }
+                    }
+                    sawPaths[pth] = newLabel + " Congestion Window"
+                }
+                let label = sawPaths[pth]!
+                
                 let cwin = UInt64(pthDict["CongestionWindow"] as! Int)
                 let timeDate = df.date(from: qi["Time"] as! String)!
                 let time = timeDate.timeIntervalSince1970
-                if cwinData[pth] == nil {
-                    cwinData[pth] = [CWinData]()
+                if cwinData[label] == nil {
+                    cwinData[label] = [CWinData]()
                 }
-                cwinData[pth]!.append(CWinData(time: time, cwin: cwin))
+                cwinData[label]!.append(CWinData(time: time, cwin: cwin))
             }
+        }
+        // Remove Path 0 if there are other paths
+        if cwinData.keys.count > 1 {
+            let label0 = sawPaths["0"]!
+            cwinData[label0] = nil
         }
         let intervalsRaw = result["intervals"] as? [[String: Any]] ?? []
         var intervals = [IntervalData]()

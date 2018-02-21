@@ -58,7 +58,7 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
     var wifiBSSID: String = ""
     
     // For debug
-    var debugCount = 0
+    //var debugCount = 0
     
     // Detect app going to background
     var backgrounded = false
@@ -189,7 +189,7 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
                 self.countNoWifi += 1
                 if self.countNoWifi >= 3 {
                     DispatchQueue.main.async {
-                        self.userLabel.text = "No more data seen on WiFi..."
+                        self.userLabel.text = "No more data seen on WiFi, but system did not yet consider WiFi lost... How far do you need to move in order to let the system noticing it?"
                     }
                 }
             }
@@ -332,12 +332,12 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
     @objc
     func probeCellular() {
         // For debug
-        debugCount += 1
-        if debugCount >= 5 {
-            print("Will debug")
-            Utils.getDebug()
-            debugCount = 0
-        }
+        //debugCount += 1
+        //if debugCount >= 5 {
+        //    print("Will debug")
+        //    Utils.getDebug()
+        //    debugCount = 0
+        //}
         // This first instruction is not cellular probing here, but this will at least fill in location graph
         locationTracker.forceUpdate()
         let cellStatus = UIDevice.current.hasCellularConnectivity
