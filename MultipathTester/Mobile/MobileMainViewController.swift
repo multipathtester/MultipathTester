@@ -113,7 +113,7 @@ class MobileMainViewController: UIViewController {
     }
 
     func determineClosestServer() {
-        DispatchQueue.global(qos: .background).async {
+        DispatchQueue.global(qos: .userInteractive).async {
             let pingTests = [
                 QUICConnectivityTest(ipVer: .any, port: 443, testServer: .fr, pingCount: 5, pingWaitMs: 50),
                 QUICConnectivityTest(ipVer: .any, port: 443, testServer: .ca, pingCount: 5, pingWaitMs: 50),

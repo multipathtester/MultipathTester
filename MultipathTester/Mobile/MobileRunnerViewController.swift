@@ -244,7 +244,7 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
         upDelays = []
         downDelays = []
         
-        DispatchQueue.global(qos: .background).async {
+        DispatchQueue.global(qos: .userInteractive).async {
             let nbTests = self.tests.count
             for t in self.tests {
                 self.runningTest = t

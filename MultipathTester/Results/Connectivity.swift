@@ -166,6 +166,19 @@ class Connectivity: Codable {
     
     static func getCurrentConnectivity(reachabilityStatus: NetworkStatus) -> Connectivity {
         let conn = Connectivity(networkType: .None, timestamp: Date())
+        #if (arch(i386) || arch(x86_64)) && os(iOS)
+            conn.networkType = .WiFiCellular
+            conn.wifiNetworkName = "WiFier"
+            conn.wifiBSSID = "12:34:56:78:90:12"
+            conn.wifiAddresses = UIDevice.current.wifiAddresses
+            conn.cellularNetworkName = "Carrier"
+            conn.telephonyNetworkSimCountry = "BE"
+            conn.telephonyNetworkSimOperator = String.init(format: "%@-%@", "123", "45")
+            conn.cellularCode = CTRadioAccessTechnologyLTE
+            conn.cellularCodeDescription = "LTE (4G)"
+            conn.cellularAddresses = UIDevice.current.cellularAddresses
+            return conn
+        #endif
         if reachabilityStatus == ReachableViaWiFi {
             conn.networkType = .WiFi
             let (netName, bssid) = Connectivity.getWiFiSSID()

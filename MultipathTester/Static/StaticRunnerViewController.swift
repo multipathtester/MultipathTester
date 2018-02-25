@@ -56,6 +56,9 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
             QUICConnectivityTest(ipVer: .any, port: 443, testServer: .jp),
         ]
         
+        // This randomize the order of the pings, to avoid correlating traffic too much
+        pingTests.shuffle()
+        
         // Do any additional setup after loading the view.
         tests = [
             // TODO add tests to check gQUIC vs. IETF QUIC,...
@@ -72,6 +75,9 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
             QUICPerfTest(ipVer: .v6, maxPathID: 0),
             QUICPerfTest(ipVer: .any, maxPathID: 255),
         ]
+        
+        // Debug!
+        tests = [TCPConnectivityTest(ipVer: .any, port: 443, testServer: .fr)]
         
         allTests = pingTests + tests
         
@@ -170,7 +176,7 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
         RunLoop.current.add(cellTimer!, forMode: .commonModes)
         print("We start the tests")
         
-        DispatchQueue.global(qos: .background).async {
+        DispatchQueue.global(qos: .userInteractive).async {
             let nbTests = self.pingTests.count + self.tests.count
             var testDones = 0
             var bestServer: TestServer = .fr
@@ -262,7 +268,8 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
             let duration = self.stopTime.timeIntervalSince(self.startTime)
             
             let benchmark = Benchmark(connectivities: self.connectivities, duration: duration, locations: self.locations, mobile: false, pingMed: bestMed, pingStd: bestStd, wifiBytesReceived: wifiBytesReceived, wifiBytesSent: wifiBytesSent, cellBytesReceived: cellBytesReceived, cellBytesSent: cellBytesSent, multipathService: self.multipathService, serverName: bestServer, startTime: self.startTime, testResults: testResults)
-            Utils.sendToServer(benchmark: benchmark, tests: self.allTests)
+            // Don't save tests now
+            //Utils.sendToServer(benchmark: benchmark, tests: self.allTests)
             benchmark.save()
             self.cellTimer?.invalidate()
             self.cellTimer = nil

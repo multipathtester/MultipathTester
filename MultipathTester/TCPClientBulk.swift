@@ -31,7 +31,7 @@ class TCPClientBulk {
         group.enter()
         group2.enter()
         
-        DispatchQueue.global(qos: .background).async {
+        DispatchQueue.global(qos: .userInteractive).async {
             let start = DispatchTime.now()
             group2.leave()
             let task = session.dataTask(with: self.url) { (data, resp, error) in

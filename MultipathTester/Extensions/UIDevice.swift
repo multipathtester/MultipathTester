@@ -72,6 +72,9 @@ public extension UIDevice {
     
     /// A Boolean value indicating whether the device has cellular data connectivity (true) or not (false).
     var hasCellularConnectivity: Bool {
+        #if (arch(i386) || arch(x86_64)) && os(iOS)
+            return true
+        #endif
         var addrs: UnsafeMutablePointer<ifaddrs>?
         var cursor: UnsafeMutablePointer<ifaddrs>?
         
@@ -176,6 +179,9 @@ public extension UIDevice {
     }
     
     var cellularAddresses: [String] {
+        #if (arch(i386) || arch(x86_64)) && os(iOS)
+            return ["10.0.1.2"]
+        #endif
         return getFilteredAddresses(interface_name: "pdp_ip0")
     }
 }

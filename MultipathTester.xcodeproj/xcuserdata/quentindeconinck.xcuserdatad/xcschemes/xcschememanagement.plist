@@ -4,10 +4,28 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>QUICTester.xcscheme</key>
+		<key>MultipathTester.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>2</integer>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>CEDAF24A1F5FE8E000310153</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>CEDAF25E1F5FE8E100310153</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>CEDAF2691F5FE8E100310153</key>
+		<dict>
+			<key>primary</key>
+			<true/>
 		</dict>
 	</dict>
 </dict>
