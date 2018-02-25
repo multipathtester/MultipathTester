@@ -50,6 +50,7 @@ protocol Test {
     func getStartTime() -> Date
     func getTestResult() -> TestResult
     func getTestServer() -> TestServer
+    func getTestServerHostname() -> String
     func getURL() -> String
     func getWaitTime() -> Double
     func setTestServer(testServer: TestServer)

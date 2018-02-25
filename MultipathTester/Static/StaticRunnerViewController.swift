@@ -77,7 +77,15 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
         ]
         
         // Debug!
-        tests = [TCPConnectivityTest(ipVer: .any, port: 443, testServer: .fr)]
+        tests = [
+            TCPConnectivityTest(ipVer: .any, port: 443, testServer: .fr),
+            //QUICBulkDownloadTest(ipVer: .v4, urlPath: "/10MB", maxPathID: 0),
+            //QUICBulkDownloadTest(ipVer: .v6, urlPath: "/10MB", maxPathID: 0),
+            //QUICBulkDownloadTest(ipVer: .any, urlPath: "/10MB", maxPathID: 255),
+            TCPBulkDownloadTest(ipVer: .v4, urlPath: "/10MB", multipath: false),
+            TCPBulkDownloadTest(ipVer: .v6, urlPath: "/10MB", multipath: false),
+            TCPBulkDownloadTest(ipVer: .any, urlPath: "/10MB", multipath: true),
+        ]
         
         allTests = pingTests + tests
         

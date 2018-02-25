@@ -43,7 +43,6 @@ class QUICConnectivityTest: BaseConnectivityTest {
                 }
             }
         } catch { print("Nope...") }
-        print(self.errorMsg)
         
         result = [
             "duration": elapsed,

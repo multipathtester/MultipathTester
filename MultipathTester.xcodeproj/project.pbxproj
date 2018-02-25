@@ -62,6 +62,8 @@
 		CE82BD742042C8AB0067F3D8 /* MutableCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE82BD732042C8AB0067F3D8 /* MutableCollection.swift */; };
 		CE82BD762042C9640067F3D8 /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE82BD752042C9640067F3D8 /* Sequence.swift */; };
 		CE82BD792042CC270067F3D8 /* BaseConnectivityTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE82BD782042CC270067F3D8 /* BaseConnectivityTest.swift */; };
+		CE82BD7B2042E3AA0067F3D8 /* BaseBulkDownloadTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE82BD7A2042E3AA0067F3D8 /* BaseBulkDownloadTest.swift */; };
+		CE82BD7D2042E6F00067F3D8 /* TCPBulkDownloadTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE82BD7C2042E6F00067F3D8 /* TCPBulkDownloadTest.swift */; };
 		CE8980ED203AEC4400E64953 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8980EC203AEC4400E64953 /* AboutViewController.swift */; };
 		CE8E284B1F695450004F1558 /* TCPClientReqRes.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8E284A1F695450004F1558 /* TCPClientReqRes.swift */; };
 		CE8E284D1F696334004F1558 /* TCPClientBulk.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8E284C1F696334004F1558 /* TCPClientBulk.swift */; };
@@ -212,6 +214,8 @@
 		CE82BD732042C8AB0067F3D8 /* MutableCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutableCollection.swift; sourceTree = "<group>"; };
 		CE82BD752042C9640067F3D8 /* Sequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sequence.swift; sourceTree = "<group>"; };
 		CE82BD782042CC270067F3D8 /* BaseConnectivityTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseConnectivityTest.swift; sourceTree = "<group>"; };
+		CE82BD7A2042E3AA0067F3D8 /* BaseBulkDownloadTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseBulkDownloadTest.swift; sourceTree = "<group>"; };
+		CE82BD7C2042E6F00067F3D8 /* TCPBulkDownloadTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPBulkDownloadTest.swift; sourceTree = "<group>"; };
 		CE8980EC203AEC4400E64953 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		CE8E284A1F695450004F1558 /* TCPClientReqRes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClientReqRes.swift; sourceTree = "<group>"; };
 		CE8E284C1F696334004F1558 /* TCPClientBulk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClientBulk.swift; sourceTree = "<group>"; };
@@ -429,6 +433,7 @@
 		CE82BD70204198560067F3D8 /* TCP */ = {
 			isa = PBXGroup;
 			children = (
+				CE82BD7C2042E6F00067F3D8 /* TCPBulkDownloadTest.swift */,
 				CE82BD71204198B70067F3D8 /* TCPConnectivityTest.swift */,
 			);
 			path = TCP;
@@ -437,6 +442,7 @@
 		CE82BD772042CC100067F3D8 /* BaseTraffic */ = {
 			isa = PBXGroup;
 			children = (
+				CE82BD7A2042E3AA0067F3D8 /* BaseBulkDownloadTest.swift */,
 				CE82BD782042CC270067F3D8 /* BaseConnectivityTest.swift */,
 			);
 			path = BaseTraffic;
@@ -828,6 +834,7 @@
 				CEA702FA2004C64400FDFB89 /* LineChartHelper.swift in Sources */,
 				CE8E284F1F6966FC004F1558 /* TCPClientSiri.swift in Sources */,
 				CE8E284D1F696334004F1558 /* TCPClientBulk.swift in Sources */,
+				CE82BD7D2042E6F00067F3D8 /* TCPBulkDownloadTest.swift in Sources */,
 				CE26850B2008BC3300462C6E /* TestResultInstanceDetailLineChartTableViewCell.swift in Sources */,
 				CE2685052008A54C00462C6E /* TestResultInstancesTableViewController.swift in Sources */,
 				CE4894F72028AF0100CBEED5 /* Array.swift in Sources */,
@@ -836,6 +843,7 @@
 				CE268519200DED5200462C6E /* UIDevice.swift in Sources */,
 				CEA702F62003E10E00FDFB89 /* BalloonMarker.swift in Sources */,
 				CEA703132006615A00FDFB89 /* AnyTestResult.swift in Sources */,
+				CE82BD7B2042E3AA0067F3D8 /* BaseBulkDownloadTest.swift in Sources */,
 				CE26852F20163FFD00462C6E /* MobileMainViewController.swift in Sources */,
 				CEA703092005084C00FDFB89 /* UICircularProgressRingView.swift in Sources */,
 				CEA702E82003D67100FDFB89 /* MobileRunnerViewController.swift in Sources */,

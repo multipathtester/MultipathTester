@@ -38,8 +38,6 @@ class TCPConnectivityTest: BaseConnectivityTest {
                 group.leave()
                 return
             }
-            let responseString = String(data: data!, encoding: .utf8)
-            print(responseString)
             let length = CGFloat((resp?.expectedContentLength)!) / 1000000.0
             let elapsed = DispatchTime.now().uptimeNanoseconds - start.uptimeNanoseconds
             let timeInterval = Double(elapsed) / 1_000_000
@@ -47,14 +45,13 @@ class TCPConnectivityTest: BaseConnectivityTest {
                 self.durations.append(timeInterval)
             }
             
-            print("\(timeInterval)ms for \(length) MB")
             group.leave()
         }
         task.resume()
         group.wait()
         
         // Did we got an error?
-        if self.errorMsg != nil {
+        if self.errorMsg != "" {
             return false
         }
         
@@ -72,16 +69,12 @@ class TCPConnectivityTest: BaseConnectivityTest {
         var success = false
 
         let config = URLSessionConfiguration.ephemeral
-        if true {
-            config.multipathServiceType = URLSessionConfiguration.MultipathServiceType.handover
-        }
+        config.multipathServiceType = URLSessionConfiguration.MultipathServiceType.handover
         
         let session = URLSession(configuration: config)
         
         let group = DispatchGroup()
-        let subgroup = DispatchGroup()
         group.enter()
-        subgroup.enter()
         
         DispatchQueue.global(qos: .userInteractive).async {
             success = self.performRequest(session: session, count: 0)
@@ -95,9 +88,15 @@ class TCPConnectivityTest: BaseConnectivityTest {
         wifiInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
         cellInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
         
+        if success {
+            let median = durations.median()
+            let standardDeviation = durations.standardDeviation()
+            self.errorMsg = String(format: "The server %@ is reachable with median %.1f ms and standard deviation %.1f ms.", testServer.rawValue, median, standardDeviation)
+        }
+        
         result = [
-            "duration": elapsed,
-            "durations":durations,
+            "duration": String(format: "%.9f", elapsed),
+            "durations": durations,
             "error_msg": self.errorMsg,
             "success": success,
             "wifi_bytes_sent": wifiInfoEnd.bytesSent - wifiInfoStart.bytesSent,

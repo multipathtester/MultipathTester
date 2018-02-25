@@ -9,7 +9,7 @@
 import UIKit
 import Quictraffic
 
-class QUICBulkDownloadTest: BaseTest, Test {
+class QUICBulkDownloadTest: BaseBulkDownloadTest {
     // MARK: Properties
     var maxPathID: UInt8
     
@@ -24,34 +24,16 @@ class QUICBulkDownloadTest: BaseTest, Test {
         runCfg.logPeriodMsVar = 100
     }
     
-    func getDescription() -> String {
-        let baseConfig = getProtocol().rawValue
-        switch ipVer {
-        case .v4:
-            return baseConfig + " IPv4 Bulk Download of " + urlPath
-        case .v6:
-            return baseConfig + " IPv6 Bulk Download of " + urlPath
-        default:
-            return baseConfig + " Bulk Download of " + urlPath
-        }
-    }
-    
-    func getConfigDict() -> [String : Any] {
-        return [
-            "url": getURL(),
-        ]
-    }
-    
-    func getProtocol() -> NetProtocol {
+    override func getProtocol() -> NetProtocol {
         if maxPathID > 0 {
             return .MPQUIC
         }
         return .QUIC
     }
     
-    func getTestResult() -> TestResult {
+    override func getTestResult() -> TestResult {
         let quicInfos = getProtoInfo()
-        var rcvBytesDatas = [RcvBytesData]()
+        rcvBytesDatas = [RcvBytesData]()
         var cid: String = ""
         let df = DateFormatter()
         df.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSZ"
@@ -74,33 +56,12 @@ class QUICBulkDownloadTest: BaseTest, Test {
                 rcvBytesDatas.append(RcvBytesData(time: time, rcvBytes: rcvbytes))
             }
         }
-        var resultMsg = result["error_msg"] as? String ?? "None"
-        let duration = Double(result["duration"] as? String ?? "0.0")!
-        let success = result["success"] as? Bool ?? false
-        if success {
-            resultMsg = String(format: "Completed in %.3f s", duration)
-        }
-        let wifiBytesSent = result["wifi_bytes_sent"] as? UInt32 ?? 0
-        let wifiBytesReceived = result["wifi_bytes_received"] as? UInt32 ?? 0
-        let cellBytesSent = result["cell_bytes_sent"] as? UInt32 ?? 0
-        let cellBytesReceived = result["cell_bytes_received"] as? UInt32 ?? 0
-        return BulkDownloadResult(name: getDescription(), proto: getProtocol(), success: success, result: resultMsg, duration: duration, startTime: startTime, waitTime: waitTime, wifiBytesReceived: wifiBytesReceived, wifiBytesSent: wifiBytesSent, cellBytesReceived: cellBytesReceived, cellBytesSent: cellBytesSent, multipathService: runCfg.multipathServiceVar, rcvBytesDatas: rcvBytesDatas)
-    }
-    
-    // Because QUIC cannot do GET without the https:// ...
-    override func getURL() -> String {
-        let url = super.getURL()
-        return "https://" + url
-    }
-    
-    override func getRunTime() -> Double {
-        return 5.0
+        return super.getTestResult()
     }
     
     override func run() -> [String : Any] {
         _ = super.run()
         var success = true
-        var errorMsg = ""
         let durationString = QuictrafficRun(runCfg)
         wifiInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
         cellInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
@@ -125,7 +86,5 @@ class QUICBulkDownloadTest: BaseTest, Test {
             "cell_bytes_received": cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived,
         ]
         return result
-    }
-    
-    
+    }    
 }

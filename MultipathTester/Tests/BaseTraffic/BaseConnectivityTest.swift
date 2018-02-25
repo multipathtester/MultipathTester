@@ -13,7 +13,7 @@ class BaseConnectivityTest: BaseTest, Test {
     var pingCount: Int
     var pingWaitMs: Int
     var durations: [Double] = []
-    var errorMsg: String?
+    var errorMsg: String = ""
     
     init(ipVer: IPVersion, port: UInt16, testServer: TestServer, pingCount: Int, pingWaitMs: Int, filePrefix: String) {
         self.pingCount = pingCount
