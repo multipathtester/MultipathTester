@@ -10,19 +10,16 @@ import Foundation
 
 class BaseStreamTest: BaseTest, Test {
     // Constants
-    let maxIDCst = 10000
     let uploadIntervalTimeCst: UInt64 = 100 * 1_000_000 // 100 ms, in ns
     let downloadIntervalTimeCst: UInt64 = 100 * 1_000_000 // 100 ms, in ns
-    let uploadChunkSize = 2000
-    let downloadChunkSize = 2000
-    let ackSize: Int
+    let uploadChunkSize: UInt32 = 2000
+    let downloadChunkSize: UInt32 = 2000
     
     var runTime: Int
     var errorMsg: String = ""
     
     init(ipVer: IPVersion, runTime: Int, waitTime: Double, filePrefix: String) {
         self.runTime = runTime
-        ackSize = 2 + String(format: "%d", maxIDCst-1).count
         
         super.init(traffic: "stream", ipVer: ipVer, port: 8080, urlPath: nil, filePrefix: filePrefix, waitTime: waitTime)
         

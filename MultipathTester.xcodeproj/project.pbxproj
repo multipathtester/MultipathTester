@@ -66,6 +66,7 @@
 		CE82BD7D2042E6F00067F3D8 /* TCPBulkDownloadTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE82BD7C2042E6F00067F3D8 /* TCPBulkDownloadTest.swift */; };
 		CE82BD7F204305780067F3D8 /* BaseStreamTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE82BD7E204305780067F3D8 /* BaseStreamTest.swift */; };
 		CE82BD8120430A070067F3D8 /* TCPStreamTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE82BD8020430A070067F3D8 /* TCPStreamTest.swift */; };
+		CE82BD8320458EAF0067F3D8 /* Binary.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE82BD8220458EAF0067F3D8 /* Binary.swift */; };
 		CE8980ED203AEC4400E64953 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8980EC203AEC4400E64953 /* AboutViewController.swift */; };
 		CE8E284B1F695450004F1558 /* TCPClientReqRes.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8E284A1F695450004F1558 /* TCPClientReqRes.swift */; };
 		CE8E284D1F696334004F1558 /* TCPClientBulk.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8E284C1F696334004F1558 /* TCPClientBulk.swift */; };
@@ -220,6 +221,7 @@
 		CE82BD7C2042E6F00067F3D8 /* TCPBulkDownloadTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPBulkDownloadTest.swift; sourceTree = "<group>"; };
 		CE82BD7E204305780067F3D8 /* BaseStreamTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseStreamTest.swift; sourceTree = "<group>"; };
 		CE82BD8020430A070067F3D8 /* TCPStreamTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPStreamTest.swift; sourceTree = "<group>"; };
+		CE82BD8220458EAF0067F3D8 /* Binary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Binary.swift; sourceTree = "<group>"; };
 		CE8980EC203AEC4400E64953 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		CE8E284A1F695450004F1558 /* TCPClientReqRes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClientReqRes.swift; sourceTree = "<group>"; };
 		CE8E284C1F696334004F1558 /* TCPClientBulk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClientBulk.swift; sourceTree = "<group>"; };
@@ -385,6 +387,7 @@
 		CE58F4881FCF1100009EA08F /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				CE82BD8220458EAF0067F3D8 /* Binary.swift */,
 				CE58F4891FCF1114009EA08F /* Utils.swift */,
 				CE26851A200F60BE00462C6E /* LocationTracker.swift */,
 				CE26851C200F809A00462C6E /* Location.swift */,
@@ -858,6 +861,7 @@
 				CE58F4A11FD57C58009EA08F /* QUICBulkDownloadTest.swift in Sources */,
 				CED4B5201F97972500E6F86E /* TCPFileDescriptorFinder.swift in Sources */,
 				CED4B5221F9F7FE300E6F86E /* TCPInfoConverter.swift in Sources */,
+				CE82BD8320458EAF0067F3D8 /* Binary.swift in Sources */,
 				CE82BD7F204305780067F3D8 /* BaseStreamTest.swift in Sources */,
 				CE09053D20333E9400B1445A /* ConsentFormViewController.swift in Sources */,
 				CE4894FA202B2BE300CBEED5 /* InterfaceInfo.swift in Sources */,
