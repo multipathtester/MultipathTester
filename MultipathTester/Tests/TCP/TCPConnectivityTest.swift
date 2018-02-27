@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import NetworkExtension
 
 class TCPConnectivityTest: BaseConnectivityTest {
     convenience init(ipVer: IPVersion, port: UInt16, testServer: TestServer, pingCount: Int, pingWaitMs: Int) {

@@ -64,6 +64,8 @@
 		CE82BD792042CC270067F3D8 /* BaseConnectivityTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE82BD782042CC270067F3D8 /* BaseConnectivityTest.swift */; };
 		CE82BD7B2042E3AA0067F3D8 /* BaseBulkDownloadTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE82BD7A2042E3AA0067F3D8 /* BaseBulkDownloadTest.swift */; };
 		CE82BD7D2042E6F00067F3D8 /* TCPBulkDownloadTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE82BD7C2042E6F00067F3D8 /* TCPBulkDownloadTest.swift */; };
+		CE82BD7F204305780067F3D8 /* BaseStreamTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE82BD7E204305780067F3D8 /* BaseStreamTest.swift */; };
+		CE82BD8120430A070067F3D8 /* TCPStreamTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE82BD8020430A070067F3D8 /* TCPStreamTest.swift */; };
 		CE8980ED203AEC4400E64953 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8980EC203AEC4400E64953 /* AboutViewController.swift */; };
 		CE8E284B1F695450004F1558 /* TCPClientReqRes.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8E284A1F695450004F1558 /* TCPClientReqRes.swift */; };
 		CE8E284D1F696334004F1558 /* TCPClientBulk.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8E284C1F696334004F1558 /* TCPClientBulk.swift */; };
@@ -216,6 +218,8 @@
 		CE82BD782042CC270067F3D8 /* BaseConnectivityTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseConnectivityTest.swift; sourceTree = "<group>"; };
 		CE82BD7A2042E3AA0067F3D8 /* BaseBulkDownloadTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseBulkDownloadTest.swift; sourceTree = "<group>"; };
 		CE82BD7C2042E6F00067F3D8 /* TCPBulkDownloadTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPBulkDownloadTest.swift; sourceTree = "<group>"; };
+		CE82BD7E204305780067F3D8 /* BaseStreamTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseStreamTest.swift; sourceTree = "<group>"; };
+		CE82BD8020430A070067F3D8 /* TCPStreamTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPStreamTest.swift; sourceTree = "<group>"; };
 		CE8980EC203AEC4400E64953 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		CE8E284A1F695450004F1558 /* TCPClientReqRes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClientReqRes.swift; sourceTree = "<group>"; };
 		CE8E284C1F696334004F1558 /* TCPClientBulk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClientBulk.swift; sourceTree = "<group>"; };
@@ -435,6 +439,7 @@
 			children = (
 				CE82BD7C2042E6F00067F3D8 /* TCPBulkDownloadTest.swift */,
 				CE82BD71204198B70067F3D8 /* TCPConnectivityTest.swift */,
+				CE82BD8020430A070067F3D8 /* TCPStreamTest.swift */,
 			);
 			path = TCP;
 			sourceTree = "<group>";
@@ -444,6 +449,7 @@
 			children = (
 				CE82BD7A2042E3AA0067F3D8 /* BaseBulkDownloadTest.swift */,
 				CE82BD782042CC270067F3D8 /* BaseConnectivityTest.swift */,
+				CE82BD7E204305780067F3D8 /* BaseStreamTest.swift */,
 			);
 			path = BaseTraffic;
 			sourceTree = "<group>";
@@ -852,6 +858,7 @@
 				CE58F4A11FD57C58009EA08F /* QUICBulkDownloadTest.swift in Sources */,
 				CED4B5201F97972500E6F86E /* TCPFileDescriptorFinder.swift in Sources */,
 				CED4B5221F9F7FE300E6F86E /* TCPInfoConverter.swift in Sources */,
+				CE82BD7F204305780067F3D8 /* BaseStreamTest.swift in Sources */,
 				CE09053D20333E9400B1445A /* ConsentFormViewController.swift in Sources */,
 				CE4894FA202B2BE300CBEED5 /* InterfaceInfo.swift in Sources */,
 				CE58F4801FCEA594009EA08F /* QUICConnectivityTest.swift in Sources */,
@@ -860,6 +867,7 @@
 				CE4B90472018711100E71C5E /* StreamResult.swift in Sources */,
 				CE2685162008E9E700462C6E /* MultiLineChartEntries.swift in Sources */,
 				CE58F4971FD18E64009EA08F /* BaseTest.swift in Sources */,
+				CE82BD8120430A070067F3D8 /* TCPStreamTest.swift in Sources */,
 				CEDAF24F1F5FE8E000310153 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

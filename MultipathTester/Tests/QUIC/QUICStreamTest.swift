@@ -9,85 +9,31 @@
 import UIKit
 import Quictraffic
 
-class QUICStreamTest: BaseTest, Test {
+class QUICStreamTest: BaseStreamTest {
     // MARK: Properties
     var maxPathID: UInt8
-    var runTime: Int
     
-    init(ipVer: IPVersion, maxPathID: UInt8, runTime: Int, waitTime: Double) {
+    init(ipVer: IPVersion, maxPathID: UInt8, runTime: Int, waitTime: Double, filePrefix: String) {
         self.maxPathID = maxPathID
-        self.runTime = runTime
-
-        let filePrefix = "quictraffic_stream_" + ipVer.rawValue
-        super.init(traffic: "stream", ipVer: ipVer, port: 5202, urlPath: nil, filePrefix: filePrefix, waitTime: waitTime)
-        
+        super.init(ipVer: ipVer, runTime: runTime, waitTime: waitTime, filePrefix: filePrefix)
         // Prepare the run configuration
         runCfg.maxPathIDVar = Int(maxPathID)
-        runCfg.logPeriodMsVar = 100
-        runCfg.runTimeVar = runTime
+    }
+    
+    convenience init(ipVer: IPVersion, maxPathID: UInt8, runTime: Int, waitTime: Double) {
+        let filePrefix = "quictraffic_stream_" + ipVer.rawValue
+        self.init(ipVer: ipVer, maxPathID: maxPathID, runTime: runTime, waitTime: waitTime, filePrefix: filePrefix)
     }
     
     convenience init(ipVer: IPVersion, maxPathID: UInt8, runTime: Int) {
         self.init(ipVer: ipVer, maxPathID: maxPathID, runTime: runTime, waitTime: 3.0)
     }
     
-    
-    func getDescription() -> String {
-        let baseConfig = getProtocol().rawValue
-        switch ipVer {
-        case .v4:
-            return baseConfig + " IPv4 Stream"
-        case .v6:
-            return baseConfig + " IPv6 Stream"
-        default:
-            return baseConfig + " Stream"
-        }
-    }
-    
-    func getConfigDict() -> [String : Any] {
-        return [
-            "url": getURL(),
-            "port": self.port,
-            "upload_chunk_size": "2000",
-            "download_chunk_size": "2000",
-            "duration": String(runTime) + ".0",
-            "upload_interval_time": "0.1",
-            "download_interval_time": "0.1",
-        ]
-    }
-    
-    func getProtocol() -> NetProtocol {
+    override func getProtocol() -> NetProtocol {
         if maxPathID > 0 {
             return .MPQUIC
         }
         return .QUIC
-    }
-    
-    func getTestResult() -> TestResult {
-        let upDelays = result["up_delays"] as? [DelayData] ?? []
-        let downDelays = result["down_delays"] as? [DelayData] ?? []
-        var maxUpDelay = DelayData(time: -1, delayUs: 0)
-        if upDelays.count > 0 {
-            maxUpDelay = upDelays.max { a, b in a.delayUs < b.delayUs }!
-        }
-        var maxDownDelay = DelayData(time: -1, delayUs: 0)
-        if downDelays.count > 0 {
-            maxDownDelay = downDelays.max { a, b in a.delayUs < b.delayUs }!
-        }
-        let success = result["success"] as? Bool ?? false
-        let errorMsg = result["error_msg"] as? String ?? "None"
-        var resultText = ""
-        if success {
-            resultText = "Maximum upload delay of " + String(Double(maxUpDelay.delayUs) / 1000.0) + " ms, maximum download delay of " + String(Double(maxDownDelay.delayUs) / 1000.0) + " ms"
-        } else {
-            resultText = errorMsg
-        }
-        let duration = Double(result["duration"] as? String ?? "0.0")!
-        let wifiBytesSent = result["wifi_bytes_sent"] as? UInt32 ?? 0
-        let wifiBytesReceived = result["wifi_bytes_received"] as? UInt32 ?? 0
-        let cellBytesSent = result["cell_bytes_sent"] as? UInt32 ?? 0
-        let cellBytesReceived = result["cell_bytes_received"] as? UInt32 ?? 0
-        return StreamResult(name: getDescription(), proto: getProtocol(), success: success, result: resultText, duration: duration, startTime: startTime, waitTime: waitTime, wifiBytesReceived: wifiBytesReceived, wifiBytesSent: wifiBytesSent, cellBytesReceived: cellBytesReceived, cellBytesSent: cellBytesSent, multipathService: runCfg.multipathServiceVar, upDelays: upDelays, downDelays: downDelays, errorMsg: errorMsg)
     }
     
     override func run() -> [String : Any] {
