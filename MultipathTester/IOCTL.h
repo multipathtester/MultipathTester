@@ -220,12 +220,74 @@ struct    ifreqfull {
 #define ifr_link_quality_metric ifr_ifru.ifru_link_quality_metric
 #endif
 
+#ifndef SIOCGASSOCIDS
+struct so_aidreq {
+    __uint32_t sar_cnt; /* number of associations */
+    sae_associd_t *sar_aidp; /* array of assocations IDS */
+};
+#define SIOCGASSOCIDS _IOWR('s', 150, struct so_aidreq) /* get_associds */
+#endif
 
+#ifndef SIOCGCONNIDS
+struct so_cidreq {
+    sae_associd_t src_aid; /* association ID */
+    __uint32_t scr_cnt; /* number of connections */
+    sae_connid_t *scr_cidp; /* array of connections ID */
+};
+#define SIOCGCONNIDS _IOWR('s', 151, struct so_cidreq) /* get connids */
+#endif
+
+#ifndef SIOCGCONNINFO
+/*
+ * Structure for SIOCGCONNINFO
+ */
+struct so_cinforeq {
+    sae_connid_t    scir_cid;        /* connection ID */
+    __uint32_t    scir_flags;        /* see flags below */
+    __uint32_t    scir_ifindex;        /* (last) outbound interface */
+    __int32_t    scir_error;        /* most recent error */
+    struct sockaddr    *scir_src;        /* source address */
+    socklen_t    scir_src_len;        /* source address len */
+    struct sockaddr *scir_dst;        /* destination address */
+    socklen_t    scir_dst_len;        /* destination address len */
+    __uint32_t    scir_aux_type;        /* aux data type (CIAUX) */
+    void        *scir_aux_data;        /* aux data */
+    __uint32_t    scir_aux_len;        /* aux data len */
+};
+#define SIOCGCONNINFO _IOWR('s', 152, struct so_cinforeq) /* get conninfo */
+#endif
+
+struct mptcp_itf_stats {
+    uint16_t    ifindex;
+    uint16_t    switches;
+    uint32_t    is_expensive:1;
+    uint64_t    mpis_txbytes __attribute__((aligned(8)));
+    uint64_t    mpis_rxbytes __attribute__((aligned(8)));
+};
+
+/* Version solely used to let libnetcore survive */
+#define    CONNINFO_MPTCP_VERSION    3
+typedef struct conninfo_multipathtcp {
+    uint32_t    mptcpci_subflow_count;
+    uint32_t    mptcpci_switch_count;
+    sae_connid_t    mptcpci_subflow_connids[4];
+    
+    uint64_t    mptcpci_init_rxbytes;
+    uint64_t    mptcpci_init_txbytes;
+    
+#define    MPTCP_ITFSTATS_SIZE    4
+    struct mptcp_itf_stats mptcpci_itfstats[MPTCP_ITFSTATS_SIZE];
+    
+    uint32_t    mptcpci_flags;
+#define    MPTCPCI_FIRSTPARTY    0x01
+} conninfo_multipathtcp_t;
 
 @interface IOCTL : NSObject
 
 + (void)test;
 + (void)test2;
++ (void)getMPTCPInfo:(int)fd;
++ (NSMutableDictionary *)getMPTCPInfoClean:(int)fd;
 @end
 
 #endif /* IOCTL_h */

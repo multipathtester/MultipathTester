@@ -88,10 +88,14 @@ class TestResultInstanceDetailTableViewController: UITableViewController, ChartV
                 cell.yAxisTitleLabel.transform = CGAffineTransform(rotationAngle: -CGFloat.pi / 2)
                 cell.yAxisTitleLabel.text = lineChartEntries.yLabel
             case .multiLineChartEntries:
+                // FIXME BIG BUG
                 let colors = [
                     UIColor(red: 51/255, green: 181/255, blue: 229/255, alpha: 1),
                     UIColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1),
-                    UIColor(red: 0.0, green: 1.0, blue: 0.0, alpha: 1)
+                    UIColor(red: 0.0, green: 1.0, blue: 0.0, alpha: 1),
+                    UIColor(red: 229/255, green: 51/255, blue: 181/255, alpha: 1),
+                    UIColor(red: 0.5, green: 0.9, blue: 0.3, alpha: 1),
+                    UIColor(red: 0.0, green: 0.0, blue: 1.0, alpha: 1),
                 ]
                 let multiLineChartEntries = chartValues[indexPath.row] as! MultiLineChartEntries
                 LineChartHelper.initialize(chartView: cell.chart, delegate: self, xValueFormatter: DateValueFormatter())

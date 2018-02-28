@@ -102,12 +102,13 @@ class TCPPerfTest: BasePerfTest {
     
     override func run() -> [String : Any] {
         _ = super.run()
-        var success = false
         intervals = [IntervalData]()
         
         let config = URLSessionConfiguration.ephemeral
         // TODO Multipath service
-        //config.multipathServiceType = URLSessionConfiguration.MultipathServiceType.interactive
+        if multipath {
+            config.multipathServiceType = URLSessionConfiguration.MultipathServiceType.interactive
+        }
         
         let session = URLSession(configuration: config)
         let group = DispatchGroup()
@@ -165,9 +166,17 @@ class TCPPerfTest: BasePerfTest {
             let timeInfo = Date().timeIntervalSince1970
             let err2 = getsockopt(fd, IPPROTO_TCP, TCP_CONNECTION_INFO, &tcpi, &slen)
             if err2 != 0 {
-                print(err2, errno, ENOPROTOOPT)
-                fd = findTCPFileDescriptor(expectedIPs: ips, expectedPort: Int16(port), startAt: 5)
-                print(fd)
+                //print(err2, errno, ENOPROTOOPT)
+                if multipath {
+                    let dict = IOCTL.getMPTCPInfoClean(fd)
+                    if dict != nil {
+                        print(dict!)
+                    }
+                } else {
+                    fd = findTCPFileDescriptor(expectedIPs: ips, expectedPort: Int16(port), startAt: 5)
+                    print(fd)
+                }
+                
             } else {
                 let tcpInfo = tcpInfoToDict(time: timeInfo, tcpi: tcpi)
                 tcpInfos.append(tcpInfo)
@@ -212,14 +221,19 @@ class TCPPerfTest: BasePerfTest {
         wifiInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
         cellInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
         print(errorMsg)
+        var success = false
         if errorMsg.contains("Operation timed out") {
-            success = true
+            if intervals.count > 0 {
+                success = true
+            } else {
+                self.errorMsg = self.errorMsg + " (could not collect metadata)"
+            }
         }
         
         result = [
             "intervals": intervals,
             "duration": String(format: "%.9f", elapsed),
-            "success": true,
+            "success": success,
             "total_retrans": totalRetrans,
             "total_sent": totalSent,
             "wifi_bytes_sent": wifiInfoEnd.bytesSent - wifiInfoStart.bytesSent,
