@@ -8,8 +8,6 @@
 
 import Foundation
 
-var lastFD: Int32 = -1
-
 func ipsOf(hostname: String) -> [String] {
     var ips = [String]()
     let host = CFHostCreateWithName(nil, hostname as CFString).takeRetainedValue()
@@ -27,17 +25,14 @@ func ipsOf(hostname: String) -> [String] {
     return ips
 }
 
-func findTCPFileDescriptor(expectedIPs: [String], expectedPort: Int16) -> Int32 {
+func findTCPFileDescriptor(expectedIPs: [String], expectedPort: Int16, startAt: Int32) -> Int32 {
     // This is quite ugly, but Apple does not provide an easy way to collect this information...
     var saddr = sockaddr()
     var slen: socklen_t = socklen_t(MemoryLayout<sockaddr>.size)
-    let startFd = Int32(0)
+    let startFd = startAt
     let stopFd = startFd + 1000
     // FIXME consider changing this later to adapt to changing fd
     for fd in startFd...stopFd {
-        if (fd == lastFD) {
-            continue
-        }
         let err = getpeername(fd, &saddr, &slen)
         if err == 0 {
             print(fd)
@@ -52,13 +47,11 @@ func findTCPFileDescriptor(expectedIPs: [String], expectedPort: Int16) -> Int32 
                 print("FD \(fd) ip \(host) port \(port)")
                 for expIP in expectedIPs {
                     if host == expIP {
-                        lastFD = fd
                         return fd
                     }
                 }
             }
         }
     }
-    lastFD = -1
     return -1
 }

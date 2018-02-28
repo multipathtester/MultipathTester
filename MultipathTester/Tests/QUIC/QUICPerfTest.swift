@@ -9,7 +9,7 @@
 import UIKit
 import Quictraffic
 
-class QUICPerfTest: BaseTest, Test {
+class QUICPerfTest: BasePerfTest {
     // MARK: Properties
     var maxPathID: UInt8
     
@@ -17,45 +17,22 @@ class QUICPerfTest: BaseTest, Test {
         self.maxPathID = maxPathID
 
         let filePrefix = "quictraffic_qperf_" + ipVer.rawValue
-        super.init(traffic: "qperf", ipVer: ipVer, port: 5201, urlPath: nil, filePrefix: filePrefix, waitTime: 3.0)
+        super.init(ipVer: ipVer, filePrefix: filePrefix, waitTime: 3.0)
         
         // Prepare the run configuration
         runCfg.maxPathIDVar = Int(maxPathID)
-        runCfg.logPeriodMsVar = 25
-        runCfg.runTimeVar = 7
     }
     
-    func getDescription() -> String {
-        let baseConfig = getProtocol().rawValue
-        switch ipVer {
-        case .v4:
-            return baseConfig + " IPv4 IPerf"
-        case .v6:
-            return baseConfig + " IPv6 IPerf"
-        default:
-            return baseConfig + " IPerf"
-        }
-    }
-    
-    func getConfigDict() -> [String : Any] {
-        return [
-            "download": false,
-            "duration": runCfg.runTimeVar,
-            "port": self.port,
-            "url": getURL(),
-        ]
-    }
-    
-    func getProtocol() -> NetProtocol {
+    override func getProtocol() -> NetProtocol {
         if maxPathID > 0 {
             return .MPQUIC
         }
         return .QUIC
     }
     
-    func getTestResult() -> TestResult {
+    override func getTestResult() -> TestResult {
         let quicInfos = getProtoInfo()
-        var cwinData = [String: [CWinData]]()
+        cwinData = [String: [CWinData]]()
         var sawPaths = [String: String]()
         var cid: String = ""
         var paths: [String] = [String]()
@@ -105,7 +82,7 @@ class QUICPerfTest: BaseTest, Test {
             cwinData[label0] = nil
         }
         let intervalsRaw = result["intervals"] as? [[String: Any]] ?? []
-        var intervals = [IntervalData]()
+        intervals = [IntervalData]()
         if intervalsRaw.count > 0 {
             for i in 0..<intervalsRaw.count {
                 let intervalRaw = intervalsRaw[i]
@@ -113,21 +90,7 @@ class QUICPerfTest: BaseTest, Test {
                 intervals.append(interval)
             }
         }
-        let duration = Double(result["duration"] as? String ?? "0.0")!
-        let totalRetrans = UInt64(result["total_retrans"] as? String ?? "0")!
-        let totalSent = UInt64(result["total_sent"] as? String ?? "0")!
-        let success = result["success"] as? Bool ?? false
-        var resultText = ""
-        if success {
-            resultText = "Achieved a mean goodput of " + String(format: "%.3f", Double(intervals[intervals.count-1].globalBandwidth * 8) / 1000000.0) + " Mbps."
-        } else {
-            resultText = result["error_msg"] as? String ?? "None"
-        }
-        let wifiBytesSent = result["wifi_bytes_sent"] as? UInt32 ?? 0
-        let wifiBytesReceived = result["wifi_bytes_received"] as? UInt32 ?? 0
-        let cellBytesSent = result["cell_bytes_sent"] as? UInt32 ?? 0
-        let cellBytesReceived = result["cell_bytes_received"] as? UInt32 ?? 0
-        return PerfResult(name: getDescription(), proto: getProtocol(), success: success, result: resultText, duration: duration, startTime: startTime, waitTime: waitTime, wifiBytesReceived: wifiBytesReceived, wifiBytesSent: wifiBytesSent, cellBytesReceived: cellBytesReceived, cellBytesSent: cellBytesSent, multipathService: runCfg.multipathServiceVar, totalRetrans: totalRetrans, totalSent: totalSent, intervals: intervals, cwins: cwinData)
+        return super.getTestResult()
     }
     
     override func run() -> [String : Any] {

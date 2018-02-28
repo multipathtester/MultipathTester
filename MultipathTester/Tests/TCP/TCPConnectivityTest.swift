@@ -18,10 +18,14 @@ class TCPConnectivityTest: BaseConnectivityTest {
         return .TCP
     }
     
+    // REMOVE ME
+    override func getTestServerHostname() -> String {
+        return "mptcp4.qdeconinck.be"
+    }
+    
     func performRequest(session: URLSession, count: Int) -> Bool {
         let group = DispatchGroup()
-        // FIXME
-        let url = URL(string: "https://mptcp4.qdeconinck.be:443/" + self.urlPath)!
+        let url = URL(string: getURL() + self.urlPath)!
         group.enter()
         let start = DispatchTime.now()
         let task = session.dataTask(with: url) { (data, resp, error) in

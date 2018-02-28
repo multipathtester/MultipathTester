@@ -82,13 +82,17 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
             //QUICBulkDownloadTest(ipVer: .v4, urlPath: "/10MB", maxPathID: 0),
             //QUICBulkDownloadTest(ipVer: .v6, urlPath: "/10MB", maxPathID: 0),
             //QUICBulkDownloadTest(ipVer: .any, urlPath: "/10MB", maxPathID: 255),
-            //TCPBulkDownloadTest(ipVer: .v4, urlPath: "/10MB", multipath: false),
+            //TCPBulkDownloadTest(ipVer: .any, urlPath: "/10MB", multipath: false),
             //TCPBulkDownloadTest(ipVer: .v6, urlPath: "/10MB", multipath: false),
             //TCPBulkDownloadTest(ipVer: .any, urlPath: "/10MB", multipath: true),
             //QUICStreamTest(ipVer: .v4, maxPathID: 0, runTime: 7),
             //QUICStreamTest(ipVer: .v6, maxPathID: 0, runTime: 7),
             //QUICStreamTest(ipVer: .any, maxPathID: 255, runTime: 7),
-            TCPStreamTest(ipVer: .any, runTime: 7, multipath: true),
+            //TCPStreamTest(ipVer: .any, runTime: 7, multipath: true),
+            //QUICPerfTest(ipVer: .v4, maxPathID: 0),
+            //QUICPerfTest(ipVer: .v6, maxPathID: 0),
+            //QUICPerfTest(ipVer: .any, maxPathID: 255),
+            TCPPerfTest(ipVer: .any, multipath: false),
         ]
         
         allTests = pingTests + tests

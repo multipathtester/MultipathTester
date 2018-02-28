@@ -66,13 +66,13 @@ class TCPClientBulk {
         var tcpi = tcp_connection_info()
         var res: DispatchTimeoutResult = .timedOut
         // TODO fix hardcoded address
-        var fd = findTCPFileDescriptor(expectedIPs: ["5.196.169.232"], expectedPort: 80)
+        var fd = findTCPFileDescriptor(expectedIPs: ["5.196.169.232"], expectedPort: 80, startAt: 3)
         if (fd < 0) {
             while (res == .timedOut && fd < 0) {
                 res = group.wait(timeout: DispatchTime.now() + 0.01)
                 print("We missed it once, try again...")
                 // Retry, we might have missed the good one thinking it's and old one
-                fd = findTCPFileDescriptor(expectedIPs: ["5.196.169.232"], expectedPort: 80)
+                fd = findTCPFileDescriptor(expectedIPs: ["5.196.169.232"], expectedPort: 80, startAt: 3)
             }
         }
         print("FD is \(fd)")
@@ -85,7 +85,7 @@ class TCPClientBulk {
             let err2 = getsockopt(fd, IPPROTO_TCP, TCP_CONNECTION_INFO, &tcpi, &slen)
             if err2 != 0 {
                 print(err2, errno, ENOPROTOOPT)
-                fd = findTCPFileDescriptor(expectedIPs: ["5.196.169.232"], expectedPort: 80)
+                fd = findTCPFileDescriptor(expectedIPs: ["5.196.169.232"], expectedPort: 80, startAt: 3)
                 print(fd)
             } else {
                 tcpInfos.append(tcpInfoToDict(time: timeInfo, tcpi: tcpi))

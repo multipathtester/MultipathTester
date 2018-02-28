@@ -67,6 +67,8 @@
 		CE82BD7F204305780067F3D8 /* BaseStreamTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE82BD7E204305780067F3D8 /* BaseStreamTest.swift */; };
 		CE82BD8120430A070067F3D8 /* TCPStreamTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE82BD8020430A070067F3D8 /* TCPStreamTest.swift */; };
 		CE82BD8320458EAF0067F3D8 /* Binary.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE82BD8220458EAF0067F3D8 /* Binary.swift */; };
+		CE82BD852046B3110067F3D8 /* BasePerfTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE82BD842046B3110067F3D8 /* BasePerfTest.swift */; };
+		CE82BD872046B5450067F3D8 /* TCPPerfTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE82BD862046B5450067F3D8 /* TCPPerfTest.swift */; };
 		CE8980ED203AEC4400E64953 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8980EC203AEC4400E64953 /* AboutViewController.swift */; };
 		CE8E284B1F695450004F1558 /* TCPClientReqRes.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8E284A1F695450004F1558 /* TCPClientReqRes.swift */; };
 		CE8E284D1F696334004F1558 /* TCPClientBulk.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8E284C1F696334004F1558 /* TCPClientBulk.swift */; };
@@ -222,6 +224,8 @@
 		CE82BD7E204305780067F3D8 /* BaseStreamTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseStreamTest.swift; sourceTree = "<group>"; };
 		CE82BD8020430A070067F3D8 /* TCPStreamTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPStreamTest.swift; sourceTree = "<group>"; };
 		CE82BD8220458EAF0067F3D8 /* Binary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Binary.swift; sourceTree = "<group>"; };
+		CE82BD842046B3110067F3D8 /* BasePerfTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasePerfTest.swift; sourceTree = "<group>"; };
+		CE82BD862046B5450067F3D8 /* TCPPerfTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPPerfTest.swift; sourceTree = "<group>"; };
 		CE8980EC203AEC4400E64953 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		CE8E284A1F695450004F1558 /* TCPClientReqRes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClientReqRes.swift; sourceTree = "<group>"; };
 		CE8E284C1F696334004F1558 /* TCPClientBulk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClientBulk.swift; sourceTree = "<group>"; };
@@ -442,6 +446,7 @@
 			children = (
 				CE82BD7C2042E6F00067F3D8 /* TCPBulkDownloadTest.swift */,
 				CE82BD71204198B70067F3D8 /* TCPConnectivityTest.swift */,
+				CE82BD862046B5450067F3D8 /* TCPPerfTest.swift */,
 				CE82BD8020430A070067F3D8 /* TCPStreamTest.swift */,
 			);
 			path = TCP;
@@ -452,6 +457,7 @@
 			children = (
 				CE82BD7A2042E3AA0067F3D8 /* BaseBulkDownloadTest.swift */,
 				CE82BD782042CC270067F3D8 /* BaseConnectivityTest.swift */,
+				CE82BD842046B3110067F3D8 /* BasePerfTest.swift */,
 				CE82BD7E204305780067F3D8 /* BaseStreamTest.swift */,
 			);
 			path = BaseTraffic;
@@ -792,6 +798,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CE268523200FACD200462C6E /* BenchmarkUUIDTableViewCell.swift in Sources */,
+				CE82BD852046B3110067F3D8 /* BasePerfTest.swift in Sources */,
 				CE58F49D1FD195ED009EA08F /* TestResultsTableViewController.swift in Sources */,
 				CEA70311200619D800FDFB89 /* Connectivity.swift in Sources */,
 				CE29B9E31FD6FD660049A105 /* IntervalData.swift in Sources */,
@@ -862,6 +869,7 @@
 				CED4B5201F97972500E6F86E /* TCPFileDescriptorFinder.swift in Sources */,
 				CED4B5221F9F7FE300E6F86E /* TCPInfoConverter.swift in Sources */,
 				CE82BD8320458EAF0067F3D8 /* Binary.swift in Sources */,
+				CE82BD872046B5450067F3D8 /* TCPPerfTest.swift in Sources */,
 				CE82BD7F204305780067F3D8 /* BaseStreamTest.swift in Sources */,
 				CE09053D20333E9400B1445A /* ConsentFormViewController.swift in Sources */,
 				CE4894FA202B2BE300CBEED5 /* InterfaceInfo.swift in Sources */,
