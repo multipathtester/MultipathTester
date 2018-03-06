@@ -225,6 +225,7 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
     }
     
     func startTests() {
+        UIApplication.shared.isIdleTimerDisabled = true
         backgrounded = false
         let reachabilityStatus = internetReachability.currentReachabilityStatus()
         wasCellularOn = UIDevice.current.hasCellularConnectivity
@@ -295,6 +296,7 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
             self.cellTimer?.invalidate()
             self.cellTimer = nil
             NotificationCenter.default.post(name: Utils.TestsLaunchedNotification, object: nil, userInfo: ["startNewTestsEnabled": true])
+            UIApplication.shared.isIdleTimerDisabled = false
 
             DispatchQueue.main.async {
                 if self.backgrounded {

@@ -172,6 +172,7 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
     }
     
     func startTests() {
+        UIApplication.shared.isIdleTimerDisabled = true
         connectivities = [Connectivity]()
         let reachabilityStatus = internetReachability.currentReachabilityStatus()
         wasCellularOn = UIDevice.current.hasCellularConnectivity
@@ -284,6 +285,7 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
             print("Tests done")
             NotificationCenter.default.post(name: Utils.TestsLaunchedNotification, object: nil, userInfo: ["startNewTestsEnabled": true])
             NotificationCenter.default.removeObserver(self)
+            UIApplication.shared.isIdleTimerDisabled = false
             DispatchQueue.main.async {
                 self.progress.setProgress(value: 100.0, animationDuration: 0.2) {}
                 self.navigationItem.hidesBackButton = false
