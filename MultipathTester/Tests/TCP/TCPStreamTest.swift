@@ -272,9 +272,9 @@ class TCPStreamTest: BaseStreamTest {
         DispatchQueue.global(qos: .userInteractive).async {
             defer { group.leave() }
             let (downConn, connID, okDown) = self.setupDownConnection(session: session)
-            guard okDown else { return }
+            guard okDown else { self.errorMsg = "Failed to create connection"; return }
             let (upConn, okUp) = self.setupUpConnection(session: session, connID: connID)
-            guard okUp else { return }
+            guard okUp else { self.errorMsg = "Failed to create connection"; return }
             self.endTime = Date().addingTimeInterval(TimeInterval(self.runCfg.runTimeVar))
             print(self.endTime.timeIntervalSinceNow)
             let queue = OperationQueue()

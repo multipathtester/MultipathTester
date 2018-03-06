@@ -99,19 +99,30 @@ class BenchmarkTableViewController: UITableViewController {
             cell.networkImageView.image = blank
         }
         
-        // TODO when TCP tests will be present
-        cell.tcpLabel.text = ""
-        cell.tcpResultsLabel.text = ""
+        cell.tcpLabel.text = "TCP"
         
         let testCount = benchmark.testResults.count
-        var testSucceeded = 0
+        var quicSucceeded = 0
+        var tcpSucceeded = 0
+        var quicTotal = 0
+        var tcpTotal = 0
         for i in 0..<testCount {
             let testResult = benchmark.testResults[i]
-            if testResult.succeeded() {
-                testSucceeded += 1
+            if testResult.getProtocol().main == "TCP" {
+                tcpTotal += 1
+                if testResult.succeeded() {
+                    tcpSucceeded += 1
+                }
+            }
+            if testResult.getProtocol().main == "QUIC" {
+                quicTotal += 1
+                if testResult.succeeded() {
+                    quicSucceeded += 1
+                }
             }
         }
-        cell.quicResultsLabel.text = String(testSucceeded) + "/" + String(testCount)
+        cell.tcpResultsLabel.text = String(tcpSucceeded) + "/" + String(tcpTotal)
+        cell.quicResultsLabel.text = String(quicSucceeded) + "/" + String(quicTotal)
         cell.pingResultsLabel.text = String.init(format: "%.0f ms", benchmark.pingMed)
         
         return cell
