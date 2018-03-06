@@ -8,9 +8,8 @@
 
 import Foundation
 
-func tcpInfoToDict(time: TimeInterval, tcpi: tcp_connection_info) -> [String: Any] {
+func tcpInfoToDict(tcpi: tcp_connection_info) -> [String: Any] {
     return [
-        "time": time,
         "tcpi_state": tcpi.tcpi_state,
         "tcpi_snd_wscale": tcpi.tcpi_snd_wscale,
         "tcpi_rcv_wscale": tcpi.tcpi_rcv_wscale,

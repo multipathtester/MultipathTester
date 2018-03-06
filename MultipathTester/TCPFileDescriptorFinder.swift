@@ -27,20 +27,22 @@ func ipsOf(hostname: String) -> [String] {
 
 func findTCPFileDescriptor(expectedIPs: [String], expectedPort: Int16, startAt: Int32) -> Int32 {
     // This is quite ugly, but Apple does not provide an easy way to collect this information...
-    var saddr = sockaddr()
-    var slen: socklen_t = socklen_t(MemoryLayout<sockaddr>.size)
     let startFd = startAt
-    let stopFd = startFd + 1000
+    let stopFd = startAt + 1000
     // FIXME consider changing this later to adapt to changing fd
     for fd in startFd...stopFd {
+        //print(fd)
+        var saddr = sockaddr()
+        var slen: socklen_t = socklen_t(MemoryLayout<sockaddr>.size)
         let err = getpeername(fd, &saddr, &slen)
         if err == 0 {
-            print(fd)
+            //print(fd)
             let port = Int16(UInt16(UInt8(bitPattern: saddr.sa_data.0)) * 256 + UInt16(UInt8(bitPattern: saddr.sa_data.1)))
             if port != expectedPort {
-                print(port, expectedPort)
+                print(fd, port, expectedPort)
                 continue
             }
+            print("Oooh...")
             var hostBuffer = [CChar](repeating: 0, count: Int(NI_MAXHOST))
             if (getnameinfo(&saddr, socklen_t(saddr.sa_len), &hostBuffer, socklen_t(hostBuffer.count), nil, 0, NI_NUMERICHOST) == 0) {
                 let host = String(cString: hostBuffer)

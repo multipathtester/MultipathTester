@@ -18,11 +18,6 @@ class TCPConnectivityTest: BaseConnectivityTest {
         return .TCP
     }
     
-    // REMOVE ME
-    override func getTestServerHostname() -> String {
-        return "mptcp4.qdeconinck.be"
-    }
-    
     func performRequest(session: URLSession, count: Int) -> Bool {
         let group = DispatchGroup()
         let url = URL(string: getURL() + self.urlPath)!
@@ -72,7 +67,12 @@ class TCPConnectivityTest: BaseConnectivityTest {
         var success = false
 
         let config = URLSessionConfiguration.ephemeral
-        config.multipathServiceType = URLSessionConfiguration.MultipathServiceType.handover
+        if runCfg.multipathServiceVar == .handover {
+            config.multipathServiceType = URLSessionConfiguration.MultipathServiceType.handover
+        }
+        if runCfg.multipathServiceVar == .aggregate {
+            config.multipathServiceType = URLSessionConfiguration.MultipathServiceType.aggregate
+        }
         
         let session = URLSession(configuration: config)
         
@@ -98,6 +98,7 @@ class TCPConnectivityTest: BaseConnectivityTest {
         }
         
         result = [
+            "tcp_infos": [], // XXX Is it useful to collect sth here?
             "duration": String(format: "%.9f", elapsed),
             "durations": durations,
             "error_msg": self.errorMsg,

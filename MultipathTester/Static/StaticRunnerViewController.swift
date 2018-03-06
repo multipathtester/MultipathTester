@@ -65,34 +65,32 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
             QUICConnectivityTest(ipVer: .any, port: 6121),
             QUICConnectivityTest(ipVer: .v4, port: 443),
             QUICConnectivityTest(ipVer: .v6, port: 443),
+            TCPConnectivityTest(ipVer: .v4, port: 443),
+            TCPConnectivityTest(ipVer: .v6, port: 443),
             QUICBulkDownloadTest(ipVer: .v4, urlPath: "/10MB", maxPathID: 0),
             QUICBulkDownloadTest(ipVer: .v6, urlPath: "/10MB", maxPathID: 0),
             QUICBulkDownloadTest(ipVer: .any, urlPath: "/10MB", maxPathID: 255),
+            TCPBulkDownloadTest(ipVer: .v4, urlPath: "/10MB", multipath: false),
+            TCPBulkDownloadTest(ipVer: .v6, urlPath: "/10MB", multipath: false),
+            TCPBulkDownloadTest(ipVer: .any, urlPath: "/10MB", multipath: true),
             QUICStreamTest(ipVer: .v4, maxPathID: 0, runTime: 7),
             QUICStreamTest(ipVer: .v6, maxPathID: 0, runTime: 7),
             QUICStreamTest(ipVer: .any, maxPathID: 255, runTime: 7),
+            TCPStreamTest(ipVer: .v4, runTime: 7, multipath: false),
+            TCPStreamTest(ipVer: .v6, runTime: 7, multipath: false),
+            TCPStreamTest(ipVer: .any, runTime: 7, multipath: true),
             QUICPerfTest(ipVer: .v4, maxPathID: 0),
             QUICPerfTest(ipVer: .v6, maxPathID: 0),
             QUICPerfTest(ipVer: .any, maxPathID: 255),
+            TCPPerfTest(ipVer: .v4, multipath: false),
+            TCPPerfTest(ipVer: .v6, multipath: false),
+            TCPPerfTest(ipVer: .any, multipath: true),
         ]
         
-        // Debug!
+        //debug
         tests = [
-            TCPConnectivityTest(ipVer: .any, port: 443, testServer: .fr),
-            //QUICBulkDownloadTest(ipVer: .v4, urlPath: "/10MB", maxPathID: 0),
-            //QUICBulkDownloadTest(ipVer: .v6, urlPath: "/10MB", maxPathID: 0),
-            //QUICBulkDownloadTest(ipVer: .any, urlPath: "/10MB", maxPathID: 255),
-            //TCPBulkDownloadTest(ipVer: .any, urlPath: "/10MB", multipath: false),
-            //TCPBulkDownloadTest(ipVer: .v6, urlPath: "/10MB", multipath: false),
-            //TCPBulkDownloadTest(ipVer: .any, urlPath: "/10MB", multipath: true),
-            //QUICStreamTest(ipVer: .v4, maxPathID: 0, runTime: 7),
-            //QUICStreamTest(ipVer: .v6, maxPathID: 0, runTime: 7),
-            //QUICStreamTest(ipVer: .any, maxPathID: 255, runTime: 7),
-            //TCPStreamTest(ipVer: .any, runTime: 7, multipath: true),
-            //QUICPerfTest(ipVer: .v4, maxPathID: 0),
-            //QUICPerfTest(ipVer: .v6, maxPathID: 0),
-            //QUICPerfTest(ipVer: .any, maxPathID: 255),
-            TCPPerfTest(ipVer: .any, multipath: false),
+            TCPBulkDownloadTest(ipVer: .any, urlPath: "/10MB", multipath: true),
+            TCPStreamTest(ipVer: .any, runTime: 7, multipath: true),
         ]
         
         allTests = pingTests + tests

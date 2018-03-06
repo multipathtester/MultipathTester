@@ -28,11 +28,6 @@ class TCPBulkDownloadTest: BaseBulkDownloadTest {
         return .TCP
     }
     
-    // REMOVE ME
-    override func getTestServerHostname() -> String {
-        return "mptcp4.qdeconinck.be"
-    }
-    
     override func run() -> [String:Any] {
         _ = super.run()
         var success = false
@@ -77,11 +72,10 @@ class TCPBulkDownloadTest: BaseBulkDownloadTest {
             task.resume()
         }
         
-        var slen: socklen_t = socklen_t(MemoryLayout<tcp_connection_info>.size)
-        var tcpi = tcp_connection_info()
         var res: DispatchTimeoutResult = .timedOut
         let ips = ipsOf(hostname: getTestServerHostname())
         var fd = findTCPFileDescriptor(expectedIPs: ips, expectedPort: Int16(port), startAt: 3)
+        print("We tried once, at least...")
         if (fd < 0) {
             while (res == .timedOut && fd < 0) {
                 res = group.wait(timeout: DispatchTime.now() + 0.01)
@@ -92,29 +86,10 @@ class TCPBulkDownloadTest: BaseBulkDownloadTest {
         }
         print("FD is \(fd)")
         
-        var tcpInfos = [Any]()
-        
-        while (res == .timedOut) {
-            res = group.wait(timeout: DispatchTime.now() + 0.01)
-            let timeInfo = Date().timeIntervalSince1970
-            let err2 = getsockopt(fd, IPPROTO_TCP, TCP_CONNECTION_INFO, &tcpi, &slen)
-            if err2 != 0 {
-                print(err2, errno, ENOPROTOOPT)
-                fd = findTCPFileDescriptor(expectedIPs: ips, expectedPort: Int16(port), startAt: 3)
-                print(fd)
-            } else {
-                tcpInfos.append(tcpInfoToDict(time: timeInfo, tcpi: tcpi))
-            }
-            res = group.wait(timeout: DispatchTime.now() + 0.01)
-        }
-        
-        // Go for a last TCP info before closing
-        let timeInfo = Date().timeIntervalSince1970
-        let err2 = getsockopt(fd, IPPROTO_TCP, TCP_CONNECTION_INFO, &tcpi, &slen)
-        if err2 != 0 {
-            print(err2, errno, ENOPROTOOPT)
-        } else {
-            tcpInfos.append(tcpInfoToDict(time: timeInfo, tcpi: tcpi))
+        // This will perform the wait on the group; once this call returns, the traffic is over
+        var tcpInfos = [[String: Any]]()
+        if fd > 0 {
+            tcpInfos = TCPLogger.logTCPInfosMain(group: group, fds: [fd], multipath: multipath, logPeriodMs: runCfg.logPeriodMsVar)
         }
         
         print(tcpInfos)
@@ -125,6 +100,7 @@ class TCPBulkDownloadTest: BaseBulkDownloadTest {
         cellInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
         
         result = [
+            "tcp_infos": tcpInfos,
             "duration": String(format: "%.9f", elapsed),
             "error_msg": self.errorMsg,
             "success": success,

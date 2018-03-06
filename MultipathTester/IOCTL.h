@@ -19,6 +19,7 @@
 #import <netinet/in.h>
 #import <net/ethernet.h>
 #import <arpa/inet.h>
+#import <netinet/tcp.h>
 
 struct if_interface_state {
     /*
@@ -257,6 +258,181 @@ struct so_cinforeq {
 #define SIOCGCONNINFO _IOWR('s', 152, struct so_cinforeq) /* get conninfo */
 #endif
 
+#ifndef TCP_INFO
+#define TCP_INFO 0x200
+/*
+ * The TCP_INFO socket option is a private API and is subject to change
+ */
+#pragma pack(4)
+
+#define    TCPI_OPT_TIMESTAMPS    0x01
+#define    TCPI_OPT_SACK        0x02
+#define    TCPI_OPT_WSCALE        0x04
+#define    TCPI_OPT_ECN        0x08
+
+#define TCPI_FLAG_LOSSRECOVERY    0x01    /* Currently in loss recovery */
+#define    TCPI_FLAG_STREAMING_ON    0x02    /* Streaming detection on */
+
+struct tcp_conn_status {
+    unsigned int    probe_activated : 1;
+    unsigned int    write_probe_failed : 1;
+    unsigned int    read_probe_failed : 1;
+    unsigned int    conn_probe_failed : 1;
+};
+
+/*
+ * Add new fields to this structure at the end only. This will preserve
+ * binary compatibility.
+ */
+struct tcp_info {
+    u_int8_t    tcpi_state;            /* TCP FSM state. */
+    u_int8_t    tcpi_options;        /* Options enabled on conn. */
+    u_int8_t    tcpi_snd_wscale;    /* RFC1323 send shift value. */
+    u_int8_t    tcpi_rcv_wscale;    /* RFC1323 recv shift value. */
+    
+    u_int32_t    tcpi_flags;            /* extra flags (TCPI_FLAG_xxx) */
+    
+    u_int32_t    tcpi_rto;            /* Retransmission timeout in milliseconds */
+    u_int32_t    tcpi_snd_mss;        /* Max segment size for send. */
+    u_int32_t    tcpi_rcv_mss;        /* Max segment size for receive. */
+    
+    u_int32_t    tcpi_rttcur;        /* Most recent value of RTT */
+    u_int32_t    tcpi_srtt;            /* Smoothed RTT */
+    u_int32_t    tcpi_rttvar;        /* RTT variance */
+    u_int32_t    tcpi_rttbest;        /* Best RTT we've seen */
+    
+    u_int32_t    tcpi_snd_ssthresh;    /* Slow start threshold. */
+    u_int32_t    tcpi_snd_cwnd;        /* Send congestion window. */
+    
+    u_int32_t    tcpi_rcv_space;        /* Advertised recv window. */
+    
+    u_int32_t    tcpi_snd_wnd;        /* Advertised send window. */
+    u_int32_t    tcpi_snd_nxt;        /* Next egress seqno */
+    u_int32_t    tcpi_rcv_nxt;        /* Next ingress seqno */
+    
+    int32_t        tcpi_last_outif;    /* if_index of interface used to send last */
+    u_int32_t    tcpi_snd_sbbytes;    /* bytes in snd buffer including data inflight */
+    
+    u_int64_t    tcpi_txpackets __attribute__((aligned(8)));    /* total packets sent */
+    u_int64_t    tcpi_txbytes __attribute__((aligned(8)));
+    /* total bytes sent */
+    u_int64_t    tcpi_txretransmitbytes __attribute__((aligned(8)));
+    /* total bytes retransmitted */
+    u_int64_t    tcpi_txunacked __attribute__((aligned(8)));
+    /* current number of bytes not acknowledged */
+    u_int64_t    tcpi_rxpackets __attribute__((aligned(8)));    /* total packets received */
+    u_int64_t    tcpi_rxbytes __attribute__((aligned(8)));
+    /* total bytes received */
+    u_int64_t    tcpi_rxduplicatebytes __attribute__((aligned(8)));
+    /* total duplicate bytes received */
+    u_int64_t    tcpi_rxoutoforderbytes __attribute__((aligned(8)));
+    /* total out of order bytes received */
+    u_int64_t    tcpi_snd_bw __attribute__((aligned(8)));    /* measured send bandwidth in bits/sec */
+    u_int8_t    tcpi_synrexmits;    /* Number of syn retransmits before connect */
+    u_int8_t    tcpi_unused1;
+    u_int16_t    tcpi_unused2;
+    u_int64_t    tcpi_cell_rxpackets __attribute((aligned(8)));    /* packets received over cellular */
+    u_int64_t    tcpi_cell_rxbytes __attribute((aligned(8)));    /* bytes received over cellular */
+    u_int64_t    tcpi_cell_txpackets __attribute((aligned(8)));    /* packets transmitted over cellular */
+    u_int64_t    tcpi_cell_txbytes __attribute((aligned(8)));    /* bytes transmitted over cellular */
+    u_int64_t    tcpi_wifi_rxpackets __attribute((aligned(8)));    /* packets received over Wi-Fi */
+    u_int64_t    tcpi_wifi_rxbytes __attribute((aligned(8)));    /* bytes received over Wi-Fi */
+    u_int64_t    tcpi_wifi_txpackets __attribute((aligned(8)));    /* packets transmitted over Wi-Fi */
+    u_int64_t    tcpi_wifi_txbytes __attribute((aligned(8)));    /* bytes transmitted over Wi-Fi */
+    u_int64_t    tcpi_wired_rxpackets __attribute((aligned(8)));    /* packets received over Wired */
+    u_int64_t    tcpi_wired_rxbytes __attribute((aligned(8)));    /* bytes received over Wired */
+    u_int64_t    tcpi_wired_txpackets __attribute((aligned(8)));    /* packets transmitted over Wired */
+    u_int64_t    tcpi_wired_txbytes __attribute((aligned(8)));    /* bytes transmitted over Wired */
+    struct tcp_conn_status    tcpi_connstatus; /* status of connection probes */
+    
+    u_int16_t
+tcpi_tfo_cookie_req:1, /* Cookie requested? */
+tcpi_tfo_cookie_rcv:1, /* Cookie received? */
+tcpi_tfo_syn_loss:1,   /* Fallback to reg. TCP after SYN-loss */
+tcpi_tfo_syn_data_sent:1, /* SYN+data has been sent out */
+tcpi_tfo_syn_data_acked:1, /* SYN+data has been fully acknowledged */
+tcpi_tfo_syn_data_rcv:1, /* Server received SYN+data with a valid cookie */
+tcpi_tfo_cookie_req_rcv:1, /* Server received cookie-request */
+tcpi_tfo_cookie_sent:1, /* Server announced cookie */
+tcpi_tfo_cookie_invalid:1, /* Server received an invalid cookie */
+tcpi_tfo_cookie_wrong:1, /* Our sent cookie was wrong */
+tcpi_tfo_no_cookie_rcv:1, /* We did not receive a cookie upon our request */
+tcpi_tfo_heuristics_disable:1, /* TFO-heuristics disabled it */
+tcpi_tfo_send_blackhole:1, /* A sending-blackhole got detected */
+tcpi_tfo_recv_blackhole:1, /* A receiver-blackhole got detected */
+tcpi_tfo_onebyte_proxy:1; /* A proxy acknowledges all but one byte of the SYN */
+    
+    u_int16_t    tcpi_ecn_client_setup:1,    /* Attempted ECN setup from client side */
+tcpi_ecn_server_setup:1,    /* Attempted ECN setup from server side */
+tcpi_ecn_success:1,        /* peer negotiated ECN */
+tcpi_ecn_lost_syn:1,        /* Lost SYN with ECN setup */
+tcpi_ecn_lost_synack:1,        /* Lost SYN-ACK with ECN setup */
+tcpi_local_peer:1,        /* Local to the host or the subnet */
+tcpi_if_cell:1,        /* Interface is cellular */
+tcpi_if_wifi:1,        /* Interface is WiFi */
+tcpi_if_wired:1,    /* Interface is wired - ethernet , thunderbolt etc,. */
+tcpi_if_wifi_infra:1,    /* Interface is wifi infrastructure */
+tcpi_if_wifi_awdl:1,    /* Interface is wifi AWDL */
+tcpi_snd_background:1,    /* Using delay based algorithm on sender side */
+tcpi_rcv_background:1;    /* Using delay based algorithm on receive side */
+    
+    u_int32_t    tcpi_ecn_recv_ce;    /* Packets received with CE */
+    u_int32_t    tcpi_ecn_recv_cwr;    /* Packets received with CWR */
+    
+    u_int32_t    tcpi_rcvoopack;        /* out-of-order packets received */
+    u_int32_t    tcpi_pawsdrop;        /* segments dropped due to PAWS */
+    u_int32_t    tcpi_sack_recovery_episode; /* SACK recovery episodes */
+    u_int32_t    tcpi_reordered_pkts;    /* packets reorderd */
+    u_int32_t    tcpi_dsack_sent;    /* Sent DSACK notification */
+    u_int32_t    tcpi_dsack_recvd;    /* Received a valid DSACK option */
+    u_int32_t    tcpi_flowhash;        /* Unique id for the connection */
+    
+    u_int64_t    tcpi_txretransmitpackets __attribute__((aligned(8)));
+};
+
+struct tcp_measure_bw_burst {
+    u_int32_t    min_burst_size; /* Minimum number of packets to use */
+    u_int32_t    max_burst_size; /* Maximum number of packets to use */
+};
+
+/*
+ * Note that IPv6 link local addresses should have the appropriate scope ID
+ */
+
+struct info_tuple {
+    u_int8_t    itpl_proto;
+    union {
+        struct sockaddr        _itpl_sa;
+        struct sockaddr_in    _itpl_sin;
+        struct sockaddr_in6    _itpl_sin6;
+    } itpl_localaddr;
+    union {
+        struct sockaddr        _itpl_sa;
+        struct sockaddr_in    _itpl_sin;
+        struct sockaddr_in6    _itpl_sin6;
+    } itpl_remoteaddr;
+};
+
+#define itpl_local_sa        itpl_localaddr._itpl_sa
+#define itpl_local_sin        itpl_localaddr._itpl_sin
+#define itpl_local_sin6        itpl_localaddr._itpl_sin6
+#define itpl_remote_sa        itpl_remoteaddr._itpl_sa
+#define itpl_remote_sin        itpl_remoteaddr._itpl_sin
+#define itpl_remote_sin6    itpl_remoteaddr._itpl_sin6
+
+/*
+ * TCP connection info auxiliary data (CIAUX_TCP)
+ *
+ * Do not add new fields to this structure, just add them to tcp_info
+ * structure towards the end. This will preserve binary compatibility.
+ */
+typedef struct conninfo_tcp {
+    pid_t            tcpci_peer_pid;    /* loopback peer PID if > 0 */
+    struct tcp_info        tcpci_tcp_info;    /* TCP info */
+} conninfo_tcp_t;
+
+#pragma pack()
+
 struct mptcp_itf_stats {
     uint16_t    ifindex;
     uint16_t    switches;
@@ -281,6 +457,7 @@ typedef struct conninfo_multipathtcp {
     uint32_t    mptcpci_flags;
 #define    MPTCPCI_FIRSTPARTY    0x01
 } conninfo_multipathtcp_t;
+#endif
 
 @interface IOCTL : NSObject
 

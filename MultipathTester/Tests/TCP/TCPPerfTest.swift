@@ -12,12 +12,11 @@ class TCPPerfTest: BasePerfTest {
     var multipath: Bool
     var endTime = Date()
     var stop = false
-    var counter = 0
     
     init(ipVer: IPVersion, multipath: Bool) {
         self.multipath = multipath
         
-        let filePrefix = "quictraffic_qperf_" + ipVer.rawValue
+        let filePrefix = "quictraffic_tperf_" + ipVer.rawValue
         super.init(ipVer: ipVer, filePrefix: filePrefix, waitTime: 3.0)
     }
     
@@ -26,11 +25,6 @@ class TCPPerfTest: BasePerfTest {
             return .MPTCP
         }
         return .TCP
-    }
-    
-    // REMOVE ME
-    override func getTestServerHostname() -> String {
-        return "mptcp4.qdeconinck.be"
     }
     
     func setupMetaConnection(session: URLSession) -> (URLSessionStreamTask, UInt64, Bool) {
@@ -105,9 +99,13 @@ class TCPPerfTest: BasePerfTest {
         intervals = [IntervalData]()
         
         let config = URLSessionConfiguration.ephemeral
-        // TODO Multipath service
         if multipath {
-            config.multipathServiceType = URLSessionConfiguration.MultipathServiceType.interactive
+            if runCfg.multipathServiceVar == .handover {
+                config.multipathServiceType = URLSessionConfiguration.MultipathServiceType.interactive
+            }
+            if runCfg.multipathServiceVar == .aggregate {
+                config.multipathServiceType = URLSessionConfiguration.MultipathServiceType.aggregate
+            }
         }
         
         let session = URLSession(configuration: config)
@@ -137,92 +135,98 @@ class TCPPerfTest: BasePerfTest {
             }
         }
         
-        var slen: socklen_t = socklen_t(MemoryLayout<tcp_connection_info>.size)
-        var tcpi = tcp_connection_info()
         var res: DispatchTimeoutResult = .timedOut
         let ips = ipsOf(hostname: getTestServerHostname())
-        // Don't take the meta conn
-        var fd = findTCPFileDescriptor(expectedIPs: ips, expectedPort: Int16(port), startAt: 5)
+        var fdMeta = findTCPFileDescriptor(expectedIPs: ips, expectedPort: Int16(port), startAt: 0)
+        if (fdMeta < 0) {
+            while (res == .timedOut && fdMeta < 0) {
+                res = group.wait(timeout: DispatchTime.now() + 0.01)
+                //print("We missed it once, try again...")
+                // Retry, we might have missed the good one thinking it's and old one
+                fdMeta = findTCPFileDescriptor(expectedIPs: ips, expectedPort: Int16(port), startAt: 0)
+            }
+        }
+        print("FDMeta is \(fdMeta)")
+        
+        var fd = findTCPFileDescriptor(expectedIPs: ips, expectedPort: Int16(port), startAt: fdMeta + 1)
         if (fd < 0) {
             while (res == .timedOut && fd < 0) {
                 res = group.wait(timeout: DispatchTime.now() + 0.01)
-                print("We missed it once, try again...")
+                //print("We missed it once, try again...")
                 // Retry, we might have missed the good one thinking it's and old one
-                fd = findTCPFileDescriptor(expectedIPs: ips, expectedPort: Int16(port), startAt: 5)
+                fd = findTCPFileDescriptor(expectedIPs: ips, expectedPort: Int16(port), startAt: fdMeta + 1)
             }
         }
         print("FD is \(fd)")
         
-        var tcpInfos = [Any]()
-        var lastInterval = Date()
-        var transferredLastSecond: UInt64 = 0
-        var retransmittedLastSecond: UInt64 = 0
+        var lastInterval: TimeInterval = Date().timeIntervalSince1970
         
-        while (res == .timedOut) {
-            res = group.wait(timeout: DispatchTime.now() + (TimeInterval(runCfg.logPeriodMsVar) / 1000.0))
-            if res == .success {
-                break
-            }
-            let timeInfo = Date().timeIntervalSince1970
-            let err2 = getsockopt(fd, IPPROTO_TCP, TCP_CONNECTION_INFO, &tcpi, &slen)
-            if err2 != 0 {
-                //print(err2, errno, ENOPROTOOPT)
-                if multipath {
-                    let dict = IOCTL.getMPTCPInfoClean(fd)
-                    if dict != nil {
-                        print(dict!)
-                    }
-                } else {
-                    fd = findTCPFileDescriptor(expectedIPs: ips, expectedPort: Int16(port), startAt: 5)
-                    print(fd)
-                }
-                
-            } else {
-                let tcpInfo = tcpInfoToDict(time: timeInfo, tcpi: tcpi)
-                tcpInfos.append(tcpInfo)
-                let now = Date()
-                if cwinData["Congestion Window"] == nil {
-                    cwinData["Congestion Window"] = [CWinData]()
-                }
-                cwinData["Congestion Window"]!.append(CWinData(time: timeInfo, cwin: UInt64(tcpInfo["tcpi_snd_cwnd"] as! UInt32)))
-                if now.timeIntervalSince(lastInterval) > (1.0 - TimeInterval(runCfg.logPeriodMsVar) / 1000.0) {
-                    let transferredNow = tcpInfo["tcpi_txbytes"] as! UInt64
-                    let retransmittedNow = tcpInfo["tcpi_txretransmitbytes"] as! UInt64
-                    let nxtCounter = counter + 1
-                    let interval = IntervalData(interval: "\(counter)-\(nxtCounter)", transferredLastSecond: transferredNow - transferredLastSecond, globalBandwidth: transferredNow / UInt64(nxtCounter), retransmittedLastSecond: retransmittedNow - retransmittedLastSecond)
-                    intervals.append(interval)
-                    transferredLastSecond = transferredNow
-                    retransmittedLastSecond = retransmittedNow
-                    lastInterval = now
-                    counter += 1
-                }
-            }
-            res = group.wait(timeout: DispatchTime.now())
+        // This will perform the wait on the group; once this call returns, the traffic is over
+        var tcpInfos = [[String: Any]]()
+        if fd > 0 {
+            tcpInfos = TCPLogger.logTCPInfosMain(group: group, fds: [fd], multipath: multipath, logPeriodMs: runCfg.logPeriodMsVar)
         }
-        
-        // Go for a last TCP info before closing
-        var totalRetrans: UInt64 = 0
-        var totalSent: UInt64 = 0
-        let timeInfo = Date().timeIntervalSince1970
-        let err2 = getsockopt(fd, IPPROTO_TCP, TCP_CONNECTION_INFO, &tcpi, &slen)
-        if err2 != 0 {
-            print(err2, errno, ENOPROTOOPT)
-        } else {
-            let tcpInfo = tcpInfoToDict(time: timeInfo, tcpi: tcpi)
-            tcpInfos.append(tcpInfo)
-            totalSent = tcpInfo["tcpi_txbytes"] as! UInt64
-            totalRetrans = tcpInfo["tcpi_txretransmitbytes"] as! UInt64
-        }
-        
-        print(tcpInfos)
-        print(intervals)
-
         let elapsed = Date().timeIntervalSince(startTime)
         wifiInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
         cellInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
         print(errorMsg)
+        
+        var transferredLastSecond: UInt64 = 0
+        var retransmittedLastSecond: UInt64 = 0
+        var transferredNow: UInt64 = 0
+        var retransmittedNow: UInt64 = 0
+        var counter = 0
+        let fdStr = String(format: "%d", fd)
+        
+        for tcpInfo in tcpInfos {
+            let timeInfo = tcpInfo["time"] as! TimeInterval
+            // XXX We only have congestion window info for plain TCP so far...
+            if !multipath {
+                if cwinData["Congestion Window"] == nil {
+                    cwinData["Congestion Window"] = [CWinData]()
+                }
+                cwinData["Congestion Window"]!.append(CWinData(time: timeInfo, cwin: UInt64(tcpInfo["tcpi_snd_cwnd"] as! UInt32)))
+            }
+            if timeInfo - lastInterval > (1.0 - TimeInterval(runCfg.logPeriodMsVar) / 1000.0) {
+                if multipath {
+                    let mptcpInfoFd = tcpInfo[fdStr] as! [String: Any]
+                    transferredNow = mptcpInfoFd["txbytes"] as! UInt64
+                    // FIXME no retransmission info for MPTCP so far...
+                } else {
+                    let tcpInfoFd = tcpInfo[fdStr] as! [String: Any]
+                    transferredNow = tcpInfoFd["tcpi_txbytes"] as! UInt64
+                    retransmittedNow = tcpInfoFd["tcpi_txretransmitbytes"] as! UInt64
+                }
+                let nxtCounter = counter + 1
+                let interval = IntervalData(interval: "\(counter)-\(nxtCounter)", transferredLastSecond: transferredNow - transferredLastSecond, globalBandwidth: transferredNow / UInt64(nxtCounter), retransmittedLastSecond: retransmittedNow - retransmittedLastSecond)
+                intervals.append(interval)
+                transferredLastSecond = transferredNow
+                retransmittedLastSecond = retransmittedNow
+                lastInterval = timeInfo
+                counter += 1
+            }
+        }
+        
+        var totalRetrans: UInt64 = 0
+        var totalSent: UInt64 = 0
+        if tcpInfos.count > 0 {
+            let tcpInfo = tcpInfos[tcpInfos.count - 1]
+            if multipath {
+                let mptcpInfoFd = tcpInfo[fdStr] as! [String: Any]
+                totalSent = mptcpInfoFd["txbytes"] as! UInt64
+                // FIXME no retransmission info for MPTCP so far...
+            } else {
+                let tcpInfoFd = tcpInfo[fdStr] as! [String: Any]
+                totalSent = tcpInfoFd["tcpi_txbytes"] as! UInt64
+                totalRetrans = tcpInfoFd["tcpi_txretransmitbytes"] as! UInt64
+            }
+        }
+        
+        print(tcpInfos)
+        print(intervals)
+        
         var success = false
-        if errorMsg.contains("Operation timed out") {
+        if errorMsg == "" || errorMsg.contains("Operation timed out") {
             if intervals.count > 0 {
                 success = true
             } else {
@@ -232,6 +236,7 @@ class TCPPerfTest: BasePerfTest {
         
         result = [
             "intervals": intervals,
+            "tcp_infos": tcpInfos,
             "duration": String(format: "%.9f", elapsed),
             "success": success,
             "total_retrans": totalRetrans,

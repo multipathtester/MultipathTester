@@ -11,293 +11,226 @@
 
 @implementation IOCTL
 
-+(void)test
-{
-    // Open socket
-    int sockfd = socket(AF_INET, SOCK_DGRAM, 0);
-    if (sockfd <= 0) {
-        NSLog(@"Cannot open socket");
-        return;
-    }
-    NSLog(@"Coucou");
-    
-    // Use ioctl to gain information from the socket
-    // - Set ifconf buffer before executing ioctl
-    // - SIOCGIFCONF command retrieves ifnet list and put it into struct ifconf
-    char buffer[4000];
-    struct ifconf ifc;
-    ifc.ifc_len = 4000;
-    ifc.ifc_ifcu.ifcu_buf = buffer;
-    if (ioctl(sockfd, SIOCGIFCONF, &ifc) < 0) {
-        NSLog(@"ioctl execution failed");
-        close(sockfd);
-        return;
-    }
-    
-    // Loop through ifc to access struct ifreq
-    // - ifc.ifc_buf now contains multiple struct ifreq, but we don't have any clue of where are those pointers are
-    // - We have to calculate the next pointer location in order to loop...
-    struct ifreq *p_ifr;
-    NSMutableDictionary *allInterfaces = [NSMutableDictionary dictionary];
-    for (char *p_index=ifc.ifc_buf; p_index < ifc.ifc_buf+ifc.ifc_len; ) {
-        p_ifr = (struct ifreq *)p_index;
-        
-        NSString *interfaceName = [NSString stringWithCString:p_ifr->ifr_name encoding:NSASCIIStringEncoding];
-        NSNumber *family = [NSNumber numberWithInt:p_ifr->ifr_addr.sa_family];
-        NSString *address = nil;
-        NSMutableDictionary *interfaceDict = nil;
-        NSMutableDictionary *interfaceTypeDetailDict = nil;
-        char temp[80];
-        
-        // Switch by sa_family
-        // - Do nothing if sa_family is not one of supported types (like MAC or IPv4)
-        switch (p_ifr->ifr_addr.sa_family) {
-            case AF_LINK:
-                // MAC address
-                
-                interfaceDict = [allInterfaces objectForKey:interfaceName];
-                if (!interfaceDict) {
-                    interfaceDict = [NSMutableDictionary dictionary];
-                    [allInterfaces setObject:interfaceDict forKey:interfaceName];
-                }
-                
-                interfaceTypeDetailDict = [interfaceDict objectForKey:family];
-                if (!interfaceTypeDetailDict) {
-                    interfaceTypeDetailDict = [NSMutableDictionary dictionary];
-                    [interfaceDict setObject:interfaceTypeDetailDict forKey:family];
-                }
-                
-                struct sockaddr_dl *sdl = (struct sockaddr_dl *) &(p_ifr->ifr_addr);
-                int a,b,c,d,e,f;
-                
-                strcpy(temp, ether_ntoa((const struct ether_addr *)LLADDR(sdl)));
-                sscanf(temp, "%x:%x:%x:%x:%x:%x", &a, &b, &c, &d, &e, &f);
-                sprintf(temp, "%02X:%02X:%02X:%02X:%02X:%02X",a,b,c,d,e,f);
-                
-                address = [NSString stringWithCString:temp encoding:NSASCIIStringEncoding];
-                [interfaceTypeDetailDict setObject:address forKey:@"address"];
-                
-                break;
-                
-            case AF_INET:
-                // IPv4 address
-                
-                interfaceDict = [allInterfaces objectForKey:interfaceName];
-                if (!interfaceDict) {
-                    interfaceDict = [NSMutableDictionary dictionary];
-                    [allInterfaces setObject:interfaceDict forKey:interfaceName];
-                }
-                
-                interfaceTypeDetailDict = [interfaceDict objectForKey:family];
-                if (!interfaceTypeDetailDict) {
-                    interfaceTypeDetailDict = [NSMutableDictionary dictionary];
-                    [interfaceDict setObject:interfaceTypeDetailDict forKey:family];
-                }
-                
-                struct sockaddr_in *sin = (struct sockaddr_in *) &p_ifr->ifr_addr;
-                
-                strcpy(temp, inet_ntoa(sin->sin_addr));
-                
-                address = [NSString stringWithCString:temp encoding:NSASCIIStringEncoding];
-                [interfaceTypeDetailDict setObject:address forKey:@"address"];
-                
-                break;
-                
-            default:
-                // Anything else
-                break;
-                
++(void)getIPStr:(struct sockaddr *)addr :(NSMutableDictionary *)dict :(NSString *)key {
+    char *s = NULL;
+    switch(addr->sa_family) {
+        case AF_INET: {
+            struct sockaddr_in *addr_in = (struct sockaddr_in *)addr;
+            s = malloc(INET_ADDRSTRLEN);
+            inet_ntop(AF_INET, &(addr_in->sin_addr), s, INET_ADDRSTRLEN);
+            break;
         }
-        
-        // Don't forget to calculate loop pointer!
-        p_index += sizeof(p_ifr->ifr_name) + MAX(sizeof(p_ifr->ifr_addr), p_ifr->ifr_addr.sa_len);
+        case AF_INET6: {
+            struct sockaddr_in6 *addr_in6 = (struct sockaddr_in6 *)addr;
+            s = malloc(INET6_ADDRSTRLEN);
+            inet_ntop(AF_INET6, &(addr_in6->sin6_addr), s, INET6_ADDRSTRLEN);
+            break;
+        }
+        default:
+            break;
     }
-    
-    NSLog(@"allInterfaces = %@", allInterfaces);
-    
-    close(sockfd);
+    if (s != nil) {
+        [dict setObject: [NSString stringWithUTF8String:s] forKey:key];
+        printf("IP address: %s\n", s);
+        free(s);
+    }
 }
 
-+(void)test2
-{
-    // Open socket
-    int sockfd = socket(AF_INET, SOCK_DGRAM, 0);
-    if (sockfd <= 0) {
-        NSLog(@"Cannot open socket");
-        return;
++(NSMutableDictionary *)getMPTCPSfInfo:(int)fd :(sae_connid_t)cid :(NSMutableDictionary *)dict {
+    struct so_cinforeq *creqsf = malloc(sizeof(struct so_cinforeq));
+    if (creqsf == nil) {
+        printf("First malloc\n");
+        return nil;
     }
-    NSLog(@"Coucou");
-    
-    // Use ioctl to gain information from the socket
-    // - Set ifconf buffer before executing ioctl
-    // - SIOCGIFCONF command retrieves ifnet list and put it into struct ifconf
-    struct ifreqfull ifr;
-    strlcpy(ifr.ifr_name, "en0", sizeof(ifr.ifr_name));
-    int i = ioctl(sockfd, SIOCGIFLINKQUALITYMETRIC, &ifr);
-    if (i < 0) {
-        NSLog(@"ioctl execution failed");
-        perror("iotcl");
-        NSLog(@"%d %d", errno, EINVAL);
-        close(sockfd);
-        return;
+    struct conninfo_tcp *tcpi = malloc(sizeof(struct conninfo_tcp));
+    if (tcpi == nil) {
+        printf("Second malloc\n");
+        free(creqsf);
+        return nil;
     }
+    // It's bad :-(
+    struct sockaddr *src = malloc(sizeof(struct sockaddr));
+    if (src == nil) {
+        printf("Third malloc\n");
+        free(tcpi);
+        free(creqsf);
+        return nil;
+    }
+    struct sockaddr *dst = malloc(sizeof(struct sockaddr));
+    if (dst == nil) {
+        printf("Fourth malloc\n");
+        free(src);
+        free(tcpi);
+        free(creqsf);
+        return nil;
+    }
+    creqsf->scir_aux_len = sizeof(struct conninfo_tcp); // Yip, otherwise it won't work :-)
+    printf("len is %d\n", creqsf->scir_aux_len);
+    creqsf->scir_aux_data = tcpi;
+    creqsf->scir_cid = cid;
+    creqsf->scir_dst = dst;
+    creqsf->scir_src = src;
     
-    NSLog(@"Sth worked...");
-    NSLog(@"%d", ifr.ifr_link_quality_metric);
-    
-    close(sockfd);
-}
+    const int k = ioctl(fd, SIOCGCONNINFO, creqsf);
+    const int errnum = errno;
+    if (k < 0) {
+        perror("ioctl try");
+        printf("I went here: %d\n", errnum);
+        printf("Now len is %d\n", creqsf->scir_aux_len);
+        free(dst);
+        free(src);
+        free(tcpi);
+        free(creqsf);
+        return nil;
+    }
 
-+(void)getMPTCPInfo:(int)fd {
-    NSLog(@"SuperCoucou");
-    struct conninfo_multipathtcp *cim = malloc(sizeof(struct conninfo_multipathtcp));
-    sae_associd_t aid;// = malloc(sizeof(sae_associd_t));
-    struct so_cidreq *cidreq = malloc(sizeof(struct so_cidreq));
-    struct so_aidreq *aidreq = malloc(sizeof(struct so_aidreq));
-    struct so_cinforeq *creq = malloc(sizeof(struct so_cinforeq));
-    int i;
+    printf("Sth worked!\n");
+    [self getIPStr:src :dict :@"src_ip"];
+    [self getIPStr:dst :dict :@"dst_ip"];
+    struct tcp_info tcpinfo = tcpi->tcpci_tcp_info;
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_state] forKey: @"tcpi_state"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_options] forKey: @"tcpi_options"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_snd_wscale] forKey: @"tcpi_snd_wscale"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_rcv_wscale] forKey: @"tcpi_rcv_wscale"];
     
-    NSLog(@"Coucou");
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_flags] forKey: @"tcpi_flags"];
     
-    aidreq->sar_aidp = &aid;
-    i = ioctl(fd, SIOCGASSOCIDS, aidreq);
-    if (i < 0) {
-        NSLog(@"ioctl execution failed");
-        perror("iotcl");
-        NSLog(@"%d %d", errno, EINVAL);
-        //free(cim);
-        //free(aid);
-        //return;
-    }
-    NSLog(@"AID worked for @%d...", fd);
-    NSLog(@"%d %d", aidreq->sar_cnt, aidreq->sar_aidp);
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_rto] forKey: @"tcpi_rto"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_snd_mss] forKey: @"tcpi_snd_mss"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_rcv_mss] forKey: @"tcpi_rcv_mss"];
     
-    cidreq->src_aid = aid;
-    i = ioctl(fd, SIOCGCONNIDS, cidreq);
-    if (i < 0) {
-        NSLog(@"ioctl execution failed");
-        perror("iotcl");
-        NSLog(@"%d %d", errno, EINVAL);
-        //free(cim);
-        //free(aid);
-        //return;
-    }
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_rttcur] forKey: @"tcpi_rttcur"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_srtt] forKey: @"tcpi_srtt"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_rttvar] forKey: @"tcpi_rttvar"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_rttbest] forKey: @"tcpi_rttbest"];
     
-    NSLog(@"Sth worked for @%d...", fd);
-    NSLog(@"We have %d IDS", cidreq->scr_cnt);
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_snd_ssthresh] forKey: @"tcpi_snd_ssthresh"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_snd_cwnd] forKey: @"tcpi_snd_cwnd"];
     
-    creq->scir_aux_data = cim;
-    creq->scir_cid = SAE_CONNID_ALL;
-    i = ioctl(fd, SIOCGCONNINFO, creq);
-    if (i < 0) {
-        NSLog(@"ioctl execution failed");
-        perror("iotcl");
-        NSLog(@"%d %d %d", i, errno, EINVAL);
-        //free(cim);
-        //free(aid);
-        //return;
-    }
+    [dict setObject: [NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_rcv_space] forKey: @"tcpi_rcv_space"];
     
-    NSLog(@"My pointer is %d", creq->scir_aux_data);
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_snd_wnd] forKey: @"tcpi_snd_wnd"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_snd_nxt] forKey: @"tcpi_snd_nxt"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_rcv_nxt] forKey: @"tcpi_rcv_nxt"];
     
-    NSLog(@"Everything worked for @%d...", fd);
-    NSLog(@"%d", creq->scir_flags);
-    NSLog(@"%d", cim->mptcpci_subflow_count);
-    NSLog(@"%d", cim->mptcpci_init_txbytes);
-    NSLog(@"%d", cim->mptcpci_init_rxbytes);
-    free(cim);
-    free(aidreq);
-    free(cidreq);
-    free(creq);
+    [dict setObject:[NSNumber numberWithInteger: tcpinfo.tcpi_last_outif] forKey: @"tcp_last_outif"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_snd_sbbytes] forKey: @"tcpi_snd_sbbytes"];
+    
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_txpackets] forKey: @"tcpi_txpackets"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_txbytes] forKey: @"tcpi_txbytes"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_txretransmitbytes] forKey: @"tcpi_txretransmitbytes"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_txunacked] forKey: @"tcpi_txunacked"];
+
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_rxpackets] forKey: @"tcpi_rxpackets"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_rxbytes] forKey: @"tcpi_rxbytes"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_rxduplicatebytes] forKey: @"tcpi_rxduplicatebytes"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_rxoutoforderbytes] forKey: @"tcpi_rxoutoforderbytes"];
+    
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_snd_bw] forKey: @"tcpi_snd_bw"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_synrexmits] forKey: @"tcpi_synrexmits"];
+    
+    // This seems duplicate with the fields after; collect them anyway?
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_cell_rxbytes] forKey: @"tcpi_cell_rxbytes"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_cell_txbytes] forKey: @"tcpi_cell_txbytes"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_cell_rxpackets] forKey: @"tcpi_cell_rxpackets"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_cell_txpackets] forKey: @"tcpi_cell_txpackets"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_wifi_rxbytes] forKey: @"tcpi_wifi_rxbytes"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_wifi_txbytes] forKey: @"tcpi_wifi_txbytes"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_wifi_rxpackets] forKey: @"tcpi_wifi_rxpackets"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_wifi_txpackets] forKey: @"tcpi_wifi_txpackets"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_wired_rxbytes] forKey: @"tcpi_wired_rxbytes"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_wired_txbytes] forKey: @"tcpi_wired_txbytes"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_wired_rxpackets] forKey: @"tcpi_wired_rxpackets"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_wired_txpackets] forKey: @"tcpi_wired_txpackets"];
+    
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_if_cell] forKey: @"tcpi_if_cell"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_if_wifi] forKey: @"tcpi_if_wifi"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_if_wired] forKey: @"tcpi_if_wired"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_if_wifi_awdl] forKey: @"tcpi_if_wifi_awdl"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_if_wifi_infra] forKey: @"tcpi_if_wifi_infra"];
+    
+    [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_txretransmitpackets] forKey: @"tcpi_txretransmitpackets"];
+    
+    free(dst);
+    free(src);
+    free(tcpi);
+    free(creqsf);
+    return dict;
 }
 
 +(NSMutableDictionary *)getMPTCPInfoClean:(int)fd {
     struct conninfo_multipathtcp *cim = malloc(sizeof(struct conninfo_multipathtcp));
     if (cim == nil) {
+        printf("First malloc\n");
         return nil;
     }
     struct so_cinforeq *creq = malloc(sizeof(struct so_cinforeq));
     if (creq == nil) {
+        printf("Second malloc\n");
         free(cim);
         return nil;
     }
+//    struct tcp_connection_info *tcpi = malloc(sizeof(struct tcp_connection_info));
+//    if (tcpi != nil) {
+//        printf("Third malloc\n");
+//        free(cim);
+//        free(creq);
+//        return nil;
+//    }
+//    struct so_cinforeq *creqsf = malloc(sizeof(struct so_cinforeq));
+//    if (creqsf == nil) {
+//        printf("Fourth malloc\n");
+//        free(cim);
+//        free(creq);
+//        free(tcpi);
+//        return nil;
+//    }
+    
+    creq->scir_aux_len = 0; // Yip, otherwise it won't work :-)
     creq->scir_aux_data = cim;
     creq->scir_cid = SAE_CONNID_ALL;
-    int i = ioctl(fd, SIOCGCONNINFO, creq);
+    const int i = ioctl(fd, SIOCGCONNINFO, creq);
+    const int errnum = errno;
     if (i < 0) {
-        NSLog(@"ioctl execution failed");
         perror("iotcl");
-        NSLog(@"%d %d %d", i, errno, EINVAL);
+        NSLog(@"%d %d %d", i, errnum, EINVAL);
         free(cim);
         free(creq);
+        //free(tcpi);
+        //free(creqsf);
         return nil;
     }
     
     NSMutableDictionary *dict = [NSMutableDictionary new];
-    [dict setObject:[NSNumber numberWithDouble: [[NSDate date] timeIntervalSince1970]] forKey: @"Time"];
-    [dict setObject:[NSNumber numberWithUnsignedInteger: cim->mptcpci_subflow_count] forKey: @"SubflowCount"];
-    [dict setObject:[NSNumber numberWithUnsignedInteger: cim->mptcpci_init_txbytes] forKey: @"TXBytes"];
-    [dict setObject:[NSNumber numberWithUnsignedInteger: cim->mptcpci_init_rxbytes] forKey: @"RXBytes"];
-    [dict setObject:[NSNumber numberWithUnsignedInteger: cim->mptcpci_flags] forKey: @"Flags"];
-    [dict setObject:[NSNumber numberWithUnsignedInteger: cim->mptcpci_switch_count] forKey: @"SwitchCount"];
+    [dict setObject:[NSNumber numberWithDouble: [[NSDate date] timeIntervalSince1970]] forKey: @"time"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: cim->mptcpci_subflow_count] forKey: @"subflowcount"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: cim->mptcpci_init_txbytes] forKey: @"txbytes"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: cim->mptcpci_init_rxbytes] forKey: @"rxbytes"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: cim->mptcpci_flags] forKey: @"flags"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: cim->mptcpci_switch_count] forKey: @"switchcount"];
 
     NSMutableDictionary *sfs = [NSMutableDictionary new];
     for (int j = 0; j < cim->mptcpci_subflow_count; j++) {
+        sae_connid_t scid = cim->mptcpci_subflow_connids[j];
         NSMutableDictionary *sf = [NSMutableDictionary new];
         struct mptcp_itf_stats stat = cim->mptcpci_itfstats[j];
         
-        [sf setObject:[NSNumber numberWithUnsignedInteger: stat.ifindex] forKey: @"InterfaceIndex"];
-        [sf setObject:[NSNumber numberWithUnsignedInteger: stat.is_expensive] forKey: @"IsExpensive"];
-        [sf setObject:[NSNumber numberWithUnsignedInteger: stat.mpis_rxbytes] forKey: @"RXBytes"];
-        [sf setObject:[NSNumber numberWithUnsignedInteger: stat.mpis_txbytes] forKey: @"TXBytes"];
-        [sf setObject:[NSNumber numberWithUnsignedInteger: stat.switches] forKey: @"Switches"];
+        [sf setObject:[NSNumber numberWithUnsignedInteger: stat.ifindex] forKey: @"interfaceindex"];
+        [sf setObject:[NSNumber numberWithUnsignedInteger: stat.is_expensive] forKey: @"isexpensive"];
+        [sf setObject:[NSNumber numberWithUnsignedInteger: stat.mpis_rxbytes] forKey: @"rxbytes"];
+        [sf setObject:[NSNumber numberWithUnsignedInteger: stat.mpis_txbytes] forKey: @"txbytes"];
+        [sf setObject:[NSNumber numberWithUnsignedInteger: stat.switches] forKey: @"switches"];
         
+        [self getMPTCPSfInfo:fd :scid :sf];
+
         [sfs setObject:sf forKey: [NSString stringWithFormat:@"%d", j]];
     }
-    [dict setObject:sfs forKey:@"Subflows"];
+    [dict setObject:sfs forKey:@"subflows"];
 
     free(cim);
     free(creq);
+    //free(tcpi);
+    //free(creqsf);
     return dict;
 }
 @end
-
-
-//class IOCTL {
-//    static func test() {
-//        let sock = socket(PF_INET, 1, 0)
-//
-//        var ic = ifconf()
-//        let LEN: Int32 = 32000
-//        ic.ifc_len = LEN
-//        ic.ifc_ifcu.ifcu_buf = UnsafeMutablePointer<CChar>.allocate(capacity: Int(LEN))
-//
-//        // SIOCGIFCONF = 36
-//        let io = ioctl(sock, UInt(SIOCGIF), &ic)
-//        guard io >= 0 else {
-//            perror("Error:")
-//            print(errno)
-//            return
-//            //fatalError("ioctl failed")
-//        }
-//
-//        let ifs = UnsafePointer<ifreq>(ic.ifc_ifcu.ifcu_req)!
-//        let ifnum = Int(ic.ifc_len) / MemoryLayout<ifreq>.size
-//
-//        for id in 0..<ifnum {
-//            let i = ifs[id]
-//            var name = i.ifr_name
-//            let ifname = withUnsafePointer(to: &name) {
-//                _ = $0.withMemoryRebound(to: CChar.self, capacity: 1, { ptr in
-//                    String(cString: ptr)
-//                })
-//            }
-//
-//            print(ifname)
-//            print(i.ifr_ifru.ifru_addr.sa_data)
-//        }
-//
-//        let res = close(sock)
-//    }
-//}
-

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		CE09053D20333E9400B1445A /* ConsentFormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE09053C20333E9400B1445A /* ConsentFormViewController.swift */; };
+		CE188F07204D5A7D009B1E18 /* TCPLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE188F06204D5A7D009B1E18 /* TCPLogger.swift */; };
 		CE23A8A41FD9534F00894CA7 /* Quictraffic.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE23A8A31FD9534F00894CA7 /* Quictraffic.framework */; };
 		CE2685002007B26E00462C6E /* BaseResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2684FF2007B26E00462C6E /* BaseResult.swift */; };
 		CE2685032008A50100462C6E /* TestResultInstancesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2685022008A50100462C6E /* TestResultInstancesTableViewCell.swift */; };
@@ -161,6 +162,7 @@
 
 /* Begin PBXFileReference section */
 		CE09053C20333E9400B1445A /* ConsentFormViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsentFormViewController.swift; sourceTree = "<group>"; };
+		CE188F06204D5A7D009B1E18 /* TCPLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPLogger.swift; sourceTree = "<group>"; };
 		CE21D42B1F67ECF300056940 /* MultipathTester.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MultipathTester.entitlements; sourceTree = "<group>"; };
 		CE23A8A31FD9534F00894CA7 /* Quictraffic.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Quictraffic.framework; sourceTree = "<group>"; };
 		CE2684FF2007B26E00462C6E /* BaseResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseResult.swift; sourceTree = "<group>"; };
@@ -395,6 +397,7 @@
 				CE58F4891FCF1114009EA08F /* Utils.swift */,
 				CE26851A200F60BE00462C6E /* LocationTracker.swift */,
 				CE26851C200F809A00462C6E /* Location.swift */,
+				CE188F06204D5A7D009B1E18 /* TCPLogger.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -880,6 +883,7 @@
 				CE2685162008E9E700462C6E /* MultiLineChartEntries.swift in Sources */,
 				CE58F4971FD18E64009EA08F /* BaseTest.swift in Sources */,
 				CE82BD8120430A070067F3D8 /* TCPStreamTest.swift in Sources */,
+				CE188F07204D5A7D009B1E18 /* TCPLogger.swift in Sources */,
 				CEDAF24F1F5FE8E000310153 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

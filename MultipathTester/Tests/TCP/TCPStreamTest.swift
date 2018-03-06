@@ -40,11 +40,6 @@ class TCPStreamTest: BaseStreamTest {
         return .TCP
     }
     
-    // REMOVE ME
-    override func getTestServerHostname() -> String {
-        return "mptcp4.qdeconinck.be"
-    }
-    
     func setupDownConnection(session: URLSession) -> (URLSessionStreamTask, UInt64, Bool) {
         let group = DispatchGroup()
         group.enter()
@@ -136,7 +131,7 @@ class TCPStreamTest: BaseStreamTest {
         let sentTime = Date()
         tcpConn.resume()
         tcpConn.write(data as Data, timeout: endTime.timeIntervalSinceNow) { (error) in
-            print("sent up")
+            //print("sent up")
             if error != nil {
                 self.errorMsg = error.debugDescription
             }
@@ -189,7 +184,7 @@ class TCPStreamTest: BaseStreamTest {
             tcpConn.readData(ofMinLength: 9, maxLength: 9, timeout: endTime.timeIntervalSinceNow, completionHandler: { (data, isEOF, error) in
                 defer { group.leave() }
                 let rcvTime = Date()
-                print("read sth up")
+                //print("read sth up")
                 if isEOF {
                     print("is EOF")
                     self.stop = true
@@ -261,8 +256,14 @@ class TCPStreamTest: BaseStreamTest {
         var success = false
 
         let config = URLSessionConfiguration.ephemeral
-        // TODO Multipath service
-        config.multipathServiceType = URLSessionConfiguration.MultipathServiceType.interactive
+        if multipath {
+            if runCfg.multipathServiceVar == .handover {
+                config.multipathServiceType = URLSessionConfiguration.MultipathServiceType.interactive
+            }
+            if runCfg.multipathServiceVar == .aggregate {
+                config.multipathServiceType = URLSessionConfiguration.MultipathServiceType.aggregate
+            }
+        }
         
         let session = URLSession(configuration: config)
         let group = DispatchGroup()
@@ -327,7 +328,36 @@ class TCPStreamTest: BaseStreamTest {
             self.stop = true
             downConn.cancel()
         }
-        group.wait()
+
+        var res: DispatchTimeoutResult = .timedOut
+        let ips = ipsOf(hostname: getTestServerHostname())
+        var fd1 = findTCPFileDescriptor(expectedIPs: ips, expectedPort: Int16(port), startAt: 0)
+        if (fd1 < 0) {
+            while (res == .timedOut && fd1 < 0) {
+                res = group.wait(timeout: DispatchTime.now() + 0.01)
+                //print("We missed it once, try again...")
+                // Retry, we might have missed the good one thinking it's and old one
+                fd1 = findTCPFileDescriptor(expectedIPs: ips, expectedPort: Int16(port), startAt: 0)
+            }
+        }
+        print("FD1 is \(fd1)")
+        
+        var fd2 = findTCPFileDescriptor(expectedIPs: ips, expectedPort: Int16(port), startAt: fd1 + 1)
+        if (fd2 < 0) {
+            while (res == .timedOut && fd2 < 0) {
+                res = group.wait(timeout: DispatchTime.now() + 0.01)
+                //print("We missed it once, try again...")
+                // Retry, we might have missed the good one thinking it's and old one
+                fd2 = findTCPFileDescriptor(expectedIPs: ips, expectedPort: Int16(port), startAt: fd1 + 1)
+            }
+        }
+        print("FD2 is \(fd2)")
+        
+        // This will perform the wait on the group; once this call returns, the traffic is over
+        var tcpInfos = [[String: Any]]()
+        if fd1 > 0 && fd2 > 0 {
+            tcpInfos = TCPLogger.logTCPInfosMain(group: group, fds: [fd1, fd2], multipath: multipath, logPeriodMs: runCfg.logPeriodMsVar)
+        }
         let elapsed = Date().timeIntervalSince(startTime)
         wifiInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
         cellInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
@@ -339,6 +369,7 @@ class TCPStreamTest: BaseStreamTest {
         }
         
         result = [
+            "tcp_infos": tcpInfos,
             "duration": String(format: "%.9f", elapsed),
             "error_msg": errorMsg,
             "down_delays": downDelays,

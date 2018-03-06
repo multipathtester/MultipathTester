@@ -87,18 +87,18 @@ class BaseTest {
     }
     
     func getTestServerHostname() -> String {
-        return testServer.rawValue + ".traffic.multipath-quic.org"
-    }
-    
-    func getURL() -> String {
-        var baseURL = getTestServerHostname()
+        var ipVerPrefix = ""
         switch ipVer {
         case .any:
             break
         default:
-            baseURL = ipVer.rawValue + "." + baseURL
+            ipVerPrefix = ipVer.rawValue + "."
         }
-        return baseURL + ":" + String(port) + urlPath
+        return ipVerPrefix + testServer.rawValue + ".traffic.multipath-quic.org"
+    }
+    
+    func getURL() -> String {
+        return getTestServerHostname() + ":" + String(port) + urlPath
     }
     
     func setTestServer(testServer: TestServer) {

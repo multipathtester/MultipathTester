@@ -88,7 +88,7 @@ class TCPClientBulk {
                 fd = findTCPFileDescriptor(expectedIPs: ["5.196.169.232"], expectedPort: 80, startAt: 3)
                 print(fd)
             } else {
-                tcpInfos.append(tcpInfoToDict(time: timeInfo, tcpi: tcpi))
+                tcpInfos.append(tcpInfoToDict(tcpi: tcpi))
             }
             res = group.wait(timeout: DispatchTime.now() + 0.01)
         }
@@ -99,7 +99,7 @@ class TCPClientBulk {
         if err2 != 0 {
             print(err2, errno, ENOPROTOOPT)
         } else {
-            tcpInfos.append(tcpInfoToDict(time: timeInfo, tcpi: tcpi))
+            tcpInfos.append(tcpInfoToDict(tcpi: tcpi))
         }
         
         // group.wait()
