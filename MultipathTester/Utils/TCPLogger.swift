@@ -15,15 +15,12 @@ class TCPLogger {
             "time": timeInfo,
         ]
         var count = 0
-        for fd in fds {
+        for i in 0..<fds.count {
+            let fd = fds[i]
             if multipath {
                 let dict = IOCTL.getMPTCPInfoClean(fd)
                 if dict != nil {
-                    //for sfs in dict["subflows"]! {
-                        
-                    //}
-                    print(dict!)
-                    tcpInfosNow[String(format: "%d", fd)] = dict!
+                    tcpInfosNow[String(format: "%d", i)] = dict!
                     count += 1
                 }
             } else {
@@ -32,7 +29,7 @@ class TCPLogger {
                 let err2 = getsockopt(fd, IPPROTO_TCP, TCP_CONNECTION_INFO, &tcpi, &slen)
                 if err2 == 0 {
                     let tcpInfo = tcpInfoToDict(tcpi: tcpi)
-                    tcpInfosNow[String(format: "%d", fd)] = tcpInfo
+                    tcpInfosNow[String(format: "%d", i)] = tcpInfo
                     count += 1
                 }
             }

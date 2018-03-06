@@ -20,7 +20,7 @@ class TCPConnectivityTest: BaseConnectivityTest {
     
     func performRequest(session: URLSession, count: Int) -> Bool {
         let group = DispatchGroup()
-        let url = URL(string: getURL() + self.urlPath)!
+        let url = URL(string: getURL())!
         group.enter()
         let start = DispatchTime.now()
         let task = session.dataTask(with: url) { (data, resp, error) in

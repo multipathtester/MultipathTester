@@ -361,10 +361,8 @@ class TCPStreamTest: BaseStreamTest {
         let elapsed = Date().timeIntervalSince(startTime)
         wifiInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
         cellInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
-        print(upDelays)
-        print(downDelays)
         print(errorMsg)
-        if errorMsg.contains("Operation timed out") {
+        if errorMsg == "" || errorMsg == "Got EOF" || errorMsg.contains("Operation timed out") {
             success = true
         }
         

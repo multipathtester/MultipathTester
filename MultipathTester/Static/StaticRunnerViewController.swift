@@ -91,6 +91,7 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
         tests = [
             TCPBulkDownloadTest(ipVer: .any, urlPath: "/10MB", multipath: true),
             TCPStreamTest(ipVer: .any, runTime: 7, multipath: true),
+            TCPPerfTest(ipVer: .any, multipath: true),
         ]
         
         allTests = pingTests + tests

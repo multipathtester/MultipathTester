@@ -176,24 +176,49 @@ class TCPPerfTest: BasePerfTest {
         var transferredNow: UInt64 = 0
         var retransmittedNow: UInt64 = 0
         var counter = 0
-        let fdStr = String(format: "%d", fd)
         
         for tcpInfo in tcpInfos {
             let timeInfo = tcpInfo["time"] as! TimeInterval
-            // XXX We only have congestion window info for plain TCP so far...
-            if !multipath {
+            if multipath {
+                let mptcpInfoFd = tcpInfo["0"] as! [String: Any]
+                let subflowsInfo = mptcpInfoFd["subflows"] as! [String: Any]
+                for sfID in subflowsInfo.keys {
+                    let subflowInfo = subflowsInfo[sfID] as! [String: Any]
+                    var label = "Path \(sfID)"
+                    let isWiFi = subflowInfo["tcpi_if_wifi"] as? UInt8 ?? 0
+                    let isCell = subflowInfo["tcpi_if_cell"] as? UInt8 ?? 0
+                    if isWiFi > 0 {
+                        label += " (WiFi)"
+                    }
+                    if isCell > 0 {
+                        label += " (Cellular)"
+                    }
+                    label += " Congestion Window"
+                    if cwinData[label] == nil {
+                        cwinData[label] = [CWinData]()
+                    }
+                    cwinData[label]!.append(CWinData(time: timeInfo, cwin: UInt64(subflowInfo["tcpi_snd_cwnd"] as! UInt32)))
+                }
+            } else {
                 if cwinData["Congestion Window"] == nil {
                     cwinData["Congestion Window"] = [CWinData]()
                 }
-                cwinData["Congestion Window"]!.append(CWinData(time: timeInfo, cwin: UInt64(tcpInfo["tcpi_snd_cwnd"] as! UInt32)))
+                let tcpInfoFd = tcpInfo["0"] as! [String: Any]
+                cwinData["Congestion Window"]!.append(CWinData(time: timeInfo, cwin: UInt64(tcpInfoFd["tcpi_snd_cwnd"] as! UInt32)))
             }
             if timeInfo - lastInterval > (1.0 - TimeInterval(runCfg.logPeriodMsVar) / 1000.0) {
                 if multipath {
-                    let mptcpInfoFd = tcpInfo[fdStr] as! [String: Any]
+                    let mptcpInfoFd = tcpInfo["0"] as! [String: Any]
                     transferredNow = mptcpInfoFd["txbytes"] as! UInt64
-                    // FIXME no retransmission info for MPTCP so far...
+                    let subflowsInfo = mptcpInfoFd["subflows"] as! [String: Any]
+                    retransmittedNow = 0
+                    for sfID in subflowsInfo.keys {
+                        let subflowInfo = subflowsInfo[sfID] as! [String: Any]
+                        let retransmittedSf = subflowInfo["tcpi_txretransmitbytes"] as! UInt64
+                        retransmittedNow += retransmittedSf
+                    }
                 } else {
-                    let tcpInfoFd = tcpInfo[fdStr] as! [String: Any]
+                    let tcpInfoFd = tcpInfo["0"] as! [String: Any]
                     transferredNow = tcpInfoFd["tcpi_txbytes"] as! UInt64
                     retransmittedNow = tcpInfoFd["tcpi_txretransmitbytes"] as! UInt64
                 }
@@ -212,18 +237,15 @@ class TCPPerfTest: BasePerfTest {
         if tcpInfos.count > 0 {
             let tcpInfo = tcpInfos[tcpInfos.count - 1]
             if multipath {
-                let mptcpInfoFd = tcpInfo[fdStr] as! [String: Any]
+                let mptcpInfoFd = tcpInfo["0"] as! [String: Any]
                 totalSent = mptcpInfoFd["txbytes"] as! UInt64
                 // FIXME no retransmission info for MPTCP so far...
             } else {
-                let tcpInfoFd = tcpInfo[fdStr] as! [String: Any]
+                let tcpInfoFd = tcpInfo["0"] as! [String: Any]
                 totalSent = tcpInfoFd["tcpi_txbytes"] as! UInt64
                 totalRetrans = tcpInfoFd["tcpi_txretransmitbytes"] as! UInt64
             }
         }
-        
-        print(tcpInfos)
-        print(intervals)
         
         var success = false
         if errorMsg == "" || errorMsg.contains("Operation timed out") {

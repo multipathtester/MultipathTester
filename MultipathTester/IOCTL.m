@@ -31,7 +31,6 @@
     }
     if (s != nil) {
         [dict setObject: [NSString stringWithUTF8String:s] forKey:key];
-        printf("IP address: %s\n", s);
         free(s);
     }
 }
@@ -65,7 +64,6 @@
         return nil;
     }
     creqsf->scir_aux_len = sizeof(struct conninfo_tcp); // Yip, otherwise it won't work :-)
-    printf("len is %d\n", creqsf->scir_aux_len);
     creqsf->scir_aux_data = tcpi;
     creqsf->scir_cid = cid;
     creqsf->scir_dst = dst;
@@ -84,7 +82,6 @@
         return nil;
     }
 
-    printf("Sth worked!\n");
     [self getIPStr:src :dict :@"src_ip"];
     [self getIPStr:dst :dict :@"dst_ip"];
     struct tcp_info tcpinfo = tcpi->tcpci_tcp_info;
@@ -170,21 +167,6 @@
         free(cim);
         return nil;
     }
-//    struct tcp_connection_info *tcpi = malloc(sizeof(struct tcp_connection_info));
-//    if (tcpi != nil) {
-//        printf("Third malloc\n");
-//        free(cim);
-//        free(creq);
-//        return nil;
-//    }
-//    struct so_cinforeq *creqsf = malloc(sizeof(struct so_cinforeq));
-//    if (creqsf == nil) {
-//        printf("Fourth malloc\n");
-//        free(cim);
-//        free(creq);
-//        free(tcpi);
-//        return nil;
-//    }
     
     creq->scir_aux_len = 0; // Yip, otherwise it won't work :-)
     creq->scir_aux_data = cim;
@@ -196,8 +178,6 @@
         NSLog(@"%d %d %d", i, errnum, EINVAL);
         free(cim);
         free(creq);
-        //free(tcpi);
-        //free(creqsf);
         return nil;
     }
     

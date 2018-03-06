@@ -28,6 +28,24 @@ class TCPBulkDownloadTest: BaseBulkDownloadTest {
         return .TCP
     }
     
+    override func getTestResult() -> TestResult {
+        let tcpInfos = result["tcp_infos"] as! [[String: Any]]
+        rcvBytesDatas = [RcvBytesData]()
+        for ti in tcpInfos {
+            guard let connInfo = ti["0"] as? [String: Any] else {continue}
+            let time = ti["time"] as! Double
+            // The format is different in TCP and MPTCP
+            if multipath {
+                let rcvBytes = connInfo["rxbytes"] as! UInt64
+                rcvBytesDatas.append(RcvBytesData(time: time, rcvBytes: rcvBytes))
+            } else {
+                let rcvBytes = connInfo["tcpi_rxbytes"] as! UInt64
+                rcvBytesDatas.append(RcvBytesData(time: time, rcvBytes: rcvBytes))
+            }
+        }
+        return super.getTestResult()
+    }
+    
     override func run() -> [String:Any] {
         _ = super.run()
         var success = false
@@ -47,7 +65,7 @@ class TCPBulkDownloadTest: BaseBulkDownloadTest {
         let group = DispatchGroup()
         group.enter()
         
-        let url = URL(string: getURL() + self.urlPath)!
+        let url = URL(string: getURL())!
         var elapsed = Date().timeIntervalSince(startTime)
         
         DispatchQueue.global(qos: .userInteractive).async {
@@ -91,10 +109,6 @@ class TCPBulkDownloadTest: BaseBulkDownloadTest {
         if fd > 0 {
             tcpInfos = TCPLogger.logTCPInfosMain(group: group, fds: [fd], multipath: multipath, logPeriodMs: runCfg.logPeriodMsVar)
         }
-        
-        print(tcpInfos)
-        // TODO process TCP INFO
-        // TODO collect MPTCP info if needed
         
         wifiInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
         cellInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
