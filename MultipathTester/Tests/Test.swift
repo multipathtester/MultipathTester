@@ -20,22 +20,23 @@ enum TestServer: String, Codable {
     case jp
 }
 
+enum NetProtocolBase: String, Codable {
+    case TCP
+    case QUIC
+}
+
 enum NetProtocol: String, Codable {
     case TCP
     case MPTCP
     case QUIC
     case MPQUIC
     
-    var main: String {
+    var main: NetProtocolBase {
         switch self {
-        case .TCP:
-            return "TCP"
-        case .MPTCP:
-            return "TCP"
-        case.QUIC:
-            return "QUIC"
-        case .MPQUIC:
-            return "QUIC"
+        case .TCP, .MPTCP:
+            return .TCP
+        case .QUIC, .MPQUIC:
+            return .QUIC
         }
     }
 }

@@ -220,7 +220,7 @@ class TestResultsTableViewController: UITableViewController {
         }
         
         for t in testResults! {
-            let proto = t.getProtocol().main
+            let proto = t.getProtocol().main.rawValue
             if dict[proto] == nil {
                 dict[proto] = [String: [TestResult]]()
             }

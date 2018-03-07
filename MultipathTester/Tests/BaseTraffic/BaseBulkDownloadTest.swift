@@ -30,10 +30,6 @@ class BaseBulkDownloadTest: BaseTest, Test {
         ]
     }
     
-    func getProtocol() -> NetProtocol {
-        fatalError("Must Override")
-    }
-    
     // Because QUIC cannot do GET without the https:// ...
     override func getURL() -> String {
         let url = super.getURL()

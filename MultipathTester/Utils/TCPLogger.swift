@@ -42,10 +42,6 @@ class TCPLogger {
     }
     
     static func logTCPInfosMain(group: DispatchGroup, fds: [Int32], multipath: Bool, logPeriodMs: Int) -> [[String: Any]] {
-        return logTCPInfosMain(group: group, fds: fds, multipath: multipath, logPeriodMs: logPeriodMs, stopNotify: nil)
-    }
-    
-    static func logTCPInfosMain(group: DispatchGroup, fds: [Int32], multipath: Bool, logPeriodMs: Int, stopNotify: AtomicBoolean?) -> [[String: Any]] {
         var res: DispatchTimeoutResult = .timedOut
         
         var tcpInfos = [[String: Any]]()
@@ -54,12 +50,6 @@ class TCPLogger {
             res = group.wait(timeout: DispatchTime.now() + (TimeInterval(logPeriodMs) / 1000.0))
             if res == .success {
                 break
-            }
-            if var stop = stopNotify {
-                if stop.val {
-                    print("Stop logger")
-                    return tcpInfos
-                }
             }
             let toAdd = TCPLogger.logTCPInfo(fds: fds, multipath: multipath)
             if toAdd.count > 0 {

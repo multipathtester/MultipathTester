@@ -50,7 +50,7 @@ class QUICReqResTest: BaseTest, Test {
         ]
     }
     
-    func getProtocol() -> NetProtocol {
+    override func getProtocol() -> NetProtocol {
         if maxPathID > 0 {
             return .MPQUIC
         }

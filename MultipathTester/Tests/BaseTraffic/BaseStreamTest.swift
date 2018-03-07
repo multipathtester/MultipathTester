@@ -52,10 +52,6 @@ class BaseStreamTest: BaseTest, Test {
         ]
     }
     
-    func getProtocol() -> NetProtocol {
-        fatalError("Must Override")
-    }
-    
     func getTestResult() -> TestResult {
         let upDelays = result["up_delays"] as? [DelayData] ?? []
         let downDelays = result["down_delays"] as? [DelayData] ?? []
@@ -94,10 +90,6 @@ class BaseStreamTest: BaseTest, Test {
     
     func notifyReachability() {
         // Does nothing by default, but should be overriden for QUIC traffic
-    }
-    
-    func notifyLoss() {
-        
     }
     
 }

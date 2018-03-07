@@ -78,8 +78,18 @@ class BaseTest {
         return startTime
     }
     
+    func getProtocol() -> NetProtocol {
+        fatalError("Must Override")
+    }
+    
     func getProtoInfo() -> [[String: Any]] {
-        return Utils.collectQUICInfo(logFileURL: logFileURL)
+        switch getProtocol() {
+        case .TCP, .MPTCP:
+            return result["tcp_infos"] as? [[String: Any]] ?? []
+        case .QUIC, .MPQUIC:
+            return Utils.collectQUICInfo(logFileURL: logFileURL)
+        }
+        
     }
     
     func getTestServer() -> TestServer {

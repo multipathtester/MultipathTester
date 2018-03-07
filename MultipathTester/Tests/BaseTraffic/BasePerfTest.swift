@@ -43,10 +43,6 @@ class BasePerfTest: BaseTest, Test {
         ]
     }
     
-    func getProtocol() -> NetProtocol {
-        fatalError("Must Override")
-    }
-    
     func getTestResult() -> TestResult {
         let duration = Double(result["duration"] as? String ?? "0.0")!
         let totalRetrans = UInt64(result["total_retrans"] as? String ?? "0")!

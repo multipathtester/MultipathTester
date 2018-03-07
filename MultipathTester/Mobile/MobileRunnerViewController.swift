@@ -339,15 +339,12 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
                 return ChartDataEntry(x: newDownDelays[x].time, y: Double(newDownDelays[x].delayUs) / 1000.0)
             }
             switch t.getProtocol().main {
-            case "TCP":
+            case .TCP:
                 upMPTCPDelays += newUpValues
                 downMPTCPDelays += newDownValues
-            case "QUIC":
+            case .QUIC:
                 upQUICDelays += newUpValues
                 downQUICDelays += newDownValues
-            default:
-                print("Unknown protocol \(t.getProtocol().main)")
-                break
             }
             
             if newUpValues.count > 0 || newDownValues.count > 0 {

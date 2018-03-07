@@ -11,8 +11,10 @@
 
 @implementation IOCTL
 
-struct sockaddr src;
-struct sockaddr dst;
+struct sockaddr_in srcv4;
+struct sockaddr_in dstv4;
+struct sockaddr_in6 srcv6;
+struct sockaddr_in6 dstv6;
 struct conninfo_tcp tcpi;
 struct conninfo_multipathtcp cim;
 
@@ -49,14 +51,47 @@ struct conninfo_multipathtcp cim;
         printf("First malloc\n");
         return nil;
     }
+    
+    // We need two iotcls: one to get the size of the IP addresses, the other to fetch the info
+    creqsf->scir_aux_data = &tcpi;
+    creqsf->scir_cid = cid;
+    creqsf->scir_aux_len = 0; // Don't take info now
+    creqsf->scir_src_len = 0; // What is the version of source IP?
+    creqsf->scir_dst_len = 0; // What is the version of destination IP?
+    
+    const int l = ioctl(fd, SIOCGCONNINFO, creqsf);
+    const int errnum1 = errno;
+    if (l < 0) {
+        perror("ioctl 1 try");
+        printf("I went here: %d\n", errnum1);
+        free(creqsf);
+        return nil;
+    }
+    
+    // What is the version of IP?
+    if (creqsf->scir_src_len == sizeof(struct sockaddr_in)) {
+        creqsf->scir_src = (struct sockaddr *)&srcv4;
+    } else if (creqsf->scir_src_len == sizeof(struct sockaddr_in6)) {
+        creqsf->scir_src = (struct sockaddr *)&srcv6;
+    } else {
+        printf("Unknown size for source IP: %d\n", creqsf->scir_src_len);
+        return nil;
+    }
+    
+    if (creqsf->scir_dst_len == sizeof(struct sockaddr_in)) {
+        creqsf->scir_dst = (struct sockaddr *)&dstv4;
+    } else if (creqsf->scir_dst_len == sizeof(struct sockaddr_in6)) {
+        creqsf->scir_dst = (struct sockaddr *)&dstv6;
+    } else {
+        printf("Unknown size for destination IP: %d\n", creqsf->scir_dst_len);
+        return nil;
+    }
+    
     creqsf->scir_aux_len = sizeof(struct conninfo_tcp); // Yip, otherwise it won't work :-)
     creqsf->scir_aux_data = &tcpi;
     creqsf->scir_cid = cid;
-    creqsf->scir_dst = &dst;
-    creqsf->scir_src = &src;
     
     const int k = ioctl(fd, SIOCGCONNINFO, creqsf);
-    
     const int errnum = errno;
     if (k < 0) {
         perror("ioctl try");
@@ -66,8 +101,8 @@ struct conninfo_multipathtcp cim;
         return nil;
     }
 
-    [self getIPStr:&src :dict :@"src_ip"];
-    [self getIPStr:&dst :dict :@"dst_ip"];
+    [self getIPStr:creqsf->scir_src :dict :@"src_ip"];
+    [self getIPStr:creqsf->scir_dst :dict :@"dst_ip"];
     struct tcp_info tcpinfo = tcpi.tcpci_tcp_info;
     [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_state] forKey: @"tcpi_state"];
     [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_options] forKey: @"tcpi_options"];

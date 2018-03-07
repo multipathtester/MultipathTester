@@ -18,7 +18,7 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
     var startTime: Date = Date()
     var stopTime: Date = Date()
     
-    var pingTests: [QUICConnectivityTest] = [QUICConnectivityTest]()
+    var pingTests = [TCPConnectivityTest]()
     var tests: [Test] = [Test]()
     var allTests: [Test] = [Test]()
     var runningIndex: Int = -1
@@ -51,9 +51,10 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
         self.progress.value = 0.0
         
         pingTests = [
-            QUICConnectivityTest(ipVer: .any, port: 443, testServer: .fr),
-            QUICConnectivityTest(ipVer: .any, port: 443, testServer: .ca),
-            QUICConnectivityTest(ipVer: .any, port: 443, testServer: .jp),
+            // Zero ping count because pingOne after
+            TCPConnectivityTest(ipVer: .any, port: 443, testServer: .fr, pingCount: 0, pingWaitMs: 200),
+            TCPConnectivityTest(ipVer: .any, port: 443, testServer: .ca, pingCount: 0, pingWaitMs: 200),
+            TCPConnectivityTest(ipVer: .any, port: 443, testServer: .jp, pingCount: 0, pingWaitMs: 200),
         ]
         
         // This randomize the order of the pings, to avoid correlating traffic too much
@@ -65,25 +66,25 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
             QUICConnectivityTest(ipVer: .any, port: 6121),
             QUICConnectivityTest(ipVer: .v4, port: 443),
             QUICConnectivityTest(ipVer: .v6, port: 443),
-            TCPConnectivityTest(ipVer: .v4, port: 443),
-            TCPConnectivityTest(ipVer: .v6, port: 443),
+            //TCPConnectivityTest(ipVer: .v4, port: 443),
+            //TCPConnectivityTest(ipVer: .v6, port: 443),
             QUICBulkDownloadTest(ipVer: .v4, urlPath: "/10MB", maxPathID: 0),
             QUICBulkDownloadTest(ipVer: .v6, urlPath: "/10MB", maxPathID: 0),
             QUICBulkDownloadTest(ipVer: .any, urlPath: "/10MB", maxPathID: 255),
-            TCPBulkDownloadTest(ipVer: .v4, urlPath: "/10MB", multipath: false),
-            TCPBulkDownloadTest(ipVer: .v6, urlPath: "/10MB", multipath: false),
+            //TCPBulkDownloadTest(ipVer: .v4, urlPath: "/10MB", multipath: false),
+            //TCPBulkDownloadTest(ipVer: .v6, urlPath: "/10MB", multipath: false),
             TCPBulkDownloadTest(ipVer: .any, urlPath: "/10MB", multipath: true),
             QUICStreamTest(ipVer: .v4, maxPathID: 0, runTime: 7),
             QUICStreamTest(ipVer: .v6, maxPathID: 0, runTime: 7),
             QUICStreamTest(ipVer: .any, maxPathID: 255, runTime: 7),
-            TCPStreamTest(ipVer: .v4, runTime: 7, multipath: false),
-            TCPStreamTest(ipVer: .v6, runTime: 7, multipath: false),
+            //TCPStreamTest(ipVer: .v4, runTime: 7, multipath: false),
+            //TCPStreamTest(ipVer: .v6, runTime: 7, multipath: false),
             TCPStreamTest(ipVer: .any, runTime: 7, multipath: true),
             QUICPerfTest(ipVer: .v4, maxPathID: 0),
             QUICPerfTest(ipVer: .v6, maxPathID: 0),
             QUICPerfTest(ipVer: .any, maxPathID: 255),
-            TCPPerfTest(ipVer: .v4, multipath: false),
-            TCPPerfTest(ipVer: .v6, multipath: false),
+            //TCPPerfTest(ipVer: .v4, multipath: false),
+            //TCPPerfTest(ipVer: .v6, multipath: false),
             TCPPerfTest(ipVer: .any, multipath: true),
         ]
         
@@ -191,36 +192,70 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
             var bestServer: TestServer = .fr
             var bestMed: Double = Double.greatestFiniteMagnitude
             var bestStd: Double = Double.greatestFiniteMagnitude
+            
+            let queue = OperationQueue()
+            let group = DispatchGroup()
+            
             for i in 0..<self.pingTests.count {
                 let test = self.pingTests[i]
-                DispatchQueue.main.async {
-                    self.progress.setProgress(value: CGFloat((Float(i) / Float(nbTests) * 100.0)), animationDuration: 0.0) {}
-                    self.runningIndex = i
-                    self.testsTable.reloadData()
-                    self.progress.setProgress(value: CGFloat((Float(i) / Float(nbTests) * 100.0) + Float(test.getWaitTime())), animationDuration: test.getWaitTime()) {
-                        // Do anything your heart desires...
-                        print("wait completed")
-                        self.progress.setProgress(value: CGFloat((Float(i + 1) / Float(nbTests) * 100.0) - 1.0), animationDuration: test.getRunTime()) {print("test completed")}
-                    }
-                }
-                if self.stoppedTests {
-                    break
-                }
-                let res = test.run()
-                testDones += 1
-                let success = res["success"] as! Bool
-                let durations = res["durations"] as! [Double]
-                let median = durations.median()
-                print("median duration of", test.getTestServer(), "is", median)
-                if success && median >= 0.0 && median < bestMed {
-                    bestServer = test.getTestServer()
-                    bestMed = median
-                    bestStd = durations.standardDeviation()
-                }
-                if self.stoppedTests {
-                    break
+                group.enter()
+                queue.addOperation {
+                    _ = test.run()
+                    group.leave()
                 }
             }
+            DispatchQueue.main.async {
+                self.progress.setProgress(value: CGFloat(0.0), animationDuration: 0.0) {}
+                self.testsTable.reloadData()
+                self.progress.setProgress(value: CGFloat((Float(self.pingTests.count) / Float(nbTests) * 100.0 / 6)), animationDuration: 1.0) {}
+            }
+            group.wait()
+            print("All connected")
+            
+            let pingCount = 5
+            for pc in 0..<pingCount {
+                DispatchQueue.main.async {
+                    self.testsTable.reloadData()
+                    let fixPart: CGFloat = CGFloat(Float(self.pingTests.count) / Float(nbTests) * 100.0) / 6
+                    let mobilePart: CGFloat = CGFloat(Float(pc) + 1.0)
+                    self.progress.setProgress(value: fixPart * mobilePart, animationDuration: 1.0) {}
+                }
+                for i in 0..<self.pingTests.count {
+                    let test = self.pingTests[i]
+                    let succeeded = test.result["success"] as? Bool ?? false
+                    if succeeded {
+                        group.enter()
+                        queue.addOperation {
+                            print("Start ping \(test.getTestServer())")
+                            _ = test.runOnePing()
+                            print("Done ping \(test.getTestServer())")
+                            group.leave()
+                        }
+                    }
+                }
+                group.wait()
+                print("All have done ping \(pc + 1)")
+                // Wait for 100 ms before next burst
+                usleep(100 * 1000)
+            }
+            print("All have done all pings")
+            testDones += self.pingTests.count
+            for i in 0..<self.pingTests.count {
+                let test = self.pingTests[i]
+                let res = test.result
+                let success = res["success"] as? Bool ?? false
+                let durations = res["durations"] as? [Double] ?? []
+                if success && durations.count == pingCount {
+                    let median = durations.median()
+                    print("median duration of", test.getTestServer(), "is", median)
+                    if median >= 0.0 && median < bestMed {
+                        bestServer = test.getTestServer()
+                        bestMed = median
+                        bestStd = durations.standardDeviation()
+                    }
+                }
+            }
+            
             print("Best server is", bestServer)
             for i in 0..<self.tests.count {
                 let test = self.tests[i]
@@ -277,8 +312,7 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
             let duration = self.stopTime.timeIntervalSince(self.startTime)
             
             let benchmark = Benchmark(connectivities: self.connectivities, duration: duration, locations: self.locations, mobile: false, pingMed: bestMed, pingStd: bestStd, wifiBytesReceived: wifiBytesReceived, wifiBytesSent: wifiBytesSent, cellBytesReceived: cellBytesReceived, cellBytesSent: cellBytesSent, multipathService: self.multipathService, serverName: bestServer, startTime: self.startTime, testResults: testResults)
-            // Don't save tests now
-            //Utils.sendToServer(benchmark: benchmark, tests: self.allTests)
+            Utils.sendToServer(benchmark: benchmark, tests: self.allTests)
             benchmark.save()
             self.cellTimer?.invalidate()
             self.cellTimer = nil

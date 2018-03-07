@@ -115,35 +115,65 @@ class MobileMainViewController: UIViewController {
     func determineClosestServer() {
         DispatchQueue.global(qos: .userInteractive).async {
             let pingTests = [
-                QUICConnectivityTest(ipVer: .any, port: 443, testServer: .fr, pingCount: 5, pingWaitMs: 50),
-                QUICConnectivityTest(ipVer: .any, port: 443, testServer: .ca, pingCount: 5, pingWaitMs: 50),
-                QUICConnectivityTest(ipVer: .any, port: 443, testServer: .jp, pingCount: 5, pingWaitMs: 50),
+                TCPConnectivityTest(ipVer: .any, port: 443, testServer: .fr, pingCount: 0, pingWaitMs: 200),
+                TCPConnectivityTest(ipVer: .any, port: 443, testServer: .ca, pingCount: 0, pingWaitMs: 200),
+                TCPConnectivityTest(ipVer: .any, port: 443, testServer: .jp, pingCount: 0, pingWaitMs: 200),
             ]
             var currentBestServer: TestServer = .fr
             self.bestMedPing = Double.greatestFiniteMagnitude
             self.bestStdPing = Double.greatestFiniteMagnitude
+            
             let queue = OperationQueue()
             let group = DispatchGroup()
+            
             for i in 0..<pingTests.count {
-                group.enter()
                 let test = pingTests[i]
+                group.enter()
                 queue.addOperation {
-                    let res = test.run()
-                    let success = res["success"] as! Bool
-                    let durations = res["durations"] as! [Double]
-                    let median = durations.median()
-                    print("median duration of", test.getTestServer(), "is", median)
-                    OperationQueue.main.addOperation {
-                        if success && median >= 0.0 && median < self.bestMedPing {
-                            currentBestServer = test.getTestServer()
-                            self.bestMedPing = median
-                            self.bestStdPing = durations.standardDeviation()
-                        }
-                        group.leave()
-                    }
+                    _ = test.run()
+                    group.leave()
                 }
             }
             group.wait()
+            print("All connected")
+            
+            let pingCount = 5
+            for pc in 0..<pingCount {
+                for i in 0..<pingTests.count {
+                    let test = pingTests[i]
+                    let succeeded = test.result["success"] as? Bool ?? false
+                    if succeeded {
+                        group.enter()
+                        queue.addOperation {
+                            print("Start ping \(test.getTestServer())")
+                            _ = test.runOnePing()
+                            print("Done ping \(test.getTestServer())")
+                            group.leave()
+                        }
+                    }
+                }
+                group.wait()
+                print("All have done ping \(pc + 1)")
+                // Wait for 100 ms before next burst
+                usleep(100 * 1000)
+            }
+            print("All have done all pings")
+            for i in 0..<pingTests.count {
+                let test = pingTests[i]
+                let res = test.result
+                let success = res["success"] as? Bool ?? false
+                let durations = res["durations"] as? [Double] ?? []
+                if success && durations.count == pingCount {
+                    let median = durations.median()
+                    print("median duration of", test.getTestServer(), "is", median)
+                    if median >= 0.0 && median < self.bestMedPing {
+                        currentBestServer = test.getTestServer()
+                        self.bestMedPing = median
+                        self.bestStdPing = durations.standardDeviation()
+                    }
+                }
+            }
+            
             print("Best server is", currentBestServer)
             self.bestServer = currentBestServer
             self.ready = true

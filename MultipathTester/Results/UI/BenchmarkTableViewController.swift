@@ -108,13 +108,13 @@ class BenchmarkTableViewController: UITableViewController {
         var tcpTotal = 0
         for i in 0..<testCount {
             let testResult = benchmark.testResults[i]
-            if testResult.getProtocol().main == "TCP" {
+            switch testResult.getProtocol().main {
+            case .TCP:
                 tcpTotal += 1
                 if testResult.succeeded() {
                     tcpSucceeded += 1
                 }
-            }
-            if testResult.getProtocol().main == "QUIC" {
+            case .QUIC:
                 quicTotal += 1
                 if testResult.succeeded() {
                     quicSucceeded += 1

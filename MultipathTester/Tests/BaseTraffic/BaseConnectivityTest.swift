@@ -74,10 +74,6 @@ class BaseConnectivityTest: BaseTest, Test {
         return "https://" + super.getURL()
     }
     
-    func getProtocol() -> NetProtocol {
-        fatalError("Must Override")
-    }
-    
     func getTestResult() -> TestResult {
         let resultMsg = result["error_msg"] as? String ?? "None"
         let duration = Double(result["duration"] as? String ?? "0.0")!

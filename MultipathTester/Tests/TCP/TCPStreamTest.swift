@@ -23,7 +23,6 @@ class TCPStreamTest: BaseStreamTest {
     var nxtMessageID: UInt32 = 0
     var sentTimes: [Int: Date] = [:]
     var stop = AtomicBoolean() // This is initially set to false
-    var stopNotify = AtomicBoolean() // this is initially set to false
     
     init(ipVer: IPVersion, runTime: Int, waitTime: Double, multipath: Bool) {
         self.multipath = multipath
@@ -436,11 +435,5 @@ class TCPStreamTest: BaseStreamTest {
     override func stopTraffic() {
         print("I call stop")
         stop.val = true
-    }
-    
-    override func notifyLoss() {
-        print("Notifying loss")
-        stopNotify.val = true
-        print("Loss notified")
     }
 }
