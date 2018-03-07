@@ -82,4 +82,22 @@ class BaseStreamTest: BaseTest, Test {
         let cellBytesReceived = result["cell_bytes_received"] as? UInt32 ?? 0
         return StreamResult(name: getDescription(), proto: getProtocol(), success: success, result: resultText, duration: duration, startTime: startTime, waitTime: waitTime, wifiBytesReceived: wifiBytesReceived, wifiBytesSent: wifiBytesSent, cellBytesReceived: cellBytesReceived, cellBytesSent: cellBytesSent, multipathService: runCfg.multipathServiceVar, upDelays: upDelays, downDelays: downDelays, errorMsg: errorMsg)
     }
+    
+    func getProgressDelays() -> ([DelayData], [DelayData]) {
+        // MUST BE OVERRIDEN
+        return ([], [])
+    }
+    
+    func stopTraffic() {
+        // MUST BE OVERRIDEN
+    }
+    
+    func notifyReachability() {
+        // Does nothing by default, but should be overriden for QUIC traffic
+    }
+    
+    func notifyLoss() {
+        
+    }
+    
 }

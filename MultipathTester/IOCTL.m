@@ -11,27 +11,35 @@
 
 @implementation IOCTL
 
+struct sockaddr src;
+struct sockaddr dst;
+struct conninfo_tcp tcpi;
+struct conninfo_multipathtcp cim;
+
 +(void)getIPStr:(struct sockaddr *)addr :(NSMutableDictionary *)dict :(NSString *)key {
-    char *s = NULL;
     switch(addr->sa_family) {
         case AF_INET: {
             struct sockaddr_in *addr_in = (struct sockaddr_in *)addr;
-            s = malloc(INET_ADDRSTRLEN);
-            inet_ntop(AF_INET, &(addr_in->sin_addr), s, INET_ADDRSTRLEN);
+            char *s = malloc(INET_ADDRSTRLEN);
+            if (s != nil) {
+                inet_ntop(AF_INET, &(addr_in->sin_addr), s, INET_ADDRSTRLEN);
+                [dict setObject: [NSString stringWithUTF8String:s] forKey:key];
+                free(s);
+            }
             break;
         }
         case AF_INET6: {
             struct sockaddr_in6 *addr_in6 = (struct sockaddr_in6 *)addr;
-            s = malloc(INET6_ADDRSTRLEN);
-            inet_ntop(AF_INET6, &(addr_in6->sin6_addr), s, INET6_ADDRSTRLEN);
+            char *s = malloc(INET6_ADDRSTRLEN);
+            if (s != nil) {
+                inet_ntop(AF_INET6, &(addr_in6->sin6_addr), s, INET6_ADDRSTRLEN);
+                [dict setObject: [NSString stringWithUTF8String:s] forKey:key];
+                free(s);
+            }
             break;
         }
         default:
             break;
-    }
-    if (s != nil) {
-        [dict setObject: [NSString stringWithUTF8String:s] forKey:key];
-        free(s);
     }
 }
 
@@ -41,50 +49,26 @@
         printf("First malloc\n");
         return nil;
     }
-    struct conninfo_tcp *tcpi = malloc(sizeof(struct conninfo_tcp));
-    if (tcpi == nil) {
-        printf("Second malloc\n");
-        free(creqsf);
-        return nil;
-    }
-    // It's bad :-(
-    struct sockaddr *src = malloc(sizeof(struct sockaddr));
-    if (src == nil) {
-        printf("Third malloc\n");
-        free(tcpi);
-        free(creqsf);
-        return nil;
-    }
-    struct sockaddr *dst = malloc(sizeof(struct sockaddr));
-    if (dst == nil) {
-        printf("Fourth malloc\n");
-        free(src);
-        free(tcpi);
-        free(creqsf);
-        return nil;
-    }
     creqsf->scir_aux_len = sizeof(struct conninfo_tcp); // Yip, otherwise it won't work :-)
-    creqsf->scir_aux_data = tcpi;
+    creqsf->scir_aux_data = &tcpi;
     creqsf->scir_cid = cid;
-    creqsf->scir_dst = dst;
-    creqsf->scir_src = src;
+    creqsf->scir_dst = &dst;
+    creqsf->scir_src = &src;
     
     const int k = ioctl(fd, SIOCGCONNINFO, creqsf);
+    
     const int errnum = errno;
     if (k < 0) {
         perror("ioctl try");
         printf("I went here: %d\n", errnum);
         printf("Now len is %d\n", creqsf->scir_aux_len);
-        free(dst);
-        free(src);
-        free(tcpi);
         free(creqsf);
         return nil;
     }
 
-    [self getIPStr:src :dict :@"src_ip"];
-    [self getIPStr:dst :dict :@"dst_ip"];
-    struct tcp_info tcpinfo = tcpi->tcpci_tcp_info;
+    [self getIPStr:&src :dict :@"src_ip"];
+    [self getIPStr:&dst :dict :@"dst_ip"];
+    struct tcp_info tcpinfo = tcpi.tcpci_tcp_info;
     [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_state] forKey: @"tcpi_state"];
     [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_options] forKey: @"tcpi_options"];
     [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_snd_wscale] forKey: @"tcpi_snd_wscale"];
@@ -147,53 +131,43 @@
     [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_if_wifi_infra] forKey: @"tcpi_if_wifi_infra"];
     
     [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_txretransmitpackets] forKey: @"tcpi_txretransmitpackets"];
-    
-    free(dst);
-    free(src);
-    free(tcpi);
+
     free(creqsf);
     return dict;
 }
 
-+(NSMutableDictionary *)getMPTCPInfoClean:(int)fd {
-    struct conninfo_multipathtcp *cim = malloc(sizeof(struct conninfo_multipathtcp));
-    if (cim == nil) {
-        printf("First malloc\n");
-        return nil;
-    }
++(NSMutableDictionary *)getMPTCPInfo:(int)fd {
     struct so_cinforeq *creq = malloc(sizeof(struct so_cinforeq));
     if (creq == nil) {
-        printf("Second malloc\n");
-        free(cim);
+        printf("First malloc\n");
         return nil;
     }
     
     creq->scir_aux_len = 0; // Yip, otherwise it won't work :-)
-    creq->scir_aux_data = cim;
+    creq->scir_aux_data = &cim;
     creq->scir_cid = SAE_CONNID_ALL;
     const int i = ioctl(fd, SIOCGCONNINFO, creq);
     const int errnum = errno;
     if (i < 0) {
         perror("iotcl");
         NSLog(@"%d %d %d", i, errnum, EINVAL);
-        free(cim);
         free(creq);
         return nil;
     }
     
     NSMutableDictionary *dict = [NSMutableDictionary new];
     [dict setObject:[NSNumber numberWithDouble: [[NSDate date] timeIntervalSince1970]] forKey: @"time"];
-    [dict setObject:[NSNumber numberWithUnsignedInteger: cim->mptcpci_subflow_count] forKey: @"subflowcount"];
-    [dict setObject:[NSNumber numberWithUnsignedInteger: cim->mptcpci_init_txbytes] forKey: @"txbytes"];
-    [dict setObject:[NSNumber numberWithUnsignedInteger: cim->mptcpci_init_rxbytes] forKey: @"rxbytes"];
-    [dict setObject:[NSNumber numberWithUnsignedInteger: cim->mptcpci_flags] forKey: @"flags"];
-    [dict setObject:[NSNumber numberWithUnsignedInteger: cim->mptcpci_switch_count] forKey: @"switchcount"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: cim.mptcpci_subflow_count] forKey: @"subflowcount"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: cim.mptcpci_init_txbytes] forKey: @"txbytes"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: cim.mptcpci_init_rxbytes] forKey: @"rxbytes"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: cim.mptcpci_flags] forKey: @"flags"];
+    [dict setObject:[NSNumber numberWithUnsignedInteger: cim.mptcpci_switch_count] forKey: @"switchcount"];
 
     NSMutableDictionary *sfs = [NSMutableDictionary new];
-    for (int j = 0; j < cim->mptcpci_subflow_count; j++) {
-        sae_connid_t scid = cim->mptcpci_subflow_connids[j];
+    for (int j = 0; j < cim.mptcpci_subflow_count; j++) {
+        sae_connid_t scid = cim.mptcpci_subflow_connids[j];
         NSMutableDictionary *sf = [NSMutableDictionary new];
-        struct mptcp_itf_stats stat = cim->mptcpci_itfstats[j];
+        struct mptcp_itf_stats stat = cim.mptcpci_itfstats[j];
         
         [sf setObject:[NSNumber numberWithUnsignedInteger: stat.ifindex] forKey: @"interfaceindex"];
         [sf setObject:[NSNumber numberWithUnsignedInteger: stat.is_expensive] forKey: @"isexpensive"];
@@ -207,10 +181,7 @@
     }
     [dict setObject:sfs forKey:@"subflows"];
 
-    free(cim);
     free(creq);
-    //free(tcpi);
-    //free(creqsf);
     return dict;
 }
 @end

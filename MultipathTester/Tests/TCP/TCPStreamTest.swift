@@ -10,14 +10,20 @@ import UIKit
 
 class TCPStreamTest: BaseStreamTest {
     var delaysMutex = pthread_mutex_t()
+    var connsMutex = pthread_mutex_t()
     var multipath: Bool
     var upDelays = [DelayData]()
     var downDelays = [DelayData]()
+    var upNewDelays = [DelayData]()
+    var downNewDelays = [DelayData]()
+    var upConn: URLSessionStreamTask?
+    var downConn: URLSessionStreamTask?
     var endTime = Date()
     var nxtAckMsgID: UInt32 = 0
     var nxtMessageID: UInt32 = 0
     var sentTimes: [Int: Date] = [:]
-    var stop = false
+    var stop = AtomicBoolean() // This is initially set to false
+    var stopNotify = AtomicBoolean() // this is initially set to false
     
     init(ipVer: IPVersion, runTime: Int, waitTime: Double, multipath: Bool) {
         self.multipath = multipath
@@ -128,14 +134,19 @@ class TCPStreamTest: BaseStreamTest {
         for _ in 9..<uploadChunkSize {
             Binary.putUInt8(0, to: data)
         }
+        let timeout = self.endTime == self.startTime ? 0 : self.endTime.timeIntervalSinceNow
         let sentTime = Date()
-        tcpConn.resume()
-        tcpConn.write(data as Data, timeout: endTime.timeIntervalSinceNow) { (error) in
-            //print("sent up")
-            if error != nil {
-                self.errorMsg = error.debugDescription
+        pthread_mutex_lock(&connsMutex)
+        if tcpConn.state == .running || tcpConn.state == .suspended {
+            tcpConn.resume()
+            tcpConn.write(data as Data, timeout: timeout) { (error) in
+                //print("sent up")
+                if error != nil {
+                    self.errorMsg = error.debugDescription
+                }
             }
         }
+        pthread_mutex_unlock(&connsMutex)
         pthread_mutex_lock(&delaysMutex)
         sentTimes[Int(nxtMessageID)] = sentTime
         pthread_mutex_unlock(&delaysMutex)
@@ -144,13 +155,12 @@ class TCPStreamTest: BaseStreamTest {
     }
     
     func clientSenderUp(tcpConn: URLSessionStreamTask) {
-        while Date().compare(endTime) == .orderedAscending && !stop {
+        while (self.startTime == self.endTime || Date().compare(endTime) == .orderedAscending) && !stop.val {
             if !sendData(tcpConn: tcpConn) {
                 //break
             }
             usleep(useconds_t(uploadIntervalTimeCst / 1_000)) // ns to us
         }
-        tcpConn.cancel()
     }
     
     func checkFormatServerAck(bytes: [UInt8]) -> (UInt32, Bool) {
@@ -177,53 +187,58 @@ class TCPStreamTest: BaseStreamTest {
     func clientReceiverUp(tcpConn: URLSessionStreamTask) {
         // 0 has been done previously
         nxtAckMsgID = 1
-        while Date().compare(endTime) == .orderedAscending && !stop {
+        while (self.startTime == self.endTime || Date().compare(endTime) == .orderedAscending) && !stop.val {
             let group = DispatchGroup()
             group.enter()
-            tcpConn.resume()
-            tcpConn.readData(ofMinLength: 9, maxLength: 9, timeout: endTime.timeIntervalSinceNow, completionHandler: { (data, isEOF, error) in
-                defer { group.leave() }
-                let rcvTime = Date()
-                //print("read sth up")
-                if isEOF {
-                    print("is EOF")
-                    self.stop = true
-                    return
-                }
-                if error != nil || data == nil {
-                    if let err = error {
-                        print(err)
-                        self.errorMsg = err.localizedDescription
-                    } else {
-                        print("no data")
-                        self.errorMsg = "no data"
+            let timeout = self.endTime == self.startTime ? 0 : self.endTime.timeIntervalSinceNow
+            pthread_mutex_lock(&self.connsMutex)
+            if tcpConn.state == .running || tcpConn.state == .suspended {
+                tcpConn.resume()
+                tcpConn.readData(ofMinLength: 9, maxLength: 9, timeout: timeout, completionHandler: { (data, isEOF, error) in
+                    defer { group.leave() }
+                    let rcvTime = Date()
+                    //print("read sth up")
+                    if isEOF {
+                        print("is EOF")
+                        self.stop.val = true
+                        return
                     }
-                    self.stop = true
-                    return
-                }
-                let bytes = [UInt8](data!)
-                let (ackMsgID, ok) = self.checkFormatServerAck(bytes: bytes)
-                if !ok {
-                    print("wrong format server ack")
-                    self.stop = true
-                    self.errorMsg = "Invalid format of ack from server in up stream"
-                    return
-                }
-                let ackedMsgID = ackMsgID - 1
-                pthread_mutex_lock(&self.delaysMutex)
-                let sentTimeAny = self.sentTimes[Int(ackedMsgID)]
-                guard let sentTime = sentTimeAny else { pthread_mutex_unlock(&self.delaysMutex) ; return }
-                let delayData = DelayData(time: Date().timeIntervalSince1970, delayUs: UInt64(rcvTime.timeIntervalSince(sentTime) * 1_000_000))
-                self.upDelays.append(delayData)
-                self.sentTimes.removeValue(forKey: Int(ackedMsgID))
-                pthread_mutex_unlock(&self.delaysMutex)
-                self.nxtAckMsgID += 1
-            })
+                    if error != nil || data == nil {
+                        if let err = error {
+                            print(err)
+                            self.errorMsg = err.localizedDescription
+                        } else {
+                            print("no data")
+                            self.errorMsg = "no data"
+                        }
+                        self.stop.val = true
+                        return
+                    }
+                    let bytes = [UInt8](data!)
+                    let (ackMsgID, ok) = self.checkFormatServerAck(bytes: bytes)
+                    if !ok {
+                        print("wrong format server ack")
+                        self.stop.val = true
+                        self.errorMsg = "Invalid format of ack from server in up stream"
+                        return
+                    }
+                    let ackedMsgID = ackMsgID - 1
+                    pthread_mutex_lock(&self.delaysMutex)
+                    let sentTimeAny = self.sentTimes[Int(ackedMsgID)]
+                    guard let sentTime = sentTimeAny else { pthread_mutex_unlock(&self.delaysMutex) ; return }
+                    let delayData = DelayData(time: Date().timeIntervalSince1970, delayUs: UInt64(rcvTime.timeIntervalSince(sentTime) * 1_000_000))
+                    self.upDelays.append(delayData)
+                    self.upNewDelays.append(delayData)
+                    self.sentTimes.removeValue(forKey: Int(ackedMsgID))
+                    pthread_mutex_unlock(&self.delaysMutex)
+                    self.nxtAckMsgID += 1
+                })
+            }
+            pthread_mutex_unlock(&self.connsMutex)
             group.wait()
         }
         print("Out of up receiver loop because \(self.errorMsg)")
-        stop = true
-        tcpConn.cancel()
+        stop.val = true
     }
     
     func checkFormatServerData(bytes: [UInt8]) -> (UInt32, Bool) {
@@ -242,12 +257,17 @@ class TCPStreamTest: BaseStreamTest {
         Binary.putUInt32(5, to: data)
         Binary.putUInt8(65, to: data) // 'A'
         Binary.putUInt32(msgID+1, to: data)
-        tcpConn.resume()
-        tcpConn.write(data as Data, timeout: endTime.timeIntervalSinceNow, completionHandler: { (error) in
-            if error != nil {
-                self.errorMsg = error.debugDescription
-            }
-        })
+        let timeout = self.endTime == self.startTime ? 0 : self.endTime.timeIntervalSinceNow
+        pthread_mutex_lock(&self.connsMutex)
+        if tcpConn.state == .running || tcpConn.state == .suspended {
+            tcpConn.resume()
+            tcpConn.write(data as Data, timeout: timeout, completionHandler: { (error) in
+                if error != nil {
+                    self.errorMsg = error.debugDescription
+                }
+            })
+        }
+        pthread_mutex_unlock(&self.connsMutex)
         return true
     }
     
@@ -273,9 +293,16 @@ class TCPStreamTest: BaseStreamTest {
             defer { group.leave() }
             let (downConn, connID, okDown) = self.setupDownConnection(session: session)
             guard okDown else { self.errorMsg = "Failed to create connection"; return }
+            self.downConn = downConn
             let (upConn, okUp) = self.setupUpConnection(session: session, connID: connID)
             guard okUp else { self.errorMsg = "Failed to create connection"; return }
-            self.endTime = Date().addingTimeInterval(TimeInterval(self.runCfg.runTimeVar))
+            self.upConn = upConn
+            if self.runCfg.runTimeVar > 0 {
+                self.endTime = Date().addingTimeInterval(TimeInterval(self.runCfg.runTimeVar))
+            } else {
+                self.endTime = self.startTime
+            }
+            
             print(self.endTime.timeIntervalSinceNow)
             let queue = OperationQueue()
             queue.addOperation {
@@ -284,49 +311,55 @@ class TCPStreamTest: BaseStreamTest {
             queue.addOperation {
                 self.clientReceiverUp(tcpConn: upConn)
             }
-            while Date().compare(self.endTime) == .orderedAscending && !self.stop {
+            while (self.startTime == self.endTime || Date().compare(self.endTime) == .orderedAscending) && !self.stop.val {
                 // Important to avoid overloading read calls
                 let group2 = DispatchGroup()
                 group2.enter()
-                downConn.resume()
-                downConn.readData(ofMinLength: Int(self.downloadChunkSize), maxLength: Int(self.downloadChunkSize), timeout: self.endTime.timeIntervalSinceNow, completionHandler: { (data, isEOF, error) in
-                    defer { group2.leave() }
-                    if isEOF {
-                        self.errorMsg = "Got EOF"
-                        self.stop = true
-                        return
-                    }
-                    if error != nil || data == nil {
-                        self.errorMsg = error.debugDescription
-                        self.stop = true
-                        return
-                    }
-                    let bytes = [UInt8](data!)
-                    let (msgID, ok) = self.checkFormatServerData(bytes: bytes)
-                    if !ok {
-                        self.errorMsg = "Unexpected format of data packet from server"
-                        self.stop = true
-                        return
-                    }
-                    if !self.sendAck(tcpConn: downConn, msgID: msgID) {
-                        self.errorMsg = "Error when sending ack"
-                        self.stop = true
-                        return
-                    }
-                    pthread_mutex_lock(&self.delaysMutex)
-                    let numDelays = Binary.getUInt32(bytes: bytes, startIndex: 9)
-                    for i in 0..<Int(numDelays) {
-                        let startIndex = 13 + 8 * i
-                        let delayNs = Binary.getUInt64(bytes: bytes, startIndex: startIndex)
-                        let delayData = DelayData(time: Date().timeIntervalSince1970, delayUs: delayNs / 1_000) // from ns to us
-                        self.downDelays.append(delayData)
-                    }
-                    pthread_mutex_unlock(&self.delaysMutex)
-                })
+                let timeout = self.endTime == self.startTime ? 0 : self.endTime.timeIntervalSinceNow
+                pthread_mutex_lock(&self.connsMutex)
+                if downConn.state == .running || downConn.state == .suspended {
+                    downConn.resume()
+                    downConn.readData(ofMinLength: Int(self.downloadChunkSize), maxLength: Int(self.downloadChunkSize), timeout: timeout, completionHandler: { (data, isEOF, error) in
+                        defer { group2.leave() }
+                        if isEOF {
+                            self.errorMsg = "Got EOF"
+                            self.stop.val = true
+                            return
+                        }
+                        if error != nil || data == nil {
+                            self.errorMsg = error.debugDescription
+                            self.stop.val = true
+                            return
+                        }
+                        let bytes = [UInt8](data!)
+                        let (msgID, ok) = self.checkFormatServerData(bytes: bytes)
+                        if !ok {
+                            self.errorMsg = "Unexpected format of data packet from server"
+                            self.stop.val = true
+                            return
+                        }
+                        if !self.sendAck(tcpConn: downConn, msgID: msgID) {
+                            self.errorMsg = "Error when sending ack"
+                            self.stop.val = true
+                            return
+                        }
+                        pthread_mutex_lock(&self.delaysMutex)
+                        let numDelays = Binary.getUInt32(bytes: bytes, startIndex: 9)
+                        for i in 0..<Int(numDelays) {
+                            let startIndex = 13 + 8 * i
+                            let delayNs = Binary.getUInt64(bytes: bytes, startIndex: startIndex)
+                            let delayData = DelayData(time: Date().timeIntervalSince1970, delayUs: delayNs / 1_000) // from ns to us
+                            self.downDelays.append(delayData)
+                            self.downNewDelays.append(delayData)
+                        }
+                        pthread_mutex_unlock(&self.delaysMutex)
+                    })
+                }
+                pthread_mutex_unlock(&self.connsMutex)
                 group2.wait()
             }
-            self.stop = true
-            downConn.cancel()
+            print("I'm out of down receiver")
+            self.stop.val = true
         }
 
         var res: DispatchTimeoutResult = .timedOut
@@ -359,6 +392,14 @@ class TCPStreamTest: BaseStreamTest {
             tcpInfos = TCPLogger.logTCPInfosMain(group: group, fds: [fd1, fd2], multipath: multipath, logPeriodMs: runCfg.logPeriodMsVar)
         }
         let elapsed = Date().timeIntervalSince(startTime)
+        pthread_mutex_lock(&connsMutex)
+        if let upConnOk = self.upConn {
+            upConnOk.cancel()
+        }
+        if let downConnOk = self.downConn {
+            downConnOk.cancel()
+        }
+        pthread_mutex_unlock(&connsMutex)
         wifiInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
         cellInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
         print(errorMsg)
@@ -379,5 +420,27 @@ class TCPStreamTest: BaseStreamTest {
             "cell_bytes_received": cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived,
         ]
         return result
+    }
+    
+    // MARK: Specific to that test
+    override func getProgressDelays() -> ([DelayData], [DelayData]) {
+        pthread_mutex_lock(&self.delaysMutex)
+        let returnUp = upNewDelays
+        let returnDown = downNewDelays
+        upNewDelays = [DelayData]()
+        downNewDelays = [DelayData]()
+        pthread_mutex_unlock(&self.delaysMutex)
+        return (returnUp, returnDown)
+    }
+    
+    override func stopTraffic() {
+        print("I call stop")
+        stop.val = true
+    }
+    
+    override func notifyLoss() {
+        print("Notifying loss")
+        stopNotify.val = true
+        print("Loss notified")
     }
 }

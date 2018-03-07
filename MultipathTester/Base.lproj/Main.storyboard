@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="PuS-mM-DGt">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14101" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="PuS-mM-DGt">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14086"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
@@ -69,7 +69,7 @@
                                                 <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                                 <state key="normal" title="Accept"/>
                                                 <connections>
-                                                    <segue destination="PuS-mM-DGt" kind="showDetail" identifier="AcceptConsent" action="showViewController:sender:" id="riT-6h-z2x"/>
+                                                    <segue destination="PuS-mM-DGt" kind="showDetail" identifier="AcceptConsent" id="riT-6h-z2x"/>
                                                 </connections>
                                             </button>
                                         </subviews>
@@ -355,14 +355,14 @@
                                                 <rect key="frame" x="320" y="0.0" width="51" height="62.5"/>
                                                 <subviews>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Vgg-Wc-auE">
-                                                        <rect key="frame" x="0.0" y="0.0" width="51" height="31"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="51" height="15.5"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     </view>
                                                     <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="right" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iXZ-6U-e73">
-                                                        <rect key="frame" x="0.0" y="31" width="53" height="0.0"/>
+                                                        <rect key="frame" x="0.0" y="15.5" width="53" height="31"/>
                                                     </switch>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="II8-2n-fhw">
-                                                        <rect key="frame" x="0.0" y="31" width="51" height="31.5"/>
+                                                        <rect key="frame" x="0.0" y="46.5" width="51" height="16"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     </view>
                                                 </subviews>
@@ -666,10 +666,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="cUB-k8-ecg">
-                                <rect key="frame" x="2" y="66" width="371" height="550"/>
+                                <rect key="frame" x="2" y="66" width="371" height="549.5"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="How far can you reach your WiFi?" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wBv-7T-2OW">
-                                        <rect key="frame" x="0.0" y="0.0" width="371" height="110"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="371" height="109.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -732,7 +732,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fcS-br-kVr">
-                                        <rect key="frame" x="0.0" y="440" width="371" height="110"/>
+                                        <rect key="frame" x="0.0" y="440" width="371" height="109.5"/>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="36"/>
                                         <state key="normal" title="Start"/>
                                         <connections>
@@ -791,24 +791,29 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="8NG-P8-5qp">
-                                <rect key="frame" x="0.0" y="64" width="0.0" height="554"/>
+                                <rect key="frame" x="0.0" y="64" width="375" height="554"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" restorationIdentifier="timeGraph" translatesAutoresizingMaskIntoConstraints="NO" id="1wi-5k-Gvi" customClass="LineChartView" customModule="Charts">
-                                        <rect key="frame" x="0.0" y="0.0" width="0.0" height="184.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="138.5"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </view>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0En-Uh-hLT" customClass="LineChartView" customModule="Charts">
-                                        <rect key="frame" x="0.0" y="184.5" width="0.0" height="185"/>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0En-Uh-hLT" userLabel="Up Delays Chart View" customClass="LineChartView" customModule="Charts">
+                                        <rect key="frame" x="0.0" y="138.5" width="375" height="138.5"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </view>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UQe-PW-n81" customClass="LineChartView" customModule="Charts">
+                                        <rect key="frame" x="0.0" y="277" width="375" height="138.5"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </view>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ijp-F1-Uw7">
-                                        <rect key="frame" x="0.0" y="369.5" width="0.0" height="184.5"/>
+                                        <rect key="frame" x="0.0" y="415.5" width="375" height="138.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
                                 <constraints>
+                                    <constraint firstItem="UQe-PW-n81" firstAttribute="height" secondItem="1wi-5k-Gvi" secondAttribute="height" id="GGi-tW-hMB"/>
                                     <constraint firstItem="Ijp-F1-Uw7" firstAttribute="width" secondItem="1wi-5k-Gvi" secondAttribute="width" id="Qdt-Oa-2J9"/>
                                     <constraint firstItem="0En-Uh-hLT" firstAttribute="width" secondItem="1wi-5k-Gvi" secondAttribute="width" id="TfX-tU-6tf"/>
                                     <constraint firstItem="0En-Uh-hLT" firstAttribute="height" secondItem="1wi-5k-Gvi" secondAttribute="height" id="nUn-0b-keF"/>
@@ -826,8 +831,9 @@
                         <viewLayoutGuide key="safeArea" id="tEb-Hn-Nq6"/>
                     </view>
                     <connections>
-                        <outlet property="delaysChartView" destination="0En-Uh-hLT" id="sUn-na-3RC"/>
                         <outlet property="distanceChartView" destination="1wi-5k-Gvi" id="dsO-Vn-so7"/>
+                        <outlet property="downDelaysChartView" destination="UQe-PW-n81" id="ElV-4c-Ixv"/>
+                        <outlet property="upDelaysChartView" destination="0En-Uh-hLT" id="zSK-6c-5QP"/>
                         <outlet property="userLabel" destination="Ijp-F1-Uw7" id="mad-Hm-qkt"/>
                     </connections>
                 </viewController>

@@ -461,10 +461,7 @@ typedef struct conninfo_multipathtcp {
 
 @interface IOCTL : NSObject
 
-+ (void)test;
-+ (void)test2;
-+ (void)getMPTCPInfo:(int)fd;
-+ (NSMutableDictionary *)getMPTCPInfoClean:(int)fd;
++ (NSMutableDictionary *)getMPTCPInfo:(int)fd;
 @end
 
 #endif /* IOCTL_h */

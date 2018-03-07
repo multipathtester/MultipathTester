@@ -99,7 +99,7 @@ class QUICStreamTest: BaseStreamTest {
     }
     
     // MARK: Specific to that test
-    func getProgressDelays() -> ([DelayData], [DelayData]) {
+    override func getProgressDelays() -> ([DelayData], [DelayData]) {
         var upDelays = [DelayData]()
         var downDelays = [DelayData]()
         let delaysStr = QuictrafficGetStreamProgressResult(getNotifyID())
@@ -128,6 +128,14 @@ class QUICStreamTest: BaseStreamTest {
             }
         }
         return (upDelays, downDelays)
+    }
+    
+    override func stopTraffic() {
+        QuictrafficStopStream(getNotifyID())
+    }
+    
+    override func notifyReachability() {
+        QuictrafficNotifyReachability(getNotifyID())
     }
 }
 
