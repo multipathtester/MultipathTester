@@ -88,6 +88,8 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
             TCPPerfTest(ipVer: .any, multipath: true),
         ]
         
+        tests.shuffle()
+        
         allTests = pingTests + tests
         
         multipathService = .handover

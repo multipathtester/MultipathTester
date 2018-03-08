@@ -141,24 +141,24 @@ class TCPPerfTest: BasePerfTest {
         
         var res: DispatchTimeoutResult = .timedOut
         let ips = ipsOf(hostname: getTestServerHostname())
-        var fdMeta = findTCPFileDescriptor(expectedIPs: ips, expectedPort: Int16(port), startAt: 0)
+        var fdMeta = findTCPFileDescriptor(expectedIPs: ips, expectedPort: Int16(port), exclude: -1)
         if (fdMeta < 0) {
             while (res == .timedOut && fdMeta < 0) {
                 res = group.wait(timeout: DispatchTime.now() + 0.01)
                 //print("We missed it once, try again...")
                 // Retry, we might have missed the good one thinking it's and old one
-                fdMeta = findTCPFileDescriptor(expectedIPs: ips, expectedPort: Int16(port), startAt: 0)
+                fdMeta = findTCPFileDescriptor(expectedIPs: ips, expectedPort: Int16(port), exclude: -1)
             }
         }
         print("FDMeta is \(fdMeta)")
         
-        var fd = findTCPFileDescriptor(expectedIPs: ips, expectedPort: Int16(port), startAt: fdMeta + 1)
+        var fd = findTCPFileDescriptor(expectedIPs: ips, expectedPort: Int16(port), exclude: fdMeta)
         if (fd < 0) {
             while (res == .timedOut && fd < 0) {
                 res = group.wait(timeout: DispatchTime.now() + 0.01)
                 //print("We missed it once, try again...")
                 // Retry, we might have missed the good one thinking it's and old one
-                fd = findTCPFileDescriptor(expectedIPs: ips, expectedPort: Int16(port), startAt: fdMeta + 1)
+                fd = findTCPFileDescriptor(expectedIPs: ips, expectedPort: Int16(port), exclude: fdMeta)
             }
         }
         print("FD is \(fd)")

@@ -25,13 +25,16 @@ func ipsOf(hostname: String) -> [String] {
     return ips
 }
 
-func findTCPFileDescriptor(expectedIPs: [String], expectedPort: Int16, startAt: Int32) -> Int32 {
+func findTCPFileDescriptor(expectedIPs: [String], expectedPort: Int16, exclude: Int32) -> Int32 {
     // This is quite ugly, but Apple does not provide an easy way to collect this information...
-    let startFd = startAt
-    let stopFd = startAt + 1000
+    let startFd: Int32 = 0
+    let stopFd: Int32 = startFd + 1000
     // FIXME consider changing this later to adapt to changing fd
-    for fd in startFd...stopFd {
+    for fd in 0...stopFd {
         //print(fd)
+        if fd == exclude {
+            continue
+        }
         var saddr = sockaddr()
         var slen: socklen_t = socklen_t(MemoryLayout<sockaddr>.size)
         let err = getpeername(fd, &saddr, &slen)

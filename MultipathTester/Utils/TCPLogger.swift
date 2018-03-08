@@ -18,10 +18,22 @@ class TCPLogger {
         for i in 0..<fds.count {
             let fd = fds[i]
             if multipath {
-                let dict = IOCTL.getMPTCPInfo(fd)
-                if dict != nil {
-                    tcpInfosNow[String(format: "%d", i)] = dict!
-                    count += 1
+                // Because it seems it can crash...
+                let group = DispatchGroup()
+                let queue = OperationQueue()
+                group.enter()
+                queue.addOperation {
+                    let dict = IOCTL.getMPTCPInfo(fd)
+                    if dict != nil {
+                        tcpInfosNow[String(format: "%d", i)] = dict!
+                        count += 1
+                    }
+                    group.leave()
+                }
+                // If after 100 ms, we got no response, probably something went wrong
+                let res = group.wait(timeout: DispatchTime.now() + 0.1)
+                if res == .timedOut {
+                    print("I timeout MPTCPInfo!")
                 }
             } else {
                 var slen: socklen_t = socklen_t(MemoryLayout<tcp_connection_info>.size)

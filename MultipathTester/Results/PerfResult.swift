@@ -15,7 +15,7 @@ class PerfResult: BaseResult, TestResult {
     
     // MARK: Collect URL
     static func getCollectURL() -> URL {
-        return URL(string: "https://ns387496.ip-176-31-249.eu/iperf/test/")!
+        return URL(string: collectURLBase + "iperf/test/")!
     }
     
     // MARK: Properties

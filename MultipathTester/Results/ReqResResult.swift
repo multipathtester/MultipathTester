@@ -15,7 +15,7 @@ class ReqResResult: BaseResult, TestResult {
     
     // MARK: Collect URL
     static func getCollectURL() -> URL {
-        return URL(string: "https://ns387496.ip-176-31-249.eu/msg/test/")!
+        return URL(string: collectURLBase + "msg/test/")!
     }
     
     // MARK: Properties

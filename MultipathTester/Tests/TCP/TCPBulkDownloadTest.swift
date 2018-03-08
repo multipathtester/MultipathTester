@@ -96,14 +96,14 @@ class TCPBulkDownloadTest: BaseBulkDownloadTest {
         
         var res: DispatchTimeoutResult = .timedOut
         let ips = ipsOf(hostname: getTestServerHostname())
-        var fd = findTCPFileDescriptor(expectedIPs: ips, expectedPort: Int16(port), startAt: 3)
+        var fd = findTCPFileDescriptor(expectedIPs: ips, expectedPort: Int16(port), exclude: -1)
         print("We tried once, at least...")
         if (fd < 0) {
             while (res == .timedOut && fd < 0) {
                 res = group.wait(timeout: DispatchTime.now() + 0.01)
                 print("We missed it once, try again...")
                 // Retry, we might have missed the good one thinking it's and old one
-                fd = findTCPFileDescriptor(expectedIPs: ips, expectedPort: Int16(port), startAt: 3)
+                fd = findTCPFileDescriptor(expectedIPs: ips, expectedPort: Int16(port), exclude: -1)
             }
         }
         print("FD is \(fd)")

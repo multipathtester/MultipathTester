@@ -94,7 +94,7 @@ class Utils {
     
     static func getMaxWifiDistance() -> Double {
         // Create GET request
-        let url = URL(string: "https://ns387496.ip-176-31-249.eu/mptests/max_wifi_distance/")!
+        let url = URL(string: BaseResult.collectURLBase + "mptests/max_wifi_distance/")!
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -137,7 +137,7 @@ class Utils {
         let jsonData = try? JSONSerialization.data(withJSONObject: json)
         
         // Create POST request
-        let url = URL(string: "https://ns387496.ip-176-31-249.eu/mptests/create/")!
+        let url = URL(string: BaseResult.collectURLBase + "mptests/create/")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -183,7 +183,7 @@ class Utils {
         let jsonData = try? JSONSerialization.data(withJSONObject: connectivities)
         
         // Create POST request
-        let url = URL(string: "https://ns387496.ip-176-31-249.eu/netconnectivities/create/")!
+        let url = URL(string: BaseResult.collectURLBase + "netconnectivities/create/")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")

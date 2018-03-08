@@ -132,7 +132,6 @@ class TCPConnectivityTest: BaseConnectivityTest {
         }
         
         group.wait()
-        print(durations)
         
         let elapsed = Date().timeIntervalSince(startTime)
         wifiInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)

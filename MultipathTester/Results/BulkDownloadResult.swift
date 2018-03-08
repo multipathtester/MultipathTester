@@ -15,7 +15,7 @@ class BulkDownloadResult: BaseResult, TestResult {
     
     // MARK: Collect URL
     static func getCollectURL() -> URL {
-        return URL(string: "https://ns387496.ip-176-31-249.eu/simplehttpget/test/")!
+        return URL(string: collectURLBase + "simplehttpget/test/")!
     }
     
     // MARK: Properties

@@ -16,8 +16,6 @@ class TCPStreamTest: BaseStreamTest {
     var downDelays = [DelayData]()
     var upNewDelays = [DelayData]()
     var downNewDelays = [DelayData]()
-    var upConn: URLSessionStreamTask?
-    var downConn: URLSessionStreamTask?
     var endTime = Date()
     var nxtAckMsgID: UInt32 = 0
     var nxtMessageID: UInt32 = 0
@@ -296,10 +294,8 @@ class TCPStreamTest: BaseStreamTest {
             defer { group.leave() }
             let (downConn, connID, okDown) = self.setupDownConnection(session: session)
             guard okDown else { self.errorMsg = "Failed to create connection"; return }
-            self.downConn = downConn
             let (upConn, okUp) = self.setupUpConnection(session: session, connID: connID)
             guard okUp else { self.errorMsg = "Failed to create connection"; return }
-            self.upConn = upConn
             if self.runCfg.runTimeVar > 0 {
                 self.endTime = Date().addingTimeInterval(TimeInterval(self.runCfg.runTimeVar))
             } else {
@@ -367,24 +363,24 @@ class TCPStreamTest: BaseStreamTest {
 
         var res: DispatchTimeoutResult = .timedOut
         let ips = ipsOf(hostname: getTestServerHostname())
-        var fd1 = findTCPFileDescriptor(expectedIPs: ips, expectedPort: Int16(port), startAt: 0)
+        var fd1 = findTCPFileDescriptor(expectedIPs: ips, expectedPort: Int16(port), exclude: -1)
         if (fd1 < 0) {
             while (res == .timedOut && fd1 < 0) {
                 res = group.wait(timeout: DispatchTime.now() + 0.01)
                 //print("We missed it once, try again...")
                 // Retry, we might have missed the good one thinking it's and old one
-                fd1 = findTCPFileDescriptor(expectedIPs: ips, expectedPort: Int16(port), startAt: 0)
+                fd1 = findTCPFileDescriptor(expectedIPs: ips, expectedPort: Int16(port), exclude: -1)
             }
         }
         print("FD1 is \(fd1)")
         
-        var fd2 = findTCPFileDescriptor(expectedIPs: ips, expectedPort: Int16(port), startAt: fd1 + 1)
+        var fd2 = findTCPFileDescriptor(expectedIPs: ips, expectedPort: Int16(port), exclude: fd1)
         if (fd2 < 0) {
             while (res == .timedOut && fd2 < 0) {
                 res = group.wait(timeout: DispatchTime.now() + 0.01)
                 //print("We missed it once, try again...")
                 // Retry, we might have missed the good one thinking it's and old one
-                fd2 = findTCPFileDescriptor(expectedIPs: ips, expectedPort: Int16(port), startAt: fd1 + 1)
+                fd2 = findTCPFileDescriptor(expectedIPs: ips, expectedPort: Int16(port), exclude: fd1)
             }
         }
         print("FD2 is \(fd2)")
@@ -395,14 +391,6 @@ class TCPStreamTest: BaseStreamTest {
             tcpInfos = TCPLogger.logTCPInfosMain(group: group, fds: [fd1, fd2], multipath: multipath, logPeriodMs: runCfg.logPeriodMsVar)
         }
         let elapsed = Date().timeIntervalSince(startTime)
-        pthread_mutex_lock(&connsMutex)
-        if let upConnOk = self.upConn {
-            upConnOk.cancel()
-        }
-        if let downConnOk = self.downConn {
-            downConnOk.cancel()
-        }
-        pthread_mutex_unlock(&connsMutex)
         wifiInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
         cellInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
         print(errorMsg)

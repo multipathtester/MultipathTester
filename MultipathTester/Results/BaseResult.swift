@@ -12,6 +12,9 @@
 import Foundation
 
 class BaseResult: Codable {
+    // MARK: Constants
+    static var collectURLBase: String = "https://ns387496.ip-176-31-249.eu/"  //"https://collect.multipath-quic.org/"
+    
     // MARK: Properties
     var name: String
     var proto: NetProtocol
