@@ -13,6 +13,7 @@ class RunConfig: NSObject, QuictrafficRunConfigProtocol {
     enum MultipathServiceType: String, Codable {
         case aggregate
         case handover
+        case interactive
     }
 
     // MARK: Properties

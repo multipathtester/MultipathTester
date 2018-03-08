@@ -276,11 +276,15 @@ class TCPStreamTest: BaseStreamTest {
 
         let config = URLSessionConfiguration.ephemeral
         if multipath {
-            if runCfg.multipathServiceVar == .handover {
-                config.multipathServiceType = URLSessionConfiguration.MultipathServiceType.interactive
-            }
-            if runCfg.multipathServiceVar == .aggregate {
+            switch runCfg.multipathServiceVar {
+            case .aggregate:
                 config.multipathServiceType = URLSessionConfiguration.MultipathServiceType.aggregate
+            case .handover:
+                // Don't run handover here, but interactive instead
+                runCfg.multipathServiceVar = .interactive
+                config.multipathServiceType = URLSessionConfiguration.MultipathServiceType.interactive
+            case .interactive:
+                config.multipathServiceType = URLSessionConfiguration.MultipathServiceType.interactive
             }
         }
         

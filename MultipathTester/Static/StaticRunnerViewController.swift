@@ -210,7 +210,6 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
                 self.progress.setProgress(value: CGFloat((Float(self.pingTests.count) / Float(nbTests) * 100.0 / 6)), animationDuration: 1.0) {}
             }
             group.wait()
-            print("All connected")
             
             let pingCount = 5
             for pc in 0..<pingCount {
@@ -226,19 +225,15 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
                     if succeeded {
                         group.enter()
                         queue.addOperation {
-                            print("Start ping \(test.getTestServer())")
                             _ = test.runOnePing()
-                            print("Done ping \(test.getTestServer())")
                             group.leave()
                         }
                     }
                 }
                 group.wait()
-                print("All have done ping \(pc + 1)")
                 // Wait for 100 ms before next burst
                 usleep(100 * 1000)
             }
-            print("All have done all pings")
             testDones += self.pingTests.count
             for i in 0..<self.pingTests.count {
                 let test = self.pingTests[i]

@@ -132,13 +132,11 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
             }
             print("stooooop")
             DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
-                print("Doing the real stop")
                 for t in self.streamTests {
                     t.stopTraffic()
                 }
                 print("Done my stop job")
             }
-            print("traffic stopped")
             DispatchQueue.main.async {
                 self.userLabel.text = "WiFi is lost."
             }

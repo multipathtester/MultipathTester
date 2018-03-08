@@ -91,11 +91,14 @@ class TestResultsTableViewController: UITableViewController {
         let bundle = Bundle(for: type(of: self))
         let ok = UIImage(named: "ok", in: bundle, compatibleWith: self.traitCollection)
         let failed = UIImage(named: "error", in: bundle, compatibleWith: self.traitCollection)
+        let half_ok = UIImage(named: "half_ok", in: bundle, compatibleWith: self.traitCollection)
         
         if tableItem.nbSuccess == tableItem.testResults.count {
             cell.sucessImageView.image = ok
-        } else {
+        } else if tableItem.nbSuccess == 0 {
             cell.sucessImageView.image = failed
+        } else {
+            cell.sucessImageView.image = half_ok
         }
         
         return cell

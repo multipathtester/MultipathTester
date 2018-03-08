@@ -145,19 +145,15 @@ class MobileMainViewController: UIViewController {
                     if succeeded {
                         group.enter()
                         queue.addOperation {
-                            print("Start ping \(test.getTestServer())")
                             _ = test.runOnePing()
-                            print("Done ping \(test.getTestServer())")
                             group.leave()
                         }
                     }
                 }
                 group.wait()
-                print("All have done ping \(pc + 1)")
                 // Wait for 100 ms before next burst
                 usleep(100 * 1000)
             }
-            print("All have done all pings")
             for i in 0..<pingTests.count {
                 let test = pingTests[i]
                 let res = test.result

@@ -70,11 +70,13 @@ class TCPConnectivityTest: BaseConnectivityTest {
         var success = false
 
         let config = URLSessionConfiguration.ephemeral
-        if runCfg.multipathServiceVar == .handover {
-            config.multipathServiceType = URLSessionConfiguration.MultipathServiceType.handover
-        }
-        if runCfg.multipathServiceVar == .aggregate {
+        switch runCfg.multipathServiceVar {
+        case .aggregate:
             config.multipathServiceType = URLSessionConfiguration.MultipathServiceType.aggregate
+        case .handover:
+            config.multipathServiceType = URLSessionConfiguration.MultipathServiceType.handover
+        case .interactive:
+            config.multipathServiceType = URLSessionConfiguration.MultipathServiceType.interactive
         }
         
         session = URLSession(configuration: config)

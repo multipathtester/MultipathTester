@@ -27,6 +27,8 @@ class AboutViewController: UIViewController {
         Client UUID: \(UIDevice.current.identifierForVendor!.uuidString)
         Software version: \(softwareVersion)
         
+        Some of the icons are under CC 3.0 BY license. Maxim Basinski is the author of them.
+        
         Developed by Quentin De Coninck, working at Universite Catholique de Louvain. Contact:  <quentin.deconinck@uclouvain.be>
         """
     }
