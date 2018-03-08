@@ -130,10 +130,16 @@ class TestResultInstanceDetailTableViewController: UITableViewController, ChartV
         if indexPath.section == 0 {
             cell.detailLabel.text = testResult?.getDescription()
         } else { // section == 1
-            cell.detailLabel.text = testResult?.getResult()
             if (testResult?.succeeded())! {
+                cell.detailLabel.text = testResult?.getResult()
                 cell.backgroundColor = UIColor(red: 0.0, green: 1.0, blue: 0.0, alpha: 1.0)
             } else {
+                let errorMsgArray = testResult?.getResult().components(separatedBy: ":")
+                if let errorMsgArrayOk = errorMsgArray, testResult?.getProtocol().main == .QUIC {
+                    cell.detailLabel.text = errorMsgArrayOk[errorMsgArrayOk.count - 1].trimmingCharacters(in: .whitespacesAndNewlines)
+                } else {
+                    cell.detailLabel.text = testResult?.getResult()
+                }
                 cell.backgroundColor = UIColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0)
             }
         }

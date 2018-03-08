@@ -793,24 +793,24 @@
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="8NG-P8-5qp">
                                 <rect key="frame" x="0.0" y="64" width="375" height="554"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" restorationIdentifier="timeGraph" translatesAutoresizingMaskIntoConstraints="NO" id="1wi-5k-Gvi" customClass="LineChartView" customModule="Charts">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="138.5"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    </view>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0En-Uh-hLT" userLabel="Up Delays Chart View" customClass="LineChartView" customModule="Charts">
-                                        <rect key="frame" x="0.0" y="138.5" width="375" height="138.5"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    </view>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UQe-PW-n81" customClass="LineChartView" customModule="Charts">
-                                        <rect key="frame" x="0.0" y="277" width="375" height="138.5"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    </view>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ijp-F1-Uw7">
-                                        <rect key="frame" x="0.0" y="415.5" width="375" height="138.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="138.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <view contentMode="scaleToFill" restorationIdentifier="timeGraph" translatesAutoresizingMaskIntoConstraints="NO" id="1wi-5k-Gvi" customClass="LineChartView" customModule="Charts">
+                                        <rect key="frame" x="0.0" y="138.5" width="375" height="138.5"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </view>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0En-Uh-hLT" userLabel="Up Delays Chart View" customClass="LineChartView" customModule="Charts">
+                                        <rect key="frame" x="0.0" y="277" width="375" height="138.5"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </view>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UQe-PW-n81" customClass="LineChartView" customModule="Charts">
+                                        <rect key="frame" x="0.0" y="415.5" width="375" height="138.5"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </view>
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="UQe-PW-n81" firstAttribute="height" secondItem="1wi-5k-Gvi" secondAttribute="height" id="GGi-tW-hMB"/>
@@ -1500,7 +1500,7 @@
         <image name="no_cellular" width="128" height="128"/>
         <image name="no_location" width="128" height="128"/>
         <image name="no_wifi" width="128" height="128"/>
-        <image name="ok" width="48" height="48"/>
+        <image name="ok" width="64" height="64"/>
         <image name="tab_history" width="25" height="25"/>
         <image name="uclouvain" width="427" height="590"/>
         <image name="walking" width="24" height="24"/>
