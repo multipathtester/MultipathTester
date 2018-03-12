@@ -123,12 +123,12 @@ class TCPPerfTest: BasePerfTest {
             guard okData else { return }
             self.endTime = Date().addingTimeInterval(TimeInterval(self.runCfg.runTimeVar))
             print(self.endTime.timeIntervalSinceNow)
+            let stringData = String(repeating: "0123456789", count: 4000)
             while Date().compare(self.endTime) == .orderedAscending && !self.stop {
                 // Important to avoid overloading read calls
                 let group2 = DispatchGroup()
                 group2.enter()
                 dataConn.resume()
-                let stringData = String(repeating: "0123456789", count: 4000)
                 dataConn.write(stringData.data(using: .utf8)!, timeout: self.endTime.timeIntervalSinceNow, completionHandler: { (error) in
                     defer { group2.leave() }
                     if let err = error {

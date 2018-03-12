@@ -132,9 +132,16 @@ class BaseTest {
         runCfg.multipathServiceVar = service
     }
     
-    func run() -> [String:Any] {
+    func wait() {
         // This is why this MUST be run in background
         usleep(UInt32(waitTime * 1000000))
+    }
+    
+    func succeeded() -> Bool {
+        return result["success"] as? Bool ?? false
+    }
+    
+    func run() -> [String:Any] {
         startTime = Date()
         wifiInfoStart = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
         cellInfoStart = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)

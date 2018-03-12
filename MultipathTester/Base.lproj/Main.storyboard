@@ -726,15 +726,15 @@
                                         </subviews>
                                     </stackView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="You need both WiFi and cellular to perform this test." textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TxT-aS-9sp">
-                                        <rect key="frame" x="0.0" y="330.5" width="371" height="109.5"/>
+                                        <rect key="frame" x="0.0" y="331" width="371" height="109.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fcS-br-kVr">
-                                        <rect key="frame" x="0.0" y="440" width="371" height="109.5"/>
+                                        <rect key="frame" x="0.0" y="440.5" width="371" height="109.5"/>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="36"/>
-                                        <state key="normal" title="Start"/>
+                                        <state key="normal" title="I'm ready to move!"/>
                                         <connections>
                                             <segue destination="qC0-TW-1dg" kind="show" identifier="RunMobileTests" id="luP-lj-yTR"/>
                                         </connections>
@@ -830,6 +830,13 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="tEb-Hn-Nq6"/>
                     </view>
+                    <navigationItem key="navigationItem" id="wGq-Wz-haU">
+                        <barButtonItem key="rightBarButtonItem" systemItem="stop" id="Rnu-KF-5DK">
+                            <connections>
+                                <action selector="stopMobileTests:" destination="qC0-TW-1dg" id="SBl-um-P6W"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="distanceChartView" destination="1wi-5k-Gvi" id="dsO-Vn-so7"/>
                         <outlet property="downDelaysChartView" destination="UQe-PW-n81" id="ElV-4c-Ixv"/>

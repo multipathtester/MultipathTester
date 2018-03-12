@@ -138,7 +138,7 @@ class MobileMainViewController: UIViewController {
             print("All connected")
             
             let pingCount = 5
-            for pc in 0..<pingCount {
+            for _ in 0..<pingCount {
                 for i in 0..<pingTests.count {
                     let test = pingTests[i]
                     let succeeded = test.result["success"] as? Bool ?? false
@@ -235,7 +235,7 @@ class MobileMainViewController: UIViewController {
         }
         
         if wifi && cell && ready {
-            summaryLabel.text = "You are ready to perform this test."
+            summaryLabel.text = "Everything is set up. Are you ready?"
             startButton!.isEnabled = Utils.startNewTestsEnabled
         } else if wifi && cell {
             summaryLabel.text = "Determining closest server..."

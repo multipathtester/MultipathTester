@@ -28,6 +28,7 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
     var timer: Timer?
     var completed: Bool = false
     var stopping: Bool = false
+    var userInterrupted: Bool = false
     
     // Reachability does not warn about the cellular state if WiFi is on...
     var wasCellularOn: Bool = false
@@ -104,6 +105,21 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
         startTests()
     }
     
+    func stopTraffic(after: TimeInterval) {
+        stopping = true
+        if let lastDistance = distances.last {
+            computedWiFiSystemDistance = lastDistance.y
+        }
+        computedWiFiSystemLostTime = Date()
+        print("stooooop")
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + after) {
+            for t in self.streamTests {
+                t.stopTraffic()
+            }
+            print("Done my stop job")
+        }
+    }
+    
     // MARK: App state tracking
     @objc
     func applicationDidSwitchToBackground(note: Notification) {
@@ -125,18 +141,7 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
         let connectivity = Connectivity.getCurrentConnectivity(reachabilityStatus: reachabilityStatus)
         connectivities.append(connectivity)
         if !stopping && ((connectivity.networkType != .WiFiCellular && connectivity.networkType != .CellularWifi) || connectivity.wifiBSSID != wifiBSSID) {
-            stopping = true
-            if let lastDistance = distances.last {
-                computedWiFiSystemDistance = lastDistance.y
-                computedWiFiSystemLostTime = Date()
-            }
-            print("stooooop")
-            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
-                for t in self.streamTests {
-                    t.stopTraffic()
-                }
-                print("Done my stop job")
-            }
+            self.stopTraffic(after: 2.0)
             DispatchQueue.main.async {
                 self.userLabel.text = "WiFi is lost."
             }
@@ -308,6 +313,9 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
                 benchmark.wifiSystemDistance = self.computedWiFiSystemDistance
                 benchmark.wifiSystemLostTime = self.computedWiFiSystemLostTime
             }
+            if self.userInterrupted {
+                benchmark.userInterrupted = true
+            }
             Utils.sendToServer(benchmark: benchmark, tests: self.streamTests)
             benchmark.save()
             self.cellTimer?.invalidate()
@@ -318,6 +326,12 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
                 UIApplication.shared.isIdleTimerDisabled = false
                 if self.backgrounded {
                     self.userLabel.text = "Test aborted: application backgrounded."
+                } else if self.userInterrupted {
+                    if self.computedWiFiBytesDistance == self.computedWiFiSystemDistance {
+                        self.userLabel.text = String(format: "You stopped the test while still reaching your WiFi Access Point %.1f m far away.", self.computedWiFiSystemDistance)
+                    } else {
+                        self.userLabel.text = String(format: "You stopped the test while your WiFi Access Point was fading out (after walking %.1f m) but your system still considered your WiFi usable %.1f m far away.", self.computedWiFiBytesDistance, self.computedWiFiSystemDistance)
+                    }
                 } else {
                     self.userLabel.text = String(format: "Test completed. You lost WiFi after walking %.1f m and your system detected it after you walked %.1f m.", self.computedWiFiBytesDistance, self.computedWiFiSystemDistance)
                 }
@@ -372,7 +386,15 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
         }
     }
     
-
+    // MARK: User button
+    @IBAction func stopMobileTests(_ sender: UIBarButtonItem) {
+        self.userInterrupted = true
+        self.stopTraffic(after: 0.0)
+        DispatchQueue.main.async {
+            sender.isEnabled = false
+        }
+    }
+    
     /*
     // MARK: - Navigation
 

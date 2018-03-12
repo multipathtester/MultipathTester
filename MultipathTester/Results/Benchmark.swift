@@ -32,6 +32,9 @@ class Benchmark: NSObject, Codable {
     var wifiSystemDistance: Double?
     var wifiSystemLostTime: Date?
     
+    // This is specific to mobile tests so far, but can be extended to other tests
+    var userInterrupted: Bool
+    
     var model: String
     var modelCode: String
     var platform: String
@@ -62,6 +65,8 @@ class Benchmark: NSObject, Codable {
         case wifiBytesLostTime
         case wifiSystemDistance
         case wifiSystemLostTime
+        
+        case userInterrupted
 
         case model
         case modelCode
@@ -95,6 +100,8 @@ class Benchmark: NSObject, Codable {
         self.serverName = serverName
         self.startTime = startTime
         self.testResults = testResults
+        
+        self.userInterrupted = false
         
         self.model = UIDevice.current.modelName
         self.modelCode = UIDevice.current.internalModelName
@@ -132,6 +139,8 @@ class Benchmark: NSObject, Codable {
         try container.encode(wifiSystemDistance, forKey: .wifiSystemDistance)
         try container.encode(wifiSystemLostTime, forKey: .wifiSystemLostTime)
         
+        try container.encode(userInterrupted, forKey: .userInterrupted)
+        
         try container.encode(model, forKey: .model)
         try container.encode(modelCode, forKey: .modelCode)
         try container.encode(platform, forKey: .platform)
@@ -164,6 +173,12 @@ class Benchmark: NSObject, Codable {
         wifiBytesLostTime = try container.decode(Date?.self, forKey: .wifiBytesLostTime)
         wifiSystemDistance = try container.decode(Double?.self, forKey: .wifiSystemDistance)
         wifiSystemLostTime = try container.decode(Date?.self, forKey: .wifiSystemLostTime)
+        
+        do {
+            userInterrupted = try container.decode(Bool.self, forKey: .userInterrupted)
+        } catch {
+            userInterrupted = false
+        }
         
         model = try container.decode(String.self, forKey: .model)
         modelCode = try container.decode(String.self, forKey: .modelCode)
@@ -205,6 +220,11 @@ class Benchmark: NSObject, Codable {
             "software_name": softwareName,
             "software_version": softwareVersion,
         ]
+        
+        // If absent, per default it is NOT user interrupted
+        if userInterrupted {
+            json["user_interrupted"] = true
+        }
         
         if mobile {
             json["mobile"] = [
