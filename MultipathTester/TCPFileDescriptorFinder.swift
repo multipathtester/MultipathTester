@@ -45,15 +45,49 @@ func findTCPFileDescriptor(expectedIPs: [String], expectedPort: Int16, exclude: 
                 print(fd, port, expectedPort)
                 continue
             }
-            print("Oooh...")
-            var hostBuffer = [CChar](repeating: 0, count: Int(NI_MAXHOST))
-            if (getnameinfo(&saddr, socklen_t(saddr.sa_len), &hostBuffer, socklen_t(hostBuffer.count), nil, 0, NI_NUMERICHOST) == 0) {
-                let host = String(cString: hostBuffer)
-                print("FD \(fd) ip \(host) port \(port)")
-                for expIP in expectedIPs {
-                    print(host, expIP)
-                    if host == expIP {
-                        return fd
+            // In case of v6, we MUST redo the call with enough place for the IPv6 address
+            if saddr.sa_family == AF_INET6 {
+                var saddr_in6 = withUnsafePointer(to: &saddr) {
+                    $0.withMemoryRebound(to: sockaddr_in6.self, capacity: 1) {
+                        $0.pointee
+                    }
+                }
+                var slen6: socklen_t = socklen_t(MemoryLayout<sockaddr_in6>.size)
+                let err6 = withUnsafeMutablePointer(to: &saddr_in6) {
+                    $0.withMemoryRebound(to: sockaddr.self, capacity: 1) {
+                        getpeername(fd, $0, &slen6)
+                    }
+                }
+                if err6 == 0 {
+                    print("Oooh... 6")
+                    var hostBuffer = [CChar](repeating: 0, count: Int(NI_MAXHOST))
+                    let gnInfo = withUnsafeMutablePointer(to: &saddr_in6) {
+                        $0.withMemoryRebound(to: sockaddr.self, capacity: 1) {
+                            getnameinfo($0, socklen_t(saddr_in6.sin6_len), &hostBuffer, socklen_t(hostBuffer.count), nil, 0, NI_NUMERICHOST)
+                        }
+                    }
+                    if gnInfo == 0 {
+                        let host = String(cString: hostBuffer)
+                        print("FD \(fd) ip \(host) port \(port)")
+                        for expIP in expectedIPs {
+                            print(host, expIP)
+                            if host == expIP {
+                                return fd
+                            }
+                        }
+                    }
+                }
+            } else {
+                print("Oooh... 4")
+                var hostBuffer = [CChar](repeating: 0, count: Int(NI_MAXHOST))
+                if (getnameinfo(&saddr, socklen_t(saddr.sa_len), &hostBuffer, socklen_t(hostBuffer.count), nil, 0, NI_NUMERICHOST) == 0) {
+                    let host = String(cString: hostBuffer)
+                    print("FD \(fd) ip \(host) port \(port)")
+                    for expIP in expectedIPs {
+                        print(host, expIP)
+                        if host == expIP {
+                            return fd
+                        }
                     }
                 }
             }

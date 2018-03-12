@@ -327,7 +327,7 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
                 if self.backgrounded {
                     self.userLabel.text = "Test aborted: application backgrounded."
                 } else if self.userInterrupted {
-                    if self.computedWiFiBytesDistance == self.computedWiFiSystemDistance {
+                    if self.countNoWifi < 3 {
                         self.userLabel.text = String(format: "You stopped the test while still reaching your WiFi Access Point %.1f m far away.", self.computedWiFiSystemDistance)
                     } else {
                         self.userLabel.text = String(format: "You stopped the test while your WiFi Access Point was fading out (after walking %.1f m) but your system still considered your WiFi usable %.1f m far away.", self.computedWiFiBytesDistance, self.computedWiFiSystemDistance)

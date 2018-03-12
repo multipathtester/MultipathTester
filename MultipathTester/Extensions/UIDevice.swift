@@ -148,6 +148,7 @@ public extension UIDevice {
                     var hostname = [CChar](repeating: 0, count: Int(NI_MAXHOST))
                     getnameinfo(interface.ifa_addr, socklen_t(interface.ifa_addr.pointee.sa_len), &hostname, socklen_t(hostname.count), nil, socklen_t(0), NI_NUMERICHOST)
                     addresses.append(String(cString: hostname))
+                    print(name, String(cString: hostname), interface.ifa_flags)
                 }
             }
         }
