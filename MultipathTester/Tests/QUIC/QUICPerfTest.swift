@@ -95,7 +95,22 @@ class QUICPerfTest: BasePerfTest {
     
     override func run() -> [String : Any] {
         _ = super.run()
-        let qperfString = QuictrafficRun(runCfg)
+        let group = DispatchGroup()
+        let queue = OperationQueue()
+        var qperfString: String? = ""
+        group.enter()
+        queue.addOperation {
+            qperfString = QuictrafficRun(self.runCfg)
+            group.leave()
+        }
+        var res = group.wait(timeout: .now() + TimeInterval(0.1))
+        while res == .timedOut {
+            if self.stopped {
+                qperfString = "ERROR: Test stopped"
+                break
+            }
+            res = group.wait(timeout: .now() + TimeInterval(0.1))
+        }
         wifiInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
         cellInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
         let lines = qperfString!.components(separatedBy: .newlines)

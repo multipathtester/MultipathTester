@@ -51,6 +51,7 @@ func findTCPFileDescriptor(expectedIPs: [String], expectedPort: Int16, exclude: 
                 let host = String(cString: hostBuffer)
                 print("FD \(fd) ip \(host) port \(port)")
                 for expIP in expectedIPs {
+                    print(host, expIP)
                     if host == expIP {
                         return fd
                     }

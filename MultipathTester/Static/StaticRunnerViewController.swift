@@ -31,6 +31,7 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
     var runningIndex: Int = -1
     var stoppedIndex: Int = -1
     var testsDone: Int = 0
+    var userInterrupted: Bool = false
     
     var internetReachability: Reachability = Reachability.forInternetConnection()
     var locationTracker: LocationTracker = LocationTracker.sharedTracker()
@@ -275,14 +276,14 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
                     self.progress.setProgress(value: CGFloat((Float(i + 1 + self.pingTests.count) / Float(nbTests) * 100.0) - 1.0), animationDuration: runTime) {print("test completed")}
                 }
             }
-            if self.stoppedTests {
+            if self.stoppedTests || self.userInterrupted {
                 break
             }
             _ = test.run()
             testsDone += 1
             // Wait AFTER the test; take the case of iPerf just before ping...
             test.wait()
-            if self.stoppedTests {
+            if self.stoppedTests || self.userInterrupted {
                 break
             }
         }
@@ -362,14 +363,14 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
                         self.progress.setProgress(value: CGFloat((Float(i + 1) / Float(nbTests) * 100.0) - 1.0), animationDuration: runTime) {print("test completed")}
                     }
                 }
-                if self.stoppedTests {
+                if self.stoppedTests || self.userInterrupted {
                     break
                 }
                 _ = test.run()
                 self.testsDone += 1
                 // Wait AFTER the test; take the case of iPerf just before ping...
                 test.wait()
-                if self.stoppedTests {
+                if self.stoppedTests || self.userInterrupted {
                     break
                 }
             }
@@ -399,6 +400,9 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
             let duration = self.stopTime.timeIntervalSince(self.startTime)
             
             let benchmark = Benchmark(connectivities: self.connectivities, duration: duration, locations: self.locations, mobile: false, pingMed: bestMed, pingStd: bestStd, wifiBytesReceived: wifiBytesReceived, wifiBytesSent: wifiBytesSent, cellBytesReceived: cellBytesReceived, cellBytesSent: cellBytesSent, multipathService: self.multipathService, serverName: bestServer, startTime: self.startTime, testResults: testResults)
+            if self.userInterrupted {
+                benchmark.userInterrupted = true
+            }
             Utils.sendToServer(benchmark: benchmark, tests: self.tests)
             benchmark.save()
             self.cellTimer?.invalidate()
@@ -478,7 +482,15 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
         }
     }
     
-
+    @IBAction func stopTests(_ sender: UIBarButtonItem) {
+        sender.isEnabled = false
+        self.userInterrupted = true
+        for i in 0..<allTests.count {
+            let test = allTests[i]
+            test.stop()
+        }
+    }
+    
     /*
     // MARK: - Navigation
 

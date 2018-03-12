@@ -62,9 +62,37 @@ class QUICBulkDownloadTest: BaseBulkDownloadTest {
     override func run() -> [String : Any] {
         _ = super.run()
         var success = true
-        let durationString = QuictrafficRun(runCfg)
+        let group = DispatchGroup()
+        let queue = OperationQueue()
+        var durationString: String? = ""
+        group.enter()
+        queue.addOperation {
+            durationString = QuictrafficRun(self.runCfg)
+            group.leave()
+        }
+        var res = group.wait(timeout: .now() + TimeInterval(0.1))
+        while res == .timedOut {
+            if self.stopped {
+                durationString = "ERROR: Test stopped"
+                break
+            }
+            res = group.wait(timeout: .now() + TimeInterval(0.1))
+        }
+        
         wifiInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
         cellInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
+        if self.stopped {
+            result = [
+                "duration": "0.0",
+                "error_msg": durationString ?? "ERROR: Test stopped",
+                "success": false,
+                "wifi_bytes_sent": wifiInfoEnd.bytesSent - wifiInfoStart.bytesSent,
+                "wifi_bytes_received": wifiInfoEnd.bytesReceived - wifiInfoStart.bytesReceived,
+                "cell_bytes_sent": cellInfoEnd.bytesSent - cellInfoStart.bytesSent,
+                "cell_bytes_received": cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived,
+            ]
+            return result
+        }
         do {
             print("Opening", outFileURL)
             let text = try String(contentsOf: outFileURL, encoding: .utf8)

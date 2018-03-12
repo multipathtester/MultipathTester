@@ -168,7 +168,7 @@ class TCPPerfTest: BasePerfTest {
         // This will perform the wait on the group; once this call returns, the traffic is over
         var tcpInfos = [[String: Any]]()
         if fd > 0 {
-            tcpInfos = TCPLogger.logTCPInfosMain(group: group, fds: [fd], multipath: multipath, logPeriodMs: runCfg.logPeriodMsVar)
+            tcpInfos = TCPLogger.logTCPInfosMain(group: group, fds: [fd], multipath: multipath, logPeriodMs: runCfg.logPeriodMsVar, test: self)
         }
         let elapsed = Date().timeIntervalSince(startTime)
         wifiInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)

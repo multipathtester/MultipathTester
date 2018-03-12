@@ -38,7 +38,22 @@ class QUICStreamTest: BaseStreamTest {
     
     override func run() -> [String : Any] {
         _ = super.run()
-        let streamString = QuictrafficRun(runCfg)
+        let group = DispatchGroup()
+        let queue = OperationQueue()
+        var streamString: String? = ""
+        group.enter()
+        queue.addOperation {
+            streamString = QuictrafficRun(self.runCfg)
+            group.leave()
+        }
+        var res = group.wait(timeout: .now() + TimeInterval(0.1))
+        while res == .timedOut {
+            if self.stopped {
+                streamString = "ERROR: Test stopped"
+                break
+            }
+            res = group.wait(timeout: .now() + TimeInterval(0.1))
+        }
         let duration = Date().timeIntervalSince(startTime)
         wifiInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
         cellInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
@@ -49,6 +64,8 @@ class QUICStreamTest: BaseStreamTest {
                 "duration": String(format: "%.9f", duration),
                 "error_msg": errorMsg,
                 "success": false,
+                "down_delays": [],
+                "up_delays": [],
                 "wifi_bytes_sent": wifiInfoEnd.bytesSent - wifiInfoStart.bytesSent,
                 "wifi_bytes_received": wifiInfoEnd.bytesReceived - wifiInfoStart.bytesReceived,
                 "cell_bytes_sent": cellInfoEnd.bytesSent - cellInfoStart.bytesSent,

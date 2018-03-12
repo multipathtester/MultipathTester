@@ -21,6 +21,8 @@ class BaseTest {
     var urlPath: String = "" // If not empty, it MUST start with a '/' character
     var waitTime: Double  // In seconds
     
+    var stopped: Bool = false
+    
     var wifiInfoStart = InterfaceInfo()
     var wifiInfoEnd = InterfaceInfo()
     var cellInfoStart = InterfaceInfo()
@@ -139,6 +141,14 @@ class BaseTest {
     
     func succeeded() -> Bool {
         return result["success"] as? Bool ?? false
+    }
+    
+    func getStopped() -> Bool {
+        return stopped
+    }
+    
+    func stop() {
+        stopped = true
     }
     
     func run() -> [String:Any] {

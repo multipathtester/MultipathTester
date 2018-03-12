@@ -46,7 +46,6 @@ class MobileMainViewController: UIViewController {
         super.viewDidLoad()
         
         startButton!.isEnabled = Utils.startNewTestsEnabled
-        print(NEHotspotHelper.supportedNetworkInterfaces() as Any)
 
         internetReachability.startNotifier()
         

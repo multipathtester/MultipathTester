@@ -111,7 +111,7 @@ class TCPBulkDownloadTest: BaseBulkDownloadTest {
         // This will perform the wait on the group; once this call returns, the traffic is over
         var tcpInfos = [[String: Any]]()
         if fd > 0 {
-            tcpInfos = TCPLogger.logTCPInfosMain(group: group, fds: [fd], multipath: multipath, logPeriodMs: runCfg.logPeriodMsVar)
+            tcpInfos = TCPLogger.logTCPInfosMain(group: group, fds: [fd], multipath: multipath, logPeriodMs: runCfg.logPeriodMsVar, test: self)
         }
         
         wifiInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)

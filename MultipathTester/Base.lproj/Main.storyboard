@@ -539,6 +539,13 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="0U1-n9-9AA"/>
                     </view>
+                    <navigationItem key="navigationItem" id="ab7-Jf-GV9">
+                        <barButtonItem key="rightBarButtonItem" systemItem="stop" id="Gn5-r7-ZhS">
+                            <connections>
+                                <action selector="stopTests:" destination="FTM-ur-gzF" id="RZj-X6-w4c"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="progress" destination="M7P-Wm-a9L" id="Pj5-QX-2EM"/>
                         <outlet property="testsTable" destination="Pj6-cR-HKL" id="Qy6-Ig-cav"/>

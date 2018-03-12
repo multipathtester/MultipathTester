@@ -388,7 +388,7 @@ class TCPStreamTest: BaseStreamTest {
         // This will perform the wait on the group; once this call returns, the traffic is over
         var tcpInfos = [[String: Any]]()
         if fd1 > 0 && fd2 > 0 {
-            tcpInfos = TCPLogger.logTCPInfosMain(group: group, fds: [fd1, fd2], multipath: multipath, logPeriodMs: runCfg.logPeriodMsVar)
+            tcpInfos = TCPLogger.logTCPInfosMain(group: group, fds: [fd1, fd2], multipath: multipath, logPeriodMs: runCfg.logPeriodMsVar, test: self)
         }
         let elapsed = Date().timeIntervalSince(startTime)
         wifiInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
