@@ -178,6 +178,8 @@ struct conninfo_multipathtcp cim;
         return nil;
     }
     
+    creq->scir_src_len = 0;
+    creq->scir_dst_len = 0;
     creq->scir_aux_len = 0; // Yip, otherwise it won't work :-)
     creq->scir_aux_data = &cim;
     creq->scir_cid = SAE_CONNID_ALL;

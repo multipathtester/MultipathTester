@@ -102,9 +102,9 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
         ]
         
         // Tests will be filled up during the tests
-        tests = [Test](pingTests) + quicPingTests
+        tests = (pingTests as [Test]) + (quicPingTests as [Test])
 
-        allTests = [Test](pingTests) + quicPingTests
+        allTests = (pingTests as [Test]) + (quicPingTests as [Test])
         allTests += quicV4Tests
         allTests += quicV6Tests
         allTests += mpquicTests
