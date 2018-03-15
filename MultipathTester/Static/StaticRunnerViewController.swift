@@ -333,8 +333,13 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
             }
             
             addedTests.shuffle() // Shuffle QUIC tests
-            self.mptcpTests.shuffle()
-            addedTests += self.mptcpTests // Also add MPTCP tests, but AFTER QUIC ones (more fragile now...)
+            
+            // XXX MPTCP tests crashes on 11.2.6 when using only one interface...
+            let os = ProcessInfo().operatingSystemVersion
+            if (self.connectivities[0].networkType == .WiFiCellular || self.connectivities[0].networkType == .CellularWifi) || (os.majorVersion >= 11 && os.minorVersion >= 3) {
+                self.mptcpTests.shuffle()
+                addedTests += self.mptcpTests // Also add MPTCP tests, but AFTER QUIC ones (more fragile now...)
+            }
             
             // Don't forget to provide the right test server to added tests
             for i in 0..<addedTests.count {
