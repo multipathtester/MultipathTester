@@ -10,15 +10,26 @@ import UIKit
 
 class TCPConnectivityTest: BaseConnectivityTest {
     var session: URLSession?
+    var multipath: Bool
+    
+    init(ipVer: IPVersion, port: UInt16, testServer: TestServer, pingCount: Int, pingWaitMs: Int, multipath: Bool) {
+        self.multipath = multipath
+        
+        let filePrefix = "quictraffic_connectivity_" + String(port) + "_" + ipVer.rawValue
+        super.init(ipVer: ipVer, port: port, testServer: testServer, pingCount: pingCount, pingWaitMs: pingWaitMs, filePrefix: filePrefix)
+    }
     
     convenience init(ipVer: IPVersion, port: UInt16, testServer: TestServer, pingCount: Int, pingWaitMs: Int) {
-        let filePrefix = "quictraffic_connectivity_" + String(port) + "_" + ipVer.rawValue
-        self.init(ipVer: ipVer, port: port, testServer: testServer, pingCount: pingCount, pingWaitMs: pingWaitMs, filePrefix: filePrefix)
+        self.init(ipVer: ipVer, port: port, testServer: testServer, pingCount: pingCount, pingWaitMs: pingWaitMs, multipath: false)
     }
     
     override func getProtocol() -> NetProtocol {
-        // Yep, we always try to do MPTCP
-        return .MPTCP
+        // We used to always try to do MPTCP, but it was a mistake as networks might block it
+        // So it might be either TCP or MPTCP
+        if multipath {
+            return .MPTCP
+        }
+        return .TCP
     }
     
     func performRequest(session: URLSession, count: Int) -> Bool {
@@ -70,15 +81,17 @@ class TCPConnectivityTest: BaseConnectivityTest {
         var success = false
 
         let config = URLSessionConfiguration.ephemeral
-        switch runCfg.multipathServiceVar {
-        case .aggregate:
-            config.multipathServiceType = URLSessionConfiguration.MultipathServiceType.aggregate
-        case .handover:
-            config.multipathServiceType = URLSessionConfiguration.MultipathServiceType.handover
-        case .interactive:
-            config.multipathServiceType = URLSessionConfiguration.MultipathServiceType.interactive
+        if multipath {
+            switch runCfg.multipathServiceVar {
+            case .aggregate:
+                config.multipathServiceType = URLSessionConfiguration.MultipathServiceType.aggregate
+            case .handover:
+                config.multipathServiceType = URLSessionConfiguration.MultipathServiceType.handover
+            case .interactive:
+                config.multipathServiceType = URLSessionConfiguration.MultipathServiceType.interactive
+            }
         }
-        
+            
         session = URLSession(configuration: config)
         
         let group = DispatchGroup()

@@ -25,7 +25,8 @@ class TCPLogger {
                 queue.addOperation {
                     let dict = IOCTL.getMPTCPInfo(fd)
                     if dict != nil {
-                        tcpInfosNow[String(format: "%d", i)] = dict!
+                        let sDict = dict as! Dictionary<String, Any>
+                        tcpInfosNow[String(format: "%d", i)] = sDict
                         count += 1
                     }
                     group.leave()

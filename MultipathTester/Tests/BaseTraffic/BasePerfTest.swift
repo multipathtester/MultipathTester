@@ -18,7 +18,7 @@ class BasePerfTest: BaseTest, Test {
         super.init(traffic: "qperf", ipVer: ipVer, port: 5201, urlPath: nil, filePrefix: filePrefix, waitTime: 3.0)
         
         // Prepare the run configuration
-        runCfg.logPeriodMsVar = 25
+        runCfg.logPeriodMsVar = 100
         runCfg.runTimeVar = 7
     }
     
