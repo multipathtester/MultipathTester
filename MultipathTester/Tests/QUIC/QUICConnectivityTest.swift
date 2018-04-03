@@ -19,9 +19,8 @@ class QUICConnectivityTest: BaseConnectivityTest {
         return .QUIC
     }
     
-    override func run() -> [String:Any] {
-        _ = super.run()
-        var success = false
+    override func run() {
+        super.run()
         let group = DispatchGroup()
         let queue = OperationQueue()
         var durationString: String? = ""
@@ -33,27 +32,25 @@ class QUICConnectivityTest: BaseConnectivityTest {
         var res = group.wait(timeout: .now() + TimeInterval(0.1))
         while res == .timedOut {
             if self.stopped {
-                durationString = "ERROR: Test stopped"
                 break
             }
             res = group.wait(timeout: .now() + TimeInterval(0.1))
         }
-        let elapsed = Date().timeIntervalSince(startTime)
+        duration = Date().timeIntervalSince(startTime)
         wifiInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
         cellInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
+        wifiBytesSent = wifiInfoEnd.bytesSent - wifiInfoStart.bytesSent
+        wifiBytesReceived = wifiInfoEnd.bytesReceived - wifiInfoStart.bytesReceived
+        cellBytesSent = cellInfoEnd.bytesSent - cellInfoStart.bytesSent
+        cellBytesReceived = cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived
+        
         if self.stopped {
-            result = [
-                "duration": elapsed,
-                "durations": durations,
-                "error_msg": durationString ?? "ERROR: Test stopped",
-                "success": false,
-                "wifi_bytes_sent": wifiInfoEnd.bytesSent - wifiInfoStart.bytesSent,
-                "wifi_bytes_received": wifiInfoEnd.bytesReceived - wifiInfoStart.bytesReceived,
-                "cell_bytes_sent": cellInfoEnd.bytesSent - cellInfoStart.bytesSent,
-                "cell_bytes_received": cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived,
-            ]
-            return result
+            success = false
+            errorMsg = "ERROR: Test stopped"
+
+            return
         }
+        
         let durationsArray = durationString!.components(separatedBy: .newlines)
         durations = Utils.parseSeveralInMs(durationsString: durationsArray)
         do {
@@ -71,17 +68,5 @@ class QUICConnectivityTest: BaseConnectivityTest {
                 }
             }
         } catch { print("Nope...") }
-        
-        result = [
-            "duration": elapsed,
-            "durations": durations,
-            "error_msg": errorMsg ?? "",
-            "success": success,
-            "wifi_bytes_sent": wifiInfoEnd.bytesSent - wifiInfoStart.bytesSent,
-            "wifi_bytes_received": wifiInfoEnd.bytesReceived - wifiInfoStart.bytesReceived,
-            "cell_bytes_sent": cellInfoEnd.bytesSent - cellInfoStart.bytesSent,
-            "cell_bytes_received": cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived,
-        ]
-        return result
     }
 }

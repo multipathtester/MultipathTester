@@ -11,7 +11,6 @@ import Foundation
 class TCPPerfTest: BasePerfTest {
     var multipath: Bool
     var endTime = Date()
-    var stop = false
     
     init(ipVer: IPVersion, multipath: Bool) {
         self.multipath = multipath
@@ -94,8 +93,8 @@ class TCPPerfTest: BasePerfTest {
         return (upConn, ok)
     }
     
-    override func run() -> [String : Any] {
-        _ = super.run()
+    override func run() {
+        super.run()
         intervals = [IntervalData]()
         
         let config = URLSessionConfiguration.ephemeral
@@ -124,7 +123,7 @@ class TCPPerfTest: BasePerfTest {
             self.endTime = Date().addingTimeInterval(TimeInterval(self.runCfg.runTimeVar))
             print(self.endTime.timeIntervalSinceNow)
             let stringData = String(repeating: "0123456789", count: 4000)
-            while Date().compare(self.endTime) == .orderedAscending && !self.stop {
+            while Date().compare(self.endTime) == .orderedAscending && !self.stopped {
                 // Important to avoid overloading read calls
                 let group2 = DispatchGroup()
                 group2.enter()
@@ -166,14 +165,18 @@ class TCPPerfTest: BasePerfTest {
         var lastInterval: TimeInterval = Date().timeIntervalSince1970
         
         // This will perform the wait on the group; once this call returns, the traffic is over
-        var tcpInfos = [[String: Any]]()
         if fd > 0 {
             tcpInfos = TCPLogger.logTCPInfosMain(group: group, fds: [fd], multipath: multipath, logPeriodMs: runCfg.logPeriodMsVar, test: self)
         }
-        let elapsed = Date().timeIntervalSince(startTime)
+        duration = Date().timeIntervalSince(startTime)
         wifiInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
         cellInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
         print(errorMsg)
+        
+        wifiBytesSent = wifiInfoEnd.bytesSent - wifiInfoStart.bytesSent
+        wifiBytesReceived = wifiInfoEnd.bytesReceived - wifiInfoStart.bytesReceived
+        cellBytesSent = cellInfoEnd.bytesSent - cellInfoStart.bytesSent
+        cellBytesReceived = cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived
         
         var transferredLastSecond: UInt64 = 0
         var retransmittedLastSecond: UInt64 = 0
@@ -227,7 +230,7 @@ class TCPPerfTest: BasePerfTest {
                     retransmittedNow = tcpInfoFd["tcpi_txretransmitbytes"] as! UInt64
                 }
                 let nxtCounter = counter + 1
-                let interval = IntervalData(interval: "\(counter)-\(nxtCounter)", transferredLastSecond: transferredNow - transferredLastSecond, globalBandwidth: transferredNow / UInt64(nxtCounter), retransmittedLastSecond: retransmittedNow - retransmittedLastSecond)
+                let interval = IntervalData(interval: "\(counter)-\(nxtCounter)", transferredLastSecond: max(transferredNow - transferredLastSecond, 0), globalBandwidth: transferredNow / UInt64(nxtCounter), retransmittedLastSecond: max(retransmittedNow - retransmittedLastSecond, 0))
                 intervals.append(interval)
                 transferredLastSecond = transferredNow
                 retransmittedLastSecond = retransmittedNow
@@ -236,14 +239,13 @@ class TCPPerfTest: BasePerfTest {
             }
         }
         
-        var totalRetrans: UInt64 = 0
-        var totalSent: UInt64 = 0
         if tcpInfos.count > 0 {
             let tcpInfo = tcpInfos[tcpInfos.count - 1]
             if multipath {
                 let mptcpInfoFd = tcpInfo["0"] as! [String: Any]
                 totalSent = mptcpInfoFd["txbytes"] as! UInt64
-                // FIXME no retransmission info for MPTCP so far...
+                // Take the simplest option for retransmissions
+                totalRetrans = retransmittedLastSecond
             } else {
                 let tcpInfoFd = tcpInfo["0"] as! [String: Any]
                 totalSent = tcpInfoFd["tcpi_txbytes"] as! UInt64
@@ -251,7 +253,6 @@ class TCPPerfTest: BasePerfTest {
             }
         }
         
-        var success = false
         if errorMsg == "" || errorMsg.contains("Operation timed out") {
             if intervals.count > 0 {
                 success = true
@@ -259,19 +260,5 @@ class TCPPerfTest: BasePerfTest {
                 self.errorMsg = self.errorMsg + " (could not collect metadata)"
             }
         }
-        
-        result = [
-            "intervals": intervals,
-            "tcp_infos": tcpInfos,
-            "duration": String(format: "%.9f", elapsed),
-            "success": success,
-            "total_retrans": String(format: "%d", totalRetrans),
-            "total_sent": String(format: "%d", totalSent),
-            "wifi_bytes_sent": wifiInfoEnd.bytesSent - wifiInfoStart.bytesSent,
-            "wifi_bytes_received": wifiInfoEnd.bytesReceived - wifiInfoStart.bytesReceived,
-            "cell_bytes_sent": cellInfoEnd.bytesSent - cellInfoStart.bytesSent,
-            "cell_bytes_received": cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived,
-        ]
-        return result
     }
 }

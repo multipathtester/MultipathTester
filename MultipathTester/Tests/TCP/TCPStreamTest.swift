@@ -12,8 +12,6 @@ class TCPStreamTest: BaseStreamTest {
     var delaysMutex = pthread_mutex_t()
     var connsMutex = pthread_mutex_t()
     var multipath: Bool
-    var upDelays = [DelayData]()
-    var downDelays = [DelayData]()
     var upNewDelays = [DelayData]()
     var downNewDelays = [DelayData]()
     var endTime = Date()
@@ -268,9 +266,8 @@ class TCPStreamTest: BaseStreamTest {
         return true
     }
     
-    override func run() -> [String:Any] {
-        _ = super.run()
-        var success = false
+    override func run() {
+        super.run()
 
         let config = URLSessionConfiguration.ephemeral
         if multipath {
@@ -386,31 +383,22 @@ class TCPStreamTest: BaseStreamTest {
         print("FD2 is \(fd2)")
         
         // This will perform the wait on the group; once this call returns, the traffic is over
-        var tcpInfos = [[String: Any]]()
         if fd1 > 0 && fd2 > 0 {
             tcpInfos = TCPLogger.logTCPInfosMain(group: group, fds: [fd1, fd2], multipath: multipath, logPeriodMs: runCfg.logPeriodMsVar, test: self)
         }
-        let elapsed = Date().timeIntervalSince(startTime)
+        duration = Date().timeIntervalSince(startTime)
         wifiInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
         cellInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
+        
+        wifiBytesSent = wifiInfoEnd.bytesSent - wifiInfoStart.bytesSent
+        wifiBytesReceived = wifiInfoEnd.bytesReceived - wifiInfoStart.bytesReceived
+        cellBytesSent = cellInfoEnd.bytesSent - cellInfoStart.bytesSent
+        cellBytesReceived = cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived
+        
         print(errorMsg)
         if errorMsg == "" || errorMsg == "Got EOF" || errorMsg.contains("Operation timed out") {
             success = true
         }
-        
-        result = [
-            "tcp_infos": tcpInfos,
-            "duration": String(format: "%.9f", elapsed),
-            "error_msg": errorMsg,
-            "down_delays": downDelays,
-            "up_delays": upDelays,
-            "success": success,
-            "wifi_bytes_sent": wifiInfoEnd.bytesSent - wifiInfoStart.bytesSent,
-            "wifi_bytes_received": wifiInfoEnd.bytesReceived - wifiInfoStart.bytesReceived,
-            "cell_bytes_sent": cellInfoEnd.bytesSent - cellInfoStart.bytesSent,
-            "cell_bytes_received": cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived,
-        ]
-        return result
     }
     
     // MARK: Specific to that test

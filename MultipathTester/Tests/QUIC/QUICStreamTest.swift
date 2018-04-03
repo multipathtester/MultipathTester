@@ -36,8 +36,8 @@ class QUICStreamTest: BaseStreamTest {
         return .QUIC
     }
     
-    override func run() -> [String : Any] {
-        _ = super.run()
+    override func run() {
+        super.run()
         let group = DispatchGroup()
         let queue = OperationQueue()
         var streamString: String? = ""
@@ -48,33 +48,31 @@ class QUICStreamTest: BaseStreamTest {
         }
         var res = group.wait(timeout: .now() + TimeInterval(0.1))
         while res == .timedOut {
-            if self.stopped {
-                streamString = "ERROR: Test stopped"
+            if stopped {
                 break
             }
             res = group.wait(timeout: .now() + TimeInterval(0.1))
         }
-        let duration = Date().timeIntervalSince(startTime)
+        duration = Date().timeIntervalSince(startTime)
         wifiInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
         cellInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
-        let lines = streamString!.components(separatedBy: .newlines)
-        let errorMsg = lines[0]
-        if lines.count < 3 {
-            result = [
-                "duration": String(format: "%.9f", duration),
-                "error_msg": errorMsg,
-                "success": false,
-                "down_delays": [],
-                "up_delays": [],
-                "wifi_bytes_sent": wifiInfoEnd.bytesSent - wifiInfoStart.bytesSent,
-                "wifi_bytes_received": wifiInfoEnd.bytesReceived - wifiInfoStart.bytesReceived,
-                "cell_bytes_sent": cellInfoEnd.bytesSent - cellInfoStart.bytesSent,
-                "cell_bytes_received": cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived,
-            ]
-            return result
+        
+        wifiBytesSent = wifiInfoEnd.bytesSent - wifiInfoStart.bytesSent
+        wifiBytesReceived = wifiInfoEnd.bytesReceived - wifiInfoStart.bytesReceived
+        cellBytesSent = cellInfoEnd.bytesSent - cellInfoStart.bytesSent
+        cellBytesReceived = cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived
+        
+        if stopped {
+            errorMsg = "ERROR: Test stopped"
+            
+            return
         }
-        var upDelays = [DelayData]()
-        var downDelays = [DelayData]()
+        
+        let lines = streamString!.components(separatedBy: .newlines)
+        errorMsg = lines[0]
+        if lines.count < 3 {
+            return
+        }
         let splitted_up_line = lines[1].components(separatedBy: " ")
         let up_count = Int(splitted_up_line[1])!
         if up_count > 0 {
@@ -96,29 +94,15 @@ class QUICStreamTest: BaseStreamTest {
             }
         }
         
-        var success = false
         if errorMsg.contains("nil") || errorMsg.contains("deadline exceeded") || errorMsg.contains("PeerGoingAway") {
             success = true
         }
-
-        result = [
-            "duration": String(format: "%.9f", duration),
-            "error_msg": errorMsg,
-            "down_delays": downDelays,
-            "up_delays": upDelays,
-            "success": success,
-            "wifi_bytes_sent": wifiInfoEnd.bytesSent - wifiInfoStart.bytesSent,
-            "wifi_bytes_received": wifiInfoEnd.bytesReceived - wifiInfoStart.bytesReceived,
-            "cell_bytes_sent": cellInfoEnd.bytesSent - cellInfoStart.bytesSent,
-            "cell_bytes_received": cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived,
-        ]
-        return result
     }
     
     // MARK: Specific to that test
     override func getProgressDelays() -> ([DelayData], [DelayData]) {
-        var upDelays = [DelayData]()
-        var downDelays = [DelayData]()
+        var upNewDelays = [DelayData]()
+        var downNewDelays = [DelayData]()
         let delaysStr = QuictrafficGetStreamProgressResult(getNotifyID())
         let lines = delaysStr!.components(separatedBy: .newlines)
         if lines.count < 2 {
@@ -131,7 +115,7 @@ class QUICStreamTest: BaseStreamTest {
                 let splitted_line = lines[i].components(separatedBy: ",")
                 let ts = Double(splitted_line[0])! / 1000000000.0
                 let delayUs = UInt64(splitted_line[1])!
-                upDelays.append(DelayData(time: ts, delayUs: delayUs))
+                upNewDelays.append(DelayData(time: ts, delayUs: delayUs))
             }
         }
         let splitted_down_line = lines[up_count+1].components(separatedBy: " ")
@@ -141,10 +125,10 @@ class QUICStreamTest: BaseStreamTest {
                 let splitted_line = lines[i].components(separatedBy: ",")
                 let ts = Double(splitted_line[0])! / 1000000000.0
                 let delayUs = UInt64(splitted_line[1])!
-                downDelays.append(DelayData(time: ts, delayUs: delayUs))
+                downNewDelays.append(DelayData(time: ts, delayUs: delayUs))
             }
         }
-        return (upDelays, downDelays)
+        return (upNewDelays, downNewDelays)
     }
     
     override func stopTraffic() {

@@ -81,20 +81,11 @@ class QUICPerfTest: BasePerfTest {
             let label0 = sawPaths["0"]!
             cwinData[label0] = nil
         }
-        let intervalsRaw = result["intervals"] as? [[String: Any]] ?? []
-        intervals = [IntervalData]()
-        if intervalsRaw.count > 0 {
-            for i in 0..<intervalsRaw.count {
-                let intervalRaw = intervalsRaw[i]
-                let interval = IntervalData(interval: intervalRaw["intervalInSec"] as! String, transferredLastSecond: UInt64(intervalRaw["transferredLastSecond"] as! Int), globalBandwidth: UInt64(intervalRaw["globalBandwidth"] as! Int), retransmittedLastSecond: UInt64(intervalRaw["retransmittedLastSecond"] as! Int))
-                intervals.append(interval)
-            }
-        }
         return super.getTestResult()
     }
     
-    override func run() -> [String : Any] {
-        _ = super.run()
+    override func run() {
+        super.run()
         let group = DispatchGroup()
         let queue = OperationQueue()
         var qperfString: String? = ""
@@ -113,46 +104,34 @@ class QUICPerfTest: BasePerfTest {
         }
         wifiInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
         cellInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
+        
+        wifiBytesSent = wifiInfoEnd.bytesSent - wifiInfoStart.bytesSent
+        wifiBytesReceived = wifiInfoEnd.bytesReceived - wifiInfoStart.bytesReceived
+        cellBytesSent = cellInfoEnd.bytesSent - cellInfoStart.bytesSent
+        cellBytesReceived = cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived
+        
         let lines = qperfString!.components(separatedBy: .newlines)
         if lines.count < 2 || lines[lines.count - 1] != "" {
             // An error occurred: the string does not end with a '\n'
-            result = [
-                "intervals": [],
-                "duration": "-1.0",
-                "error_msg": lines[0],
-                "success": false,
-                "total_retrans": "0",
-                "total_sent": "0",
-                "wifi_bytes_sent": wifiInfoEnd.bytesSent - wifiInfoStart.bytesSent,
-                "wifi_bytes_received": wifiInfoEnd.bytesReceived - wifiInfoStart.bytesReceived,
-                "cell_bytes_sent": cellInfoEnd.bytesSent - cellInfoStart.bytesSent,
-                "cell_bytes_received": cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived,
-            ]
-            return result
+            errorMsg = lines[0]
+
+            return
         }
-        var intervals = [[String: Any]]()
+        if stopped {
+            errorMsg = "ERROR: Test stopped"
+            
+            return
+        }
         for i in 1...runCfg.runTimeVar {
             let splitted_line = lines[i].components(separatedBy: " ")
-            intervals.append([
-                "intervalInSec": splitted_line[0],
-                "transferredLastSecond": Int(splitted_line[1])!,
-                "globalBandwidth": Int(splitted_line[2])!,
-                "retransmittedLastSecond": Int(splitted_line[3])!,
-            ])
+            let interval = IntervalData(interval: splitted_line[0], transferredLastSecond: UInt64(splitted_line[1])!, globalBandwidth: UInt64(splitted_line[2])!, retransmittedLastSecond: UInt64(splitted_line[3])!)
+            intervals.append(interval)
         }
         let splitted_line = lines[lines.count - 2].components(separatedBy: " ")
-        result = [
-            "intervals": intervals,
-            "duration": String(format: "%.9f", Utils.parse(durationString: splitted_line[3])),
-            "success": true,
-            "total_retrans": splitted_line[5],
-            "total_sent": splitted_line[1],
-            "wifi_bytes_sent": wifiInfoEnd.bytesSent - wifiInfoStart.bytesSent,
-            "wifi_bytes_received": wifiInfoEnd.bytesReceived - wifiInfoStart.bytesReceived,
-            "cell_bytes_sent": cellInfoEnd.bytesSent - cellInfoStart.bytesSent,
-            "cell_bytes_received": cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived,
-        ]
-        return result
+        success = true
+        duration = Utils.parse(durationString: splitted_line[3])
+        totalRetrans = UInt64(splitted_line[5])!
+        totalSent = UInt64(splitted_line[1])!
     }
     
 

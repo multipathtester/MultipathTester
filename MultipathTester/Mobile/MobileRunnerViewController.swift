@@ -269,7 +269,7 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
             for t in self.streamTests {
                 group.enter()
                 queue.addOperation {
-                    _ = t.run()
+                    t.run()
                     group.leave()
                 }
             }

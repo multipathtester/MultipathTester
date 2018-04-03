@@ -50,7 +50,7 @@ class TCPConnectivityTest: BaseConnectivityTest {
                 group.leave()
                 return
             }
-            let length = CGFloat((resp?.expectedContentLength)!) / 1000000.0
+            // let length = CGFloat((resp?.expectedContentLength)!) / 1000000.0
             let elapsed = DispatchTime.now().uptimeNanoseconds - start.uptimeNanoseconds
             let timeInterval = Double(elapsed) / 1_000_000
             if count > 0 {
@@ -76,9 +76,8 @@ class TCPConnectivityTest: BaseConnectivityTest {
         return performRequest(session: session, count: count+1)
     }
     
-    override func run() -> [String:Any] {
-        _ = super.run()
-        var success = false
+    override func run() {
+        super.run()
 
         let config = URLSessionConfiguration.ephemeral
         if multipath {
@@ -98,14 +97,14 @@ class TCPConnectivityTest: BaseConnectivityTest {
         group.enter()
         
         DispatchQueue.global(qos: .userInteractive).async {
-            success = self.performRequest(session: self.session!, count: 0)
+            self.success = self.performRequest(session: self.session!, count: 0)
             group.leave()
         }
         
         group.wait()
         print(durations)
         
-        let elapsed = Date().timeIntervalSince(startTime)
+        duration = Date().timeIntervalSince(startTime)
         wifiInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
         cellInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
         
@@ -115,38 +114,31 @@ class TCPConnectivityTest: BaseConnectivityTest {
             self.errorMsg = String(format: "The server %@ is reachable with median %.1f ms and standard deviation %.1f ms.", testServer.rawValue, median, standardDeviation)
         }
         
-        result = [
-            "tcp_infos": [], // XXX Is it useful to collect sth here?
-            "duration": String(format: "%.9f", elapsed),
-            "durations": durations,
-            "error_msg": self.errorMsg,
-            "success": success,
-            "wifi_bytes_sent": wifiInfoEnd.bytesSent - wifiInfoStart.bytesSent,
-            "wifi_bytes_received": wifiInfoEnd.bytesReceived - wifiInfoStart.bytesReceived,
-            "cell_bytes_sent": cellInfoEnd.bytesSent - cellInfoStart.bytesSent,
-            "cell_bytes_received": cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived,
-        ]
-        return result
+        // XXX Is it useful to collect tcp_infos here?
+        
+        wifiBytesSent = wifiInfoEnd.bytesSent - wifiInfoStart.bytesSent
+        wifiBytesReceived = wifiInfoEnd.bytesReceived - wifiInfoStart.bytesReceived
+        cellBytesSent = cellInfoEnd.bytesSent - cellInfoStart.bytesSent
+        cellBytesReceived = cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived
     }
     
-    func runOnePing() -> [String:Any] {
+    func runOnePing() {
         // We first performed a run without pingCount; then we continue
-        var success = false
         self.runCfg.pingCountVar = 1
-        let wifiInfoStart = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
-        let cellInfoStart = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
+        let wifiInfoStartPing = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
+        let cellInfoStartPing = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
         let group = DispatchGroup()
         // To avoid performRequest to detect there were errors (while there are not)
         self.errorMsg = ""
         group.enter()
         DispatchQueue.global(qos: .userInteractive).async {
-            success = self.performRequest(session: self.session!, count: 1)
+            self.success = self.performRequest(session: self.session!, count: 1)
             group.leave()
         }
         
         group.wait()
         
-        let elapsed = Date().timeIntervalSince(startTime)
+        duration = Date().timeIntervalSince(startTime)
         wifiInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
         cellInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
         
@@ -156,15 +148,9 @@ class TCPConnectivityTest: BaseConnectivityTest {
             self.errorMsg = String(format: "The server %@ is reachable with median %.1f ms and standard deviation %.1f ms.", testServer.rawValue, median, standardDeviation)
         }
         
-        result["duration"] = String(format: "%.9f", elapsed)
-        result["durations"] = durations
-        result["error_msg"] = self.errorMsg
-        result["success"] = success
-        result["wifi_bytes_sent"] = (result["wifi_bytes_sent"] as? UInt32 ?? 0) + wifiInfoEnd.bytesSent - wifiInfoStart.bytesSent
-        result["wifi_bytes_received"] = (result["wifi_bytes_received"] as? UInt32 ?? 0) + wifiInfoEnd.bytesReceived - wifiInfoStart.bytesReceived
-        result["cell_bytes_sent"] = (result["cell_bytes_sent"] as? UInt32 ?? 0) + cellInfoEnd.bytesSent - cellInfoStart.bytesSent
-        result["cell_bytes_received"] = (result["cell_bytes_received"] as? UInt32 ?? 0) + cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived
-        
-        return result
+        wifiBytesSent += wifiInfoEnd.bytesSent - wifiInfoStartPing.bytesSent
+        wifiBytesReceived += wifiInfoEnd.bytesReceived - wifiInfoStartPing.bytesReceived
+        cellBytesSent += cellInfoEnd.bytesSent - cellInfoStartPing.bytesSent
+        cellBytesReceived += cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived
     }
 }

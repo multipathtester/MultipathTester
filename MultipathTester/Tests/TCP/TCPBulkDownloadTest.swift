@@ -29,7 +29,6 @@ class TCPBulkDownloadTest: BaseBulkDownloadTest {
     }
     
     override func getTestResult() -> TestResult {
-        let tcpInfos = result["tcp_infos"] as! [[String: Any]]
         rcvBytesDatas = [RcvBytesData]()
         for ti in tcpInfos {
             guard let connInfo = ti["0"] as? [String: Any] else {continue}
@@ -46,9 +45,8 @@ class TCPBulkDownloadTest: BaseBulkDownloadTest {
         return super.getTestResult()
     }
     
-    override func run() -> [String:Any] {
-        _ = super.run()
-        var success = false
+    override func run() {
+        super.run()
         
         let config = URLSessionConfiguration.ephemeral
         if multipath {
@@ -70,7 +68,7 @@ class TCPBulkDownloadTest: BaseBulkDownloadTest {
         group.enter()
         
         let url = URL(string: getURL())!
-        var elapsed = Date().timeIntervalSince(startTime)
+        duration = Date().timeIntervalSince(startTime)
         
         DispatchQueue.global(qos: .userInteractive).async {
             let task = session.dataTask(with: url) { (data, resp, error) in
@@ -86,9 +84,8 @@ class TCPBulkDownloadTest: BaseBulkDownloadTest {
                     group.leave()
                     return
                 }
-                elapsed = Date().timeIntervalSince(self.startTime)
-                print(CGFloat((resp?.expectedContentLength)!) / 1000000.0)
-                success = true
+                self.duration = Date().timeIntervalSince(self.startTime)
+                self.success = true
                 group.leave()
             }
             task.resume()
@@ -109,7 +106,6 @@ class TCPBulkDownloadTest: BaseBulkDownloadTest {
         print("FD is \(fd)")
         
         // This will perform the wait on the group; once this call returns, the traffic is over
-        var tcpInfos = [[String: Any]]()
         if fd > 0 {
             tcpInfos = TCPLogger.logTCPInfosMain(group: group, fds: [fd], multipath: multipath, logPeriodMs: runCfg.logPeriodMsVar, test: self)
         }
@@ -117,16 +113,9 @@ class TCPBulkDownloadTest: BaseBulkDownloadTest {
         wifiInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
         cellInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
         
-        result = [
-            "tcp_infos": tcpInfos,
-            "duration": String(format: "%.9f", elapsed),
-            "error_msg": self.errorMsg,
-            "success": success,
-            "wifi_bytes_sent": wifiInfoEnd.bytesSent - wifiInfoStart.bytesSent,
-            "wifi_bytes_received": wifiInfoEnd.bytesReceived - wifiInfoStart.bytesReceived,
-            "cell_bytes_sent": cellInfoEnd.bytesSent - cellInfoStart.bytesSent,
-            "cell_bytes_received": cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived,
-        ]
-        return result
+        wifiBytesSent = wifiInfoEnd.bytesSent - wifiInfoStart.bytesSent
+        wifiBytesReceived = wifiInfoEnd.bytesReceived - wifiInfoStart.bytesReceived
+        cellBytesSent = cellInfoEnd.bytesSent - cellInfoStart.bytesSent
+        cellBytesReceived = cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived
     }
 }

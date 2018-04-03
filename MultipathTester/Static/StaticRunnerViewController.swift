@@ -205,7 +205,7 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
             let test = self.pingTests[i]
             group.enter()
             queue.addOperation {
-                _ = test.run()
+                test.run()
                 group.leave()
             }
         }
@@ -226,11 +226,10 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
             }
             for i in 0..<self.pingTests.count {
                 let test = self.pingTests[i]
-                let succeeded = test.result["success"] as? Bool ?? false
-                if succeeded {
+                if test.succeeded() {
                     group.enter()
                     queue.addOperation {
-                        _ = test.runOnePing()
+                        test.runOnePing()
                         group.leave()
                     }
                 }
@@ -241,10 +240,8 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
         }
         for i in 0..<self.pingTests.count {
             let test = self.pingTests[i]
-            let res = test.result
-            let success = res["success"] as? Bool ?? false
-            let durations = res["durations"] as? [Double] ?? []
-            if success && durations.count == pingCount {
+            let durations = test.durations
+            if test.succeeded() && durations.count == pingCount {
                 let median = durations.median()
                 print("median duration of", test.getTestServer(), "is", median)
                 if median >= 0.0 && median < bestMed {
@@ -279,7 +276,7 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
             if self.stoppedTests || self.userInterrupted {
                 break
             }
-            _ = test.run()
+            test.run()
             testsDone += 1
             // Wait AFTER the test; take the case of iPerf just before ping...
             test.wait()
@@ -371,7 +368,7 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
                 if self.stoppedTests || self.userInterrupted {
                     break
                 }
-                _ = test.run()
+                test.run()
                 self.testsDone += 1
                 // Wait AFTER the test; take the case of iPerf just before ping...
                 test.wait()

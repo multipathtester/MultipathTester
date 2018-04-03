@@ -59,9 +59,10 @@ class QUICBulkDownloadTest: BaseBulkDownloadTest {
         return super.getTestResult()
     }
     
-    override func run() -> [String : Any] {
-        _ = super.run()
-        var success = true
+    override func run() {
+        super.run()
+        
+        success = true
         let group = DispatchGroup()
         let queue = OperationQueue()
         var durationString: String? = ""
@@ -72,8 +73,7 @@ class QUICBulkDownloadTest: BaseBulkDownloadTest {
         }
         var res = group.wait(timeout: .now() + TimeInterval(0.1))
         while res == .timedOut {
-            if self.stopped {
-                durationString = "ERROR: Test stopped"
+            if stopped {
                 break
             }
             res = group.wait(timeout: .now() + TimeInterval(0.1))
@@ -81,17 +81,17 @@ class QUICBulkDownloadTest: BaseBulkDownloadTest {
         
         wifiInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
         cellInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
-        if self.stopped {
-            result = [
-                "duration": "0.0",
-                "error_msg": durationString ?? "ERROR: Test stopped",
-                "success": false,
-                "wifi_bytes_sent": wifiInfoEnd.bytesSent - wifiInfoStart.bytesSent,
-                "wifi_bytes_received": wifiInfoEnd.bytesReceived - wifiInfoStart.bytesReceived,
-                "cell_bytes_sent": cellInfoEnd.bytesSent - cellInfoStart.bytesSent,
-                "cell_bytes_received": cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived,
-            ]
-            return result
+        
+        wifiBytesSent = wifiInfoEnd.bytesSent - wifiInfoStart.bytesSent
+        wifiBytesReceived = wifiInfoEnd.bytesReceived - wifiInfoStart.bytesReceived
+        cellBytesSent = cellInfoEnd.bytesSent - cellInfoStart.bytesSent
+        cellBytesReceived = cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived
+        
+        if stopped {
+            success = false
+            errorMsg = "ERROR: Test stopped"
+            
+            return
         }
         do {
             print("Opening", outFileURL)
@@ -104,15 +104,7 @@ class QUICBulkDownloadTest: BaseBulkDownloadTest {
                 }
             }
         } catch { print("Nope...") }
-        result = [
-            "duration": String(format: "%.9f", Utils.parse(durationString: durationString!)),
-            "error_msg": errorMsg,
-            "success": success,
-            "wifi_bytes_sent": wifiInfoEnd.bytesSent - wifiInfoStart.bytesSent,
-            "wifi_bytes_received": wifiInfoEnd.bytesReceived - wifiInfoStart.bytesReceived,
-            "cell_bytes_sent": cellInfoEnd.bytesSent - cellInfoStart.bytesSent,
-            "cell_bytes_received": cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived,
-        ]
-        return result
+        
+        duration = Utils.parse(durationString: durationString!)
     }    
 }

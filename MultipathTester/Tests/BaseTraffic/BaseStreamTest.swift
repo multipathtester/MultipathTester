@@ -16,7 +16,10 @@ class BaseStreamTest: BaseTest, Test {
     let downloadChunkSize: UInt32 = 2000
     
     var runTime: Int
-    var errorMsg: String = ""
+    
+    // Properties of additional results to be set in run()
+    var upDelays: [DelayData] = []
+    var downDelays: [DelayData] = []
     
     init(ipVer: IPVersion, runTime: Int, waitTime: Double, filePrefix: String) {
         self.runTime = runTime
@@ -53,8 +56,6 @@ class BaseStreamTest: BaseTest, Test {
     }
     
     func getTestResult() -> TestResult {
-        let upDelays = result["up_delays"] as? [DelayData] ?? []
-        let downDelays = result["down_delays"] as? [DelayData] ?? []
         var maxUpDelay = DelayData(time: -1, delayUs: 0)
         if upDelays.count > 0 {
             maxUpDelay = upDelays.max { a, b in a.delayUs < b.delayUs }!
@@ -63,19 +64,10 @@ class BaseStreamTest: BaseTest, Test {
         if downDelays.count > 0 {
             maxDownDelay = downDelays.max { a, b in a.delayUs < b.delayUs }!
         }
-        let success = result["success"] as? Bool ?? false
-        let errorMsg = result["error_msg"] as? String ?? "None"
-        var resultText = ""
+        var resultText = errorMsg
         if success {
             resultText = "Maximum upload delay of " + String(Double(maxUpDelay.delayUs) / 1000.0) + " ms, maximum download delay of " + String(Double(maxDownDelay.delayUs) / 1000.0) + " ms"
-        } else {
-            resultText = errorMsg
         }
-        let duration = Double(result["duration"] as? String ?? "0.0")!
-        let wifiBytesSent = result["wifi_bytes_sent"] as? UInt32 ?? 0
-        let wifiBytesReceived = result["wifi_bytes_received"] as? UInt32 ?? 0
-        let cellBytesSent = result["cell_bytes_sent"] as? UInt32 ?? 0
-        let cellBytesReceived = result["cell_bytes_received"] as? UInt32 ?? 0
         return StreamResult(name: getDescription(), proto: getProtocol(), success: success, result: resultText, duration: duration, startTime: startTime, waitTime: waitTime, wifiBytesReceived: wifiBytesReceived, wifiBytesSent: wifiBytesSent, cellBytesReceived: cellBytesReceived, cellBytesSent: cellBytesSent, multipathService: runCfg.multipathServiceVar, upDelays: upDelays, downDelays: downDelays, errorMsg: errorMsg)
     }
     

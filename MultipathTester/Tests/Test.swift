@@ -61,5 +61,5 @@ protocol Test {
     func succeeded() -> Bool
     func updateURL()
     func wait()
-    func run() -> [String:Any]
+    func run()
 }

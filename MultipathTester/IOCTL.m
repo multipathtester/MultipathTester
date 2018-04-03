@@ -129,7 +129,7 @@ struct conninfo_multipathtcp cim;
     [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_snd_nxt] forKey: @"tcpi_snd_nxt"];
     [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_rcv_nxt] forKey: @"tcpi_rcv_nxt"];
     
-    [dict setObject:[NSNumber numberWithInteger: tcpinfo.tcpi_last_outif] forKey: @"tcp_last_outif"];
+    [dict setObject:[NSNumber numberWithInteger: tcpinfo.tcpi_last_outif] forKey: @"tcpi_last_outif"];
     [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_snd_sbbytes] forKey: @"tcpi_snd_sbbytes"];
     
     [dict setObject:[NSNumber numberWithUnsignedInteger: tcpinfo.tcpi_txpackets] forKey: @"tcpi_txpackets"];

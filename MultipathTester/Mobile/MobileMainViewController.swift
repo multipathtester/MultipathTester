@@ -129,7 +129,7 @@ class MobileMainViewController: UIViewController {
                 let test = pingTests[i]
                 group.enter()
                 queue.addOperation {
-                    _ = test.run()
+                    test.run()
                     group.leave()
                 }
             }
@@ -140,11 +140,10 @@ class MobileMainViewController: UIViewController {
             for _ in 0..<pingCount {
                 for i in 0..<pingTests.count {
                     let test = pingTests[i]
-                    let succeeded = test.result["success"] as? Bool ?? false
-                    if succeeded {
+                    if test.succeeded() {
                         group.enter()
                         queue.addOperation {
-                            _ = test.runOnePing()
+                            test.runOnePing()
                             group.leave()
                         }
                     }
@@ -155,10 +154,8 @@ class MobileMainViewController: UIViewController {
             }
             for i in 0..<pingTests.count {
                 let test = pingTests[i]
-                let res = test.result
-                let success = res["success"] as? Bool ?? false
-                let durations = res["durations"] as? [Double] ?? []
-                if success && durations.count == pingCount {
+                let durations = test.durations
+                if test.succeeded() && durations.count == pingCount {
                     let median = durations.median()
                     print("median duration of", test.getTestServer(), "is", median)
                     if median >= 0.0 && median < self.bestMedPing {

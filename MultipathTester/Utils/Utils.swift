@@ -214,7 +214,6 @@ class Utils {
     
     static func sendTestToServer(testResult: TestResult, benchmarkUUID: String, order: Int, protoInfo: [[String: Any]], config: [String: Any]) {
         let json = testResult.toJSONDict(benchmarkUUID: benchmarkUUID, order: order, protoInfo: protoInfo, config: config)
-        print(json)
         let jsonData = try? JSONSerialization.data(withJSONObject: json)
         
         // Create POST request

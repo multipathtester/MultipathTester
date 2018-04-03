@@ -9,11 +9,13 @@
 import Foundation
 
 class BaseConnectivityTest: BaseTest, Test {
-    // MARK: Properties
+    // MARK: Properties configurations of the test
     var pingCount: Int
     var pingWaitMs: Int
+    
+    // MARK: Additional results of the test, to be updated by the run() function
     var durations: [Double] = []
-    var errorMsg: String = ""
+    
     
     init(ipVer: IPVersion, port: UInt16, testServer: TestServer, pingCount: Int, pingWaitMs: Int, filePrefix: String) {
         self.pingCount = pingCount
@@ -75,14 +77,6 @@ class BaseConnectivityTest: BaseTest, Test {
     }
     
     func getTestResult() -> TestResult {
-        let resultMsg = result["error_msg"] as? String ?? "None"
-        let duration = Double(result["duration"] as? String ?? "0.0")!
-        let success = result["success"] as? Bool ?? false
-        let wifiBytesSent = result["wifi_bytes_sent"] as? UInt32 ?? 0
-        let wifiBytesReceived = result["wifi_bytes_received"] as? UInt32 ?? 0
-        let cellBytesSent = result["cell_bytes_sent"] as? UInt32 ?? 0
-        let cellBytesReceived = result["cell_bytes_received"] as? UInt32 ?? 0
-        let durations = result["durations"] as? [Double] ?? []
-        return ConnectivityResult(name: getDescription(), proto: getProtocol(), success: success, result: resultMsg, duration: duration, startTime: startTime, waitTime: waitTime, wifiBytesReceived: wifiBytesReceived, wifiBytesSent: wifiBytesSent, cellBytesReceived: cellBytesReceived, cellBytesSent: cellBytesSent, multipathService: runCfg.multipathServiceVar, durations: durations)
+        return ConnectivityResult(name: getDescription(), proto: getProtocol(), success: success, result: errorMsg, duration: duration, startTime: startTime, waitTime: waitTime, wifiBytesReceived: wifiBytesReceived, wifiBytesSent: wifiBytesSent, cellBytesReceived: cellBytesReceived, cellBytesSent: cellBytesSent, multipathService: runCfg.multipathServiceVar, durations: durations)
     }
 }

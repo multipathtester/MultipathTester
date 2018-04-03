@@ -8,25 +8,39 @@
 
 import Foundation
 class BaseTest {
-    // MARK: Properties
+    // MARK: Properties configuration of the test
     var ipVer: IPVersion
     var logFileURL: URL = URL(fileURLWithPath: "")
     var notifyID: String
     var outFileURL: URL = URL(fileURLWithPath: "")
     var port: UInt16
-    var result: [String:Any] = [String:Any]()
     var runCfg: RunConfig
     var startTime: Date = Date()
     var testServer: TestServer = .fr
     var urlPath: String = "" // If not empty, it MUST start with a '/' character
     var waitTime: Double  // In seconds
     
+    // Was the test interrupted?
     var stopped: Bool = false
     
+    // Collect how many bytes went on the interfaces
     var wifiInfoStart = InterfaceInfo()
     var wifiInfoEnd = InterfaceInfo()
     var cellInfoStart = InterfaceInfo()
     var cellInfoEnd = InterfaceInfo()
+    
+    // MARK: Common results to all tests. Those should be set by the run() function
+    var success = false
+    var errorMsg = ""
+    var duration: Double = 0.0 // In seconds
+    var wifiBytesSent: UInt32 = 0
+    var wifiBytesReceived: UInt32 = 0
+    var cellBytesSent: UInt32 = 0
+    var cellBytesReceived: UInt32 = 0
+    
+    // This only applies to TCP, but put it here for easier usage
+    var tcpInfos: [[String: Any]] = []
+    
     
     init(traffic: String, ipVer: IPVersion, port: UInt16, urlPath: String?, filePrefix: String, waitTime: Double) {
         self.ipVer = ipVer
@@ -87,7 +101,7 @@ class BaseTest {
     func getProtoInfo() -> [[String: Any]] {
         switch getProtocol() {
         case .TCP, .MPTCP:
-            return result["tcp_infos"] as? [[String: Any]] ?? []
+            return tcpInfos
         case .QUIC, .MPQUIC:
             return Utils.collectQUICInfo(logFileURL: logFileURL)
         }
@@ -140,7 +154,7 @@ class BaseTest {
     }
     
     func succeeded() -> Bool {
-        return result["success"] as? Bool ?? false
+        return success
     }
     
     func getStopped() -> Bool {
@@ -151,11 +165,10 @@ class BaseTest {
         stopped = true
     }
     
-    func run() -> [String:Any] {
+    func run() {
         startTime = Date()
         wifiInfoStart = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
         cellInfoStart = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
         // This MUST be overriden
-        return [:]
     }
 }
