@@ -9,9 +9,12 @@
 import CoreLocation
 import UIKit
 import Quictraffic
+import Charts
 
 class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
+    var currentResultViewController: UIViewController?
+    @IBOutlet weak var resultContainerView: UIView!
     @IBOutlet weak var testsTable: UITableView!
     @IBOutlet weak var progress: UICircularProgressRingView!
     
@@ -42,6 +45,8 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
     var wasCellularOn: Bool = false
     var cellTimer: Timer?
     var stoppedTests: Bool = false
+    
+    var chartTimer: Timer?
     
     // Value come from StaticMainViewController
     var aggregate: Bool = false
@@ -136,7 +141,23 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
         testsTable.dataSource = self
         testsTable.delegate = self
         
+        // Show the result label view, not the chart one
+        self.currentResultViewController = self.storyboard?.instantiateViewController(withIdentifier: "resultLabelViewController")
+        self.currentResultViewController!.view.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(currentResultViewController!.view, toView: resultContainerView)
+        
         startTests()
+    }
+    
+    func addSubview(_ subView:UIView, toView parentView:UIView) {
+        parentView.addSubview(subView)
+        
+        var viewBindingsDict = [String: AnyObject]()
+        viewBindingsDict["subView"] = subView
+        parentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[subView]|",
+                                                                                 options: [], metrics: nil, views: viewBindingsDict))
+        parentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[subView]|",
+                                                                                 options: [], metrics: nil, views: viewBindingsDict))
     }
 
     override func didReceiveMemoryWarning() {
@@ -286,6 +307,23 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
         }
     }
     
+    func cycleFromViewController(_ oldViewController: UIViewController, toViewController newViewController: UIViewController) {
+        oldViewController.willMove(toParentViewController: nil)
+        self.addChildViewController(newViewController)
+        self.addSubview(newViewController.view, toView:self.resultContainerView!)
+        newViewController.view.alpha = 0
+        newViewController.view.layoutIfNeeded()
+        UIView.animate(withDuration: 0.1, animations: {
+            newViewController.view.alpha = 1
+            oldViewController.view.alpha = 0
+        },
+                                   completion: { finished in
+                                    oldViewController.view.removeFromSuperview()
+                                    oldViewController.removeFromParentViewController()
+                                    newViewController.didMove(toParentViewController: self)
+        })
+    }
+    
     func startTests() {
         UIApplication.shared.isIdleTimerDisabled = true
         connectivities = [Connectivity]()
@@ -298,7 +336,12 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
         self.navigationItem.hidesBackButton = true
         cellTimer = Timer(timeInterval: 0.5, target: self, selector: #selector(StaticRunnerViewController.probeCellular), userInfo: nil, repeats: true)
         RunLoop.current.add(cellTimer!, forMode: .commonModes)
+        chartTimer = Timer(timeInterval: 0.2, target: self, selector: #selector(StaticRunnerViewController.updateChart), userInfo: nil, repeats: true)
+        RunLoop.current.add(chartTimer!, forMode: .commonModes)
+        print("Chart timer set")
         print("We start the tests")
+        let resultLabelViewController = self.currentResultViewController as! ResultLabelViewController
+        resultLabelViewController.label.text = "Searching the nearest server..."
         
         DispatchQueue.global(qos: .userInteractive).async {
             self.testsDone = 0
@@ -306,6 +349,9 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
             // -- Phase 1 : TCP Pings to determine the test server
             let (bestServer, bestMed, bestStd) = self.performPings()
             print("Best server is", bestServer)
+            DispatchQueue.main.async {
+                resultLabelViewController.label.text = "Selected server \(bestServer)"
+            }
             for i in self.pingTests.count..<self.tests.count {
                 let test = self.tests[i]
                 test.setTestServer(testServer: bestServer)
@@ -329,14 +375,15 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
                 addedTests += self.mpquicTests
             }
             
-            addedTests.shuffle() // Shuffle QUIC tests
-            
             // XXX MPTCP tests crashes on 11.2.6 when using only one interface...
             let os = ProcessInfo().operatingSystemVersion
             if (self.connectivities[0].networkType == .WiFiCellular || self.connectivities[0].networkType == .CellularWifi) || (os.majorVersion >= 11 && os.minorVersion >= 3) {
                 self.mptcpTests.shuffle()
-                addedTests += self.mptcpTests // Also add MPTCP tests, but AFTER QUIC ones (more fragile now...)
+                addedTests += self.mptcpTests // Also add MPTCP tests
             }
+            
+            // Shuffle QUIC and MPTCP tests
+            addedTests.shuffle()
             
             // Don't forget to provide the right test server to added tests
             for i in 0..<addedTests.count {
@@ -347,6 +394,18 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
             // Now add them
             self.tests += addedTests
             let nbTests = self.tests.count
+            
+            let groupResult = DispatchGroup()
+            groupResult.enter()
+            // We are nearly done, we will just now show chart view...
+            DispatchQueue.main.async {
+                let newViewController = self.storyboard?.instantiateViewController(withIdentifier: "resultLineChartViewController")
+                newViewController!.view.translatesAutoresizingMaskIntoConstraints = false
+                self.cycleFromViewController(self.currentResultViewController!, toViewController: newViewController!)
+                self.currentResultViewController = newViewController
+                groupResult.leave()
+            }
+            groupResult.wait()
             
             // -- Phase 4 : run additional tests
             for i in (self.pingTests.count + self.quicPingTests.count)..<self.tests.count {
@@ -405,10 +464,12 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
             if self.userInterrupted {
                 benchmark.userInterrupted = true
             }
-            Utils.sendToServer(benchmark: benchmark, tests: self.tests)
+            //Utils.sendToServer(benchmark: benchmark, tests: self.tests)
             benchmark.save()
             self.cellTimer?.invalidate()
             self.cellTimer = nil
+            self.chartTimer?.invalidate()
+            self.chartTimer = nil
             print("Tests done")
             NotificationCenter.default.post(name: Utils.TestsLaunchedNotification, object: nil, userInfo: ["startNewTestsEnabled": true])
             NotificationCenter.default.removeObserver(self)
@@ -460,6 +521,19 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
         }
         
         return cell
+    }
+    
+    @objc
+    func updateChart() {
+        guard let resultLineChartViewController = self.currentResultViewController as? ResultLineChartViewController else {
+            return
+        }
+        if runningIndex >= 0 && runningIndex < tests.count {
+            let test = self.tests[runningIndex]
+            if let chartEntries = test.getChartData() {
+                resultLineChartViewController.updateChart(chartEntries: chartEntries)
+            }
+        }
     }
     
     @objc

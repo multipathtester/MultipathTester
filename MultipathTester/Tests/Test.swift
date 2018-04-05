@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Charts
 
 enum IPVersion: String, Codable {
     case v4
@@ -42,6 +43,7 @@ enum NetProtocol: String, Codable {
 }
 
 protocol Test {
+    func getChartData() -> ChartEntries?
     func getDescription() -> String
     func getConfigDict() -> [String: Any]
     func getNotifyID() -> String

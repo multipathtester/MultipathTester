@@ -171,4 +171,8 @@ class BaseTest {
         cellInfoStart = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
         // This MUST be overriden
     }
+    
+    func getChartData() -> ChartEntries? {
+        return nil
+    }
 }

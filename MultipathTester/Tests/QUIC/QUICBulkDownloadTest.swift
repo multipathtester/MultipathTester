@@ -8,10 +8,15 @@
 
 import UIKit
 import Quictraffic
+import Charts
 
 class QUICBulkDownloadTest: BaseBulkDownloadTest {
     // MARK: Properties
     var maxPathID: UInt8
+    
+    // MARK: Properties used to generate chart
+    var startIndex: Int = 0
+    var collectedValues: [ChartDataEntry] = []
     
     init(ipVer: IPVersion, urlPath: String, maxPathID: UInt8) {
         self.maxPathID = maxPathID
@@ -31,13 +36,15 @@ class QUICBulkDownloadTest: BaseBulkDownloadTest {
         return .QUIC
     }
     
-    override func getTestResult() -> TestResult {
+    func getBytesDatas() -> [RcvBytesData] {
         let quicInfos = getProtoInfo()
-        rcvBytesDatas = [RcvBytesData]()
         var cid: String = ""
         let df = DateFormatter()
         df.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSZ"
-        for qi in quicInfos {
+        var bytesDatas = [RcvBytesData]()
+        var count = 0
+        for qi in quicInfos[startIndex..<quicInfos.count] {
+            count += 1
             guard let cidsDict = qi["Connections"] as? [String: Any] else {continue}
             if cidsDict.count == 0 {
                 // Avoid crash...
@@ -53,10 +60,27 @@ class QUICBulkDownloadTest: BaseBulkDownloadTest {
                 let rcvbytes = UInt64(streamDict["BytesRead"] as! Int)
                 let timeDate = df.date(from: qi["Time"] as! String)!
                 let time = timeDate.timeIntervalSince1970
-                rcvBytesDatas.append(RcvBytesData(time: time, rcvBytes: rcvbytes))
+                bytesDatas.append(RcvBytesData(time: time, rcvBytes: rcvbytes))
             }
         }
+        startIndex += count
+        return bytesDatas
+    }
+    
+    override func getTestResult() -> TestResult {
+        startIndex = 0
+        rcvBytesDatas = getBytesDatas()
+
         return super.getTestResult()
+    }
+    
+    override func getChartData() -> ChartEntries? {
+        let data = getBytesDatas()
+        let newValues = data.map { (d) -> ChartDataEntry in
+            return ChartDataEntry(x: d.time, y: Double(d.rcvBytes))
+        }
+        collectedValues += newValues
+        return LineChartEntries(xLabel: "Time", yLabel: "Bytes", data: collectedValues, dataLabel: "Bytes received", xValueFormatter: DateValueFormatter())
     }
     
     override func run() {

@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		CE09053D20333E9400B1445A /* ConsentFormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE09053C20333E9400B1445A /* ConsentFormViewController.swift */; };
+		CE1362AD20765FDE001E58B2 /* ResultLabelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1362AC20765FDE001E58B2 /* ResultLabelViewController.swift */; };
+		CE1362AF20766705001E58B2 /* ResultLineChartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1362AE20766705001E58B2 /* ResultLineChartViewController.swift */; };
 		CE188F07204D5A7D009B1E18 /* TCPLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE188F06204D5A7D009B1E18 /* TCPLogger.swift */; };
 		CE188F0A204FD615009B1E18 /* AtomicBoolean.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE188F09204FD615009B1E18 /* AtomicBoolean.swift */; };
 		CE23A8A41FD9534F00894CA7 /* Quictraffic.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE23A8A31FD9534F00894CA7 /* Quictraffic.framework */; };
@@ -163,6 +165,8 @@
 
 /* Begin PBXFileReference section */
 		CE09053C20333E9400B1445A /* ConsentFormViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsentFormViewController.swift; sourceTree = "<group>"; };
+		CE1362AC20765FDE001E58B2 /* ResultLabelViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultLabelViewController.swift; sourceTree = "<group>"; };
+		CE1362AE20766705001E58B2 /* ResultLineChartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultLineChartViewController.swift; sourceTree = "<group>"; };
 		CE188F06204D5A7D009B1E18 /* TCPLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPLogger.swift; sourceTree = "<group>"; };
 		CE188F09204FD615009B1E18 /* AtomicBoolean.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtomicBoolean.swift; sourceTree = "<group>"; };
 		CE21D42B1F67ECF300056940 /* MultipathTester.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MultipathTester.entitlements; sourceTree = "<group>"; };
@@ -531,6 +535,8 @@
 				CEA702FE2005072000FDFB89 /* StaticMainViewController.swift */,
 				CEA7030C20050C3800FDFB89 /* StaticTestTableViewCell.swift */,
 				CEA7030E2005116900FDFB89 /* StaticRunnerViewController.swift */,
+				CE1362AC20765FDE001E58B2 /* ResultLabelViewController.swift */,
+				CE1362AE20766705001E58B2 /* ResultLineChartViewController.swift */,
 			);
 			path = Static;
 			sourceTree = "<group>";
@@ -873,6 +879,7 @@
 				CEA703072005084C00FDFB89 /* UICircularProgressRingStyle.swift in Sources */,
 				CE8980ED203AEC4400E64953 /* AboutViewController.swift in Sources */,
 				CE58F4A11FD57C58009EA08F /* QUICBulkDownloadTest.swift in Sources */,
+				CE1362AF20766705001E58B2 /* ResultLineChartViewController.swift in Sources */,
 				CED4B5201F97972500E6F86E /* TCPFileDescriptorFinder.swift in Sources */,
 				CED4B5221F9F7FE300E6F86E /* TCPInfoConverter.swift in Sources */,
 				CE82BD8320458EAF0067F3D8 /* Binary.swift in Sources */,
@@ -882,6 +889,7 @@
 				CE4894FA202B2BE300CBEED5 /* InterfaceInfo.swift in Sources */,
 				CE58F4801FCEA594009EA08F /* QUICConnectivityTest.swift in Sources */,
 				CE58F4951FD188DE009EA08F /* BenchmarkTableViewCell.swift in Sources */,
+				CE1362AD20765FDE001E58B2 /* ResultLabelViewController.swift in Sources */,
 				CEA702FC2004CD4200FDFB89 /* MultiLineChartHelper.swift in Sources */,
 				CE4B90472018711100E71C5E /* StreamResult.swift in Sources */,
 				CE2685162008E9E700462C6E /* MultiLineChartEntries.swift in Sources */,
