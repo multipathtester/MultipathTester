@@ -8,6 +8,7 @@
 
 import UIKit
 import Quictraffic
+import Charts
 
 class QUICPerfTest: BasePerfTest {
     // MARK: Properties
@@ -134,5 +135,25 @@ class QUICPerfTest: BasePerfTest {
         totalSent = UInt64(splitted_line[1])!
     }
     
-
+    override func getChartData() -> ChartEntries? {
+        var curIntervals = [IntervalData]()
+        let qperfString = QuictrafficGetQPerfResults(runCfg.notifyID())
+        let lines = qperfString!.components(separatedBy: .newlines)
+        if lines.count < 2 || lines[lines.count - 1] != "" {
+            return nil
+        }
+        for i in 1..<lines.count {
+            let splitted_line = lines[i].components(separatedBy: " ")
+            if splitted_line.count != 4 {
+                continue
+            }
+            let interval = IntervalData(interval: splitted_line[0], transferredLastSecond: UInt64(splitted_line[1])!, globalBandwidth: UInt64(splitted_line[2])!, retransmittedLastSecond: UInt64(splitted_line[3])!)
+            curIntervals.append(interval)
+        }
+        let values = curIntervals.enumerated().map { (arg) -> ChartDataEntry in
+            let (index, i) = arg
+            return ChartDataEntry(x: Double(index), y: Double(i.transferredLastSecond))
+        }
+        return LineChartEntries(xLabel: "Time", yLabel: "Bytes", data: values, dataLabel: "Bytes transferred last second", xValueFormatter: DateValueFormatter())
+    }
 }

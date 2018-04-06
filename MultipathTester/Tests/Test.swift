@@ -59,6 +59,7 @@ protocol Test {
     func getWaitTime() -> Double
     func setTestServer(testServer: TestServer)
     func setMultipathService(service: RunConfig.MultipathServiceType)
+    func addProtocolInfo(protoInfo: [String: Any])
     func stop()
     func succeeded() -> Bool
     func updateURL()

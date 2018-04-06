@@ -175,4 +175,10 @@ class BaseTest {
     func getChartData() -> ChartEntries? {
         return nil
     }
+    
+    func addProtocolInfo(protoInfo: [String: Any]) {
+        if getProtocol().main == .TCP {
+            tcpInfos.append(protoInfo)
+        }
+    }
 }

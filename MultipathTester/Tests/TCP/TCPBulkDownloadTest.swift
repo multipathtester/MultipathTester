@@ -7,9 +7,14 @@
 //
 
 import UIKit
+import Charts
 
 class TCPBulkDownloadTest: BaseBulkDownloadTest {
     var multipath: Bool
+    
+    // MARK: Properties used to generate chart
+    var startIndex: Int = 0
+    var collectedValues: [ChartDataEntry] = []
     
     init(ipVer: IPVersion, urlPath: String, multipath: Bool) {
         self.multipath = multipath
@@ -28,21 +33,44 @@ class TCPBulkDownloadTest: BaseBulkDownloadTest {
         return .TCP
     }
     
-    override func getTestResult() -> TestResult {
-        rcvBytesDatas = [RcvBytesData]()
-        for ti in tcpInfos {
+    func getBytesData(all: Bool) -> [RcvBytesData] {
+        var datas = [RcvBytesData]()
+        var counter = 0
+        var curStartIndex = startIndex
+        if all {
+            curStartIndex = 0
+        }
+        for ti in tcpInfos[curStartIndex..<tcpInfos.count] {
+            counter += 1
             guard let connInfo = ti["0"] as? [String: Any] else {continue}
             let time = ti["time"] as! Double
             // The format is different in TCP and MPTCP
             if multipath {
                 let rcvBytes = connInfo["rxbytes"] as! UInt64
-                rcvBytesDatas.append(RcvBytesData(time: time, rcvBytes: rcvBytes))
+                datas.append(RcvBytesData(time: time, rcvBytes: rcvBytes))
             } else {
                 let rcvBytes = connInfo["tcpi_rxbytes"] as! UInt64
-                rcvBytesDatas.append(RcvBytesData(time: time, rcvBytes: rcvBytes))
+                datas.append(RcvBytesData(time: time, rcvBytes: rcvBytes))
             }
         }
+        if !all {
+            startIndex += counter
+        }
+        return datas
+    }
+    
+    override func getTestResult() -> TestResult {
+        rcvBytesDatas = getBytesData(all: true)
         return super.getTestResult()
+    }
+    
+    override func getChartData() -> ChartEntries? {
+        let data = getBytesData(all: false)
+        let newValues = data.map { (d) -> ChartDataEntry in
+            return ChartDataEntry(x: d.time, y: Double(d.rcvBytes))
+        }
+        collectedValues += newValues
+        return LineChartEntries(xLabel: "Time", yLabel: "Bytes", data: collectedValues, dataLabel: "Bytes received", xValueFormatter: DateValueFormatter())
     }
     
     override func run() {

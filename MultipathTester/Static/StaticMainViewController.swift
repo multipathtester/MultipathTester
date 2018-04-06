@@ -75,7 +75,7 @@ class StaticMainViewController: UIViewController {
         let error = UIImage(named: "error", in: bundle, compatibleWith: self.traitCollection)
         var (wifiAddr, cellAddr) = (false, false)
         
-        if conn.networkType == .WiFi || conn.networkType == .WiFiCellular {
+        if conn.networkType == .WiFi || conn.networkType == .WiFiCellular || conn.networkType == .CellularWifi {
             let wifi = UIImage(named: "wifi", in: bundle, compatibleWith: self.traitCollection)
             wifiImageView.image = wifi
             wifiNameLabel.text = conn.wifiNetworkName
@@ -106,7 +106,7 @@ class StaticMainViewController: UIViewController {
             wifiIPv6ImageView.image = error
         }
         
-        if conn.networkType == .Cellular || conn.networkType == .WiFiCellular {
+        if conn.networkType == .Cellular || conn.networkType == .WiFiCellular || conn.networkType == .CellularWifi {
             let cellular = UIImage(named: "cellular", in: bundle, compatibleWith: self.traitCollection)
             cellImageView.image = cellular
             cellNameLabel.text = conn.cellularNetworkName

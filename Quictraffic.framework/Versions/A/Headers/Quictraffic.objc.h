@@ -29,6 +29,8 @@
 - (NSString*)url;
 @end
 
+FOUNDATION_EXPORT NSString* QuictrafficGetQPerfResults(NSString* notifyID);
+
 /**
  * GetStreamProgressResult gets ongoing stream delays
  */

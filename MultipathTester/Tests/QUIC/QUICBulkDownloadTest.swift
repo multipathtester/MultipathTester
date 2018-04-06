@@ -36,14 +36,18 @@ class QUICBulkDownloadTest: BaseBulkDownloadTest {
         return .QUIC
     }
     
-    func getBytesDatas() -> [RcvBytesData] {
+    func getBytesDatas(all: Bool) -> [RcvBytesData] {
         let quicInfos = getProtoInfo()
         var cid: String = ""
         let df = DateFormatter()
         df.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSZ"
         var bytesDatas = [RcvBytesData]()
         var count = 0
-        for qi in quicInfos[startIndex..<quicInfos.count] {
+        var curStartIndex = startIndex
+        if all {
+            curStartIndex = 0
+        }
+        for qi in quicInfos[curStartIndex..<quicInfos.count] {
             count += 1
             guard let cidsDict = qi["Connections"] as? [String: Any] else {continue}
             if cidsDict.count == 0 {
@@ -63,19 +67,20 @@ class QUICBulkDownloadTest: BaseBulkDownloadTest {
                 bytesDatas.append(RcvBytesData(time: time, rcvBytes: rcvbytes))
             }
         }
-        startIndex += count
+        if !all {
+            startIndex += count
+        }
         return bytesDatas
     }
     
     override func getTestResult() -> TestResult {
-        startIndex = 0
-        rcvBytesDatas = getBytesDatas()
+        rcvBytesDatas = getBytesDatas(all: true)
 
         return super.getTestResult()
     }
     
     override func getChartData() -> ChartEntries? {
-        let data = getBytesDatas()
+        let data = getBytesDatas(all: false)
         let newValues = data.map { (d) -> ChartDataEntry in
             return ChartDataEntry(x: d.time, y: Double(d.rcvBytes))
         }

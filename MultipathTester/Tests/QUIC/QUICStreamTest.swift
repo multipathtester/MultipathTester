@@ -8,10 +8,15 @@
 
 import UIKit
 import Quictraffic
+import Charts
 
 class QUICStreamTest: BaseStreamTest {
     // MARK: Properties
     var maxPathID: UInt8
+    
+    // MARK: Properties for live graph
+    var curUpDelays: [ChartDataEntry] = []
+    var curDownDelays: [ChartDataEntry] = []
     
     init(ipVer: IPVersion, maxPathID: UInt8, runTime: Int, waitTime: Double, filePrefix: String) {
         self.maxPathID = maxPathID
@@ -137,6 +142,22 @@ class QUICStreamTest: BaseStreamTest {
     
     override func notifyReachability() {
         QuictrafficNotifyReachability(getNotifyID())
+    }
+    
+    override func getChartData() -> ChartEntries? {
+        let (newUpDelays, newDownDelays) = getProgressDelays()
+        let newUpValues = newUpDelays.map { (d) -> ChartDataEntry in
+            return ChartDataEntry(x: d.time, y: Double(d.delayUs) / 1000.0)
+        }
+        curUpDelays += newUpValues
+        let newDownValues = newDownDelays.map { (d) -> ChartDataEntry in
+            return ChartDataEntry(x: d.time, y: Double(d.delayUs) / 1000.0)
+        }
+        curDownDelays += newDownValues
+        return MultiLineChartEntries(xLabel: "Time", yLabel: "Delay", dataLines: [
+            "Upload delays (ms)": curUpDelays,
+            "Download delays (ms)": curDownDelays,
+        ])
     }
 }
 

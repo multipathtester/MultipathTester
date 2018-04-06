@@ -186,11 +186,23 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
         stopTests()
     }
     
+    func networkTypeChanged(conn: Connectivity) -> Bool {
+        let networkType = conn.networkType
+        let lastNetworkType = connectivities.last!.networkType
+        // WifiCellular and CellularWifi are still considered the same now...
+        if (lastNetworkType == .WiFiCellular || lastNetworkType == .CellularWifi) && (networkType == .WiFiCellular || networkType == .CellularWifi) {
+            // Log the new connectivity in connectivities
+            connectivities.append(conn)
+            return false
+        }
+        return networkType != lastNetworkType
+    }
+    
     @objc
     func reachabilityChanged(note: Notification) {
         let reachabilityStatus = internetReachability.currentReachabilityStatus()
         let conn = Connectivity.getCurrentConnectivity(reachabilityStatus: reachabilityStatus)
-        if conn.networkType != connectivities[0].networkType || (conn.wifiBSSID != nil && conn.wifiBSSID != connectivities[0].wifiBSSID) {
+        if networkTypeChanged(conn: conn) || (conn.wifiBSSID != nil && conn.wifiBSSID != connectivities[0].wifiBSSID) {
             connectivities.append(conn)
             print("Reachability changed!")
             for i in 0..<tests.count {

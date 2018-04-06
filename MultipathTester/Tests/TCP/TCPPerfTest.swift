@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Charts
 
 class TCPPerfTest: BasePerfTest {
     var multipath: Bool
@@ -260,5 +261,47 @@ class TCPPerfTest: BasePerfTest {
                 self.errorMsg = self.errorMsg + " (could not collect metadata)"
             }
         }
+    }
+    
+    override func getChartData() -> ChartEntries? {
+        var lastInterval: TimeInterval = startTime.timeIntervalSince1970
+        var curIntervals = [IntervalData]()
+        var transferredLastSecond: UInt64 = 0
+        var retransmittedLastSecond: UInt64 = 0
+        var transferredNow: UInt64 = 0
+        var retransmittedNow: UInt64 = 0
+        var counter = 0
+        for tcpInfo in tcpInfos {
+            let timeInfo = tcpInfo["time"] as! TimeInterval
+            if timeInfo - lastInterval > (1.0 - TimeInterval(runCfg.logPeriodMsVar) / 1000.0) {
+                if multipath {
+                    let mptcpInfoFd = tcpInfo["0"] as! [String: Any]
+                    transferredNow = mptcpInfoFd["txbytes"] as! UInt64
+                    let subflowsInfo = mptcpInfoFd["subflows"] as! [String: Any]
+                    retransmittedNow = 0
+                    for sfID in subflowsInfo.keys {
+                        let subflowInfo = subflowsInfo[sfID] as! [String: Any]
+                        let retransmittedSf = subflowInfo["tcpi_txretransmitbytes"] as! UInt64
+                        retransmittedNow += retransmittedSf
+                    }
+                } else {
+                    let tcpInfoFd = tcpInfo["0"] as! [String: Any]
+                    transferredNow = tcpInfoFd["tcpi_txbytes"] as! UInt64
+                    retransmittedNow = tcpInfoFd["tcpi_txretransmitbytes"] as! UInt64
+                }
+                let nxtCounter = counter + 1
+                let interval = IntervalData(interval: "\(counter)-\(nxtCounter)", transferredLastSecond: max(transferredNow - transferredLastSecond, 0), globalBandwidth: transferredNow / UInt64(nxtCounter), retransmittedLastSecond: max(retransmittedNow - retransmittedLastSecond, 0))
+                curIntervals.append(interval)
+                transferredLastSecond = transferredNow
+                retransmittedLastSecond = retransmittedNow
+                lastInterval = timeInfo
+                counter += 1
+            }
+        }
+        let values = curIntervals.enumerated().map { (arg) -> ChartDataEntry in
+            let (index, i) = arg
+            return ChartDataEntry(x: Double(index), y: Double(i.transferredLastSecond))
+        }
+        return LineChartEntries(xLabel: "Time", yLabel: "Bytes", data: values, dataLabel: "Bytes transferred last second", xValueFormatter: DateValueFormatter())
     }
 }

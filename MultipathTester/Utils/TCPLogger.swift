@@ -9,7 +9,7 @@
 import Foundation
 
 class TCPLogger {
-    static func logTCPInfo(fds: [Int32], multipath: Bool) -> [String: Any] {
+    static func logTCPInfo(fds: [Int32], multipath: Bool) -> ([String: Any], Bool) {
         let timeInfo = Date().timeIntervalSince1970
         var tcpInfosNow: [String: Any] = [
             "time": timeInfo,
@@ -35,6 +35,7 @@ class TCPLogger {
                 let res = group.wait(timeout: DispatchTime.now() + 0.1)
                 if res == .timedOut {
                     print("I timeout MPTCPInfo!")
+                    return ([:], true)
                 }
             } else {
                 var slen: socklen_t = socklen_t(MemoryLayout<tcp_connection_info>.size)
@@ -49,9 +50,9 @@ class TCPLogger {
         }
         // Don't create an entry if there is nothing
         if count == 0 {
-            return [:]
+            return ([:], false)
         }
-        return tcpInfosNow
+        return (tcpInfosNow, false)
     }
     
     static func logTCPInfosMain(group: DispatchGroup, fds: [Int32], multipath: Bool, logPeriodMs: Int, test: Test) -> [[String: Any]] {
@@ -67,17 +68,22 @@ class TCPLogger {
             if test.getStopped() {
                 break
             }
-            let toAdd = TCPLogger.logTCPInfo(fds: fds, multipath: multipath)
+            let (toAdd, stop) = TCPLogger.logTCPInfo(fds: fds, multipath: multipath)
+            if stop {
+                return tcpInfos
+            }
             if toAdd.count > 0 {
                 tcpInfos.append(toAdd)
+                test.addProtocolInfo(protoInfo: toAdd)
             }
             res = group.wait(timeout: DispatchTime.now())
         }
         
         // Go for a last TCP info before closing
-        let toAdd = TCPLogger.logTCPInfo(fds: fds, multipath: multipath)
+        let (toAdd, _) = TCPLogger.logTCPInfo(fds: fds, multipath: multipath)
         if toAdd.count > 0 {
             tcpInfos.append(toAdd)
+            test.addProtocolInfo(protoInfo: toAdd)
         }
         
         return tcpInfos

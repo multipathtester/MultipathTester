@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Charts
 
 class TCPStreamTest: BaseStreamTest {
     var delaysMutex = pthread_mutex_t()
@@ -410,6 +411,19 @@ class TCPStreamTest: BaseStreamTest {
         downNewDelays = [DelayData]()
         pthread_mutex_unlock(&self.delaysMutex)
         return (returnUp, returnDown)
+    }
+    
+    override func getChartData() -> ChartEntries? {
+        let upValues = upDelays.map { (d) -> ChartDataEntry in
+            return ChartDataEntry(x: d.time, y: Double(d.delayUs) / 1000.0)
+        }
+        let downValues = downDelays.map { (d) -> ChartDataEntry in
+            return ChartDataEntry(x: d.time, y: Double(d.delayUs) / 1000.0)
+        }
+        return MultiLineChartEntries(xLabel: "Time", yLabel: "Delay", dataLines: [
+            "Upload delays (ms)": upValues,
+            "Download delays (ms)": downValues,
+        ])
     }
     
     override func stopTraffic() {
