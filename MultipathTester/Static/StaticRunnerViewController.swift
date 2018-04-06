@@ -455,6 +455,15 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
             let cellBytesSent = cellInfoEnd.bytesSent - cellInfoStart.bytesSent
             let cellBytesReceived = cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived
             self.runningIndex = self.testsDone
+            // We're close of the end, so let the user be aware of this
+            DispatchQueue.main.async {
+                let newViewController = self.storyboard?.instantiateViewController(withIdentifier: "resultLabelViewController")
+                newViewController!.view.translatesAutoresizingMaskIntoConstraints = false
+                self.cycleFromViewController(self.currentResultViewController!, toViewController: newViewController!)
+                self.currentResultViewController = newViewController
+                let resultLabelViewController = self.currentResultViewController as! ResultLabelViewController
+                resultLabelViewController.label.text = "Finalizing the test..."
+            }
             var testResults = [TestResult]()
             for i in 0..<self.testsDone {
                 let test = self.tests[i]
@@ -476,7 +485,7 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
             if self.userInterrupted {
                 benchmark.userInterrupted = true
             }
-            //Utils.sendToServer(benchmark: benchmark, tests: self.tests)
+            Utils.sendToServer(benchmark: benchmark, tests: self.tests)
             benchmark.save()
             self.cellTimer?.invalidate()
             self.cellTimer = nil
@@ -489,6 +498,8 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
                 UIApplication.shared.isIdleTimerDisabled = false
                 self.progress.setProgress(value: 100.0, animationDuration: 0.2) {}
                 self.navigationItem.hidesBackButton = false
+                let resultLabelViewController = self.currentResultViewController as! ResultLabelViewController
+                resultLabelViewController.label.text = "Test completed."
             }
         }
     }
