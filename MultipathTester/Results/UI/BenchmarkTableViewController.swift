@@ -91,6 +91,8 @@ class BenchmarkTableViewController: UITableViewController {
                 cell.networkImageView.image = cellular
             case .WiFiCellular:
                 cell.networkImageView.image = wifi_cell
+            case .CellularWifi:
+                cell.networkImageView.image = wifi_cell
             default:
                 cell.networkImageView.image = blank
             }
