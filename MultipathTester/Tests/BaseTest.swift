@@ -32,6 +32,7 @@ class BaseTest {
     // MARK: Common results to all tests. Those should be set by the run() function
     var success = false
     var errorMsg = ""
+    var shortResult: String?
     var duration: Double = 0.0 // In seconds
     var wifiBytesSent: UInt32 = 0
     var wifiBytesReceived: UInt32 = 0
@@ -180,5 +181,9 @@ class BaseTest {
         if getProtocol().main == .TCP {
             tcpInfos.append(protoInfo)
         }
+    }
+    
+    func getShortResult() -> String? {
+        return shortResult
     }
 }

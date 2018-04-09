@@ -11,6 +11,7 @@ import UIKit
 class StaticTestTableViewCell: UITableViewCell {
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var resultImageView: UIImageView!
+    @IBOutlet weak var resultLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()

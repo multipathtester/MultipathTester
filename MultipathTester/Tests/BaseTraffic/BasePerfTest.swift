@@ -49,7 +49,11 @@ class BasePerfTest: BaseTest, Test {
         var resultText = errorMsg
         if success {
             resultText = "Achieved a mean goodput of " + String(format: "%.3f", Double(intervals[intervals.count-1].globalBandwidth * 8) / 1000000.0) + " Mbps."
+            shortResult = String(format: "%.3f Mbps", Double(intervals[intervals.count-1].globalBandwidth * 8) / 1000000.0)
+        } else {
+            shortResult = "Failed"
         }
+        
         return PerfResult(name: getDescription(), proto: getProtocol(), success: success, result: resultText, duration: duration, startTime: startTime, waitTime: waitTime, wifiBytesReceived: wifiBytesReceived, wifiBytesSent: wifiBytesSent, cellBytesReceived: cellBytesReceived, cellBytesSent: cellBytesSent, multipathService: runCfg.multipathServiceVar, totalRetrans: totalRetrans, totalSent: totalSent, intervals: intervals, cwins: cwinData)
     }
     

@@ -542,6 +542,11 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
         } else {
             cell.resultImageView.image = comingTest
         }
+        if let shortResult = test.getShortResult() {
+            cell.resultLabel.text = shortResult
+        } else {
+            cell.resultLabel.text = ""
+        }
         
         return cell
     }

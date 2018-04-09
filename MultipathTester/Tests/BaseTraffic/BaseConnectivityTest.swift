@@ -77,6 +77,12 @@ class BaseConnectivityTest: BaseTest, Test {
     }
     
     func getTestResult() -> TestResult {
+        if success {
+            shortResult = String(format: "Median of %.1f ms", durations.median())
+        } else {
+            shortResult = "Unreachable"
+        }
+        
         return ConnectivityResult(name: getDescription(), proto: getProtocol(), success: success, result: errorMsg, duration: duration, startTime: startTime, waitTime: waitTime, wifiBytesReceived: wifiBytesReceived, wifiBytesSent: wifiBytesSent, cellBytesReceived: cellBytesReceived, cellBytesSent: cellBytesSent, multipathService: runCfg.multipathServiceVar, durations: durations)
     }
 }

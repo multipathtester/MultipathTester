@@ -67,6 +67,9 @@ class BaseStreamTest: BaseTest, Test {
         var resultText = errorMsg
         if success {
             resultText = "Maximum upload delay of " + String(Double(maxUpDelay.delayUs) / 1000.0) + " ms, maximum download delay of " + String(Double(maxDownDelay.delayUs) / 1000.0) + " ms"
+            shortResult = String(format: "Max up: %.1f ms, max down: %.1f ms", Double(maxUpDelay.delayUs) / 1000.0, Double(maxDownDelay.delayUs) / 1000.0)
+        } else {
+            shortResult = "Failed"
         }
         return StreamResult(name: getDescription(), proto: getProtocol(), success: success, result: resultText, duration: duration, startTime: startTime, waitTime: waitTime, wifiBytesReceived: wifiBytesReceived, wifiBytesSent: wifiBytesSent, cellBytesReceived: cellBytesReceived, cellBytesSent: cellBytesSent, multipathService: runCfg.multipathServiceVar, upDelays: upDelays, downDelays: downDelays, errorMsg: errorMsg)
     }

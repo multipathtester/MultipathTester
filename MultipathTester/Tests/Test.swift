@@ -60,6 +60,7 @@ protocol Test {
     func setTestServer(testServer: TestServer)
     func setMultipathService(service: RunConfig.MultipathServiceType)
     func addProtocolInfo(protoInfo: [String: Any])
+    func getShortResult() -> String?
     func stop()
     func succeeded() -> Bool
     func updateURL()

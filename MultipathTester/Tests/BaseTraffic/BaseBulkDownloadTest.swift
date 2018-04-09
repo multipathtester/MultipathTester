@@ -42,6 +42,9 @@ class BaseBulkDownloadTest: BaseTest, Test {
     func getTestResult() -> TestResult {
         if success {
             errorMsg = String(format: "Completed in %.3f s", duration)
+            shortResult = errorMsg
+        } else {
+            shortResult = "Failed"
         }
         return BulkDownloadResult(name: getDescription(), proto: getProtocol(), success: success, result: errorMsg, duration: duration, startTime: startTime, waitTime: waitTime, wifiBytesReceived: wifiBytesReceived, wifiBytesSent: wifiBytesSent, cellBytesReceived: cellBytesReceived, cellBytesSent: cellBytesSent, multipathService: runCfg.multipathServiceVar, rcvBytesDatas: rcvBytesDatas)
     }

@@ -31,6 +31,8 @@ class ResultLineChartViewController: UIViewController, ChartViewDelegate {
         case .lineChartEntries:
             let lineChartEntries = chartEntries as! LineChartEntries
             LineChartHelper.initialize(chartView: chart, delegate: self, xValueFormatter: lineChartEntries.xValueFormatter)
+            // Disable zoom
+            chart.pinchZoomEnabled = false
             LineChartHelper.setData(to: chart, with: lineChartEntries.data, label: lineChartEntries.dataLabel, color: UIColor(red: 51/255, green: 181/255, blue: 229/255, alpha: 1), mode: .linear)
             xAxisLabel.text = lineChartEntries.xLabel
             // Rotate Y axis
@@ -60,6 +62,8 @@ class ResultLineChartViewController: UIViewController, ChartViewDelegate {
                 ]
             let multiLineChartEntries = chartEntries as! MultiLineChartEntries
             LineChartHelper.initialize(chartView: chart, delegate: self, xValueFormatter: DateValueFormatter())
+            // Disable zoom
+            chart.pinchZoomEnabled = false
             for (index, k) in multiLineChartEntries.dataLines.keys.enumerated() {
                 LineChartHelper.setData(to: chart, with: multiLineChartEntries.dataLines[k]!, label: k, color: colors[index], mode: .linear)
             }
