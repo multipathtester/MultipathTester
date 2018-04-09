@@ -77,6 +77,7 @@
 		CE8E284B1F695450004F1558 /* TCPClientReqRes.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8E284A1F695450004F1558 /* TCPClientReqRes.swift */; };
 		CE8E284D1F696334004F1558 /* TCPClientBulk.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8E284C1F696334004F1558 /* TCPClientBulk.swift */; };
 		CE8E284F1F6966FC004F1558 /* TCPClientSiri.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8E284E1F6966FC004F1558 /* TCPClientSiri.swift */; };
+		CEA4CF38207BAC2C00650DFF /* DownloadSessionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA4CF37207BAC2C00650DFF /* DownloadSessionDelegate.swift */; };
 		CEA702E22003C6A000FDFB89 /* Charts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA702DF2003C66900FDFB89 /* Charts.framework */; };
 		CEA702E32003C6A000FDFB89 /* Charts.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CEA702DF2003C66900FDFB89 /* Charts.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		CEA702E82003D67100FDFB89 /* MobileRunnerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA702E72003D67100FDFB89 /* MobileRunnerViewController.swift */; };
@@ -238,6 +239,7 @@
 		CE8E284A1F695450004F1558 /* TCPClientReqRes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClientReqRes.swift; sourceTree = "<group>"; };
 		CE8E284C1F696334004F1558 /* TCPClientBulk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClientBulk.swift; sourceTree = "<group>"; };
 		CE8E284E1F6966FC004F1558 /* TCPClientSiri.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClientSiri.swift; sourceTree = "<group>"; };
+		CEA4CF37207BAC2C00650DFF /* DownloadSessionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadSessionDelegate.swift; sourceTree = "<group>"; };
 		CEA702D92003C66800FDFB89 /* Charts.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Charts.xcodeproj; sourceTree = "<group>"; };
 		CEA702E72003D67100FDFB89 /* MobileRunnerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileRunnerViewController.swift; sourceTree = "<group>"; };
 		CEA702EC2003DB4D00FDFB89 /* DateValueFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateValueFormatter.swift; sourceTree = "<group>"; };
@@ -481,6 +483,14 @@
 			path = About;
 			sourceTree = "<group>";
 		};
+		CEA4CF36207BAC1400650DFF /* Delegate */ = {
+			isa = PBXGroup;
+			children = (
+				CEA4CF37207BAC2C00650DFF /* DownloadSessionDelegate.swift */,
+			);
+			path = Delegate;
+			sourceTree = "<group>";
+		};
 		CEA702DA2003C66800FDFB89 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -595,6 +605,7 @@
 				CEA702F72004B4FE00FDFB89 /* ChartsHelpers */,
 				CEA70300200507D900FDFB89 /* UICircularProgressRing */,
 				CE268517200DED3200462C6E /* Extensions */,
+				CEA4CF36207BAC1400650DFF /* Delegate */,
 				CE58F4A61FD68D0E009EA08F /* HelperObject */,
 				CE58F48D1FD163FE009EA08F /* Results */,
 				CE58F4881FCF1100009EA08F /* Utils */,
@@ -711,6 +722,9 @@
 						LastSwiftMigration = 0910;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
 							com.apple.HotspotConfiguration = {
 								enabled = 1;
 							};
@@ -879,6 +893,7 @@
 				CEA703072005084C00FDFB89 /* UICircularProgressRingStyle.swift in Sources */,
 				CE8980ED203AEC4400E64953 /* AboutViewController.swift in Sources */,
 				CE58F4A11FD57C58009EA08F /* QUICBulkDownloadTest.swift in Sources */,
+				CEA4CF38207BAC2C00650DFF /* DownloadSessionDelegate.swift in Sources */,
 				CE1362AF20766705001E58B2 /* ResultLineChartViewController.swift in Sources */,
 				CED4B5201F97972500E6F86E /* TCPFileDescriptorFinder.swift in Sources */,
 				CED4B5221F9F7FE300E6F86E /* TCPInfoConverter.swift in Sources */,

@@ -9,6 +9,7 @@
 import CoreLocation
 import UIKit
 import NetworkExtension
+import UserNotifications
 
 class MobileMainViewController: UIViewController {
     @IBOutlet weak var descriptionLabel: UILabel!
@@ -71,6 +72,30 @@ class MobileMainViewController: UIViewController {
                 
                 The record is %.1f m.
                 """, maxWifiDistance)
+            }
+        }
+        
+        // Test of notification
+        let content = UNMutableNotificationContent()
+        content.title = "Test"
+        content.body = "This is a test notification coming from MobileMainViewController"
+        content.categoryIdentifier = "RESULT"
+        content.sound = UNNotificationSound.default()
+        
+        // Configure this for a trigger at 1.50 pm
+        var dateInfo = DateComponents()
+        dateInfo.hour = 13
+        dateInfo.minute = 55
+        let trigger = UNCalendarNotificationTrigger(dateMatching: dateInfo, repeats: false)
+        
+        // Create the request object
+        let request = UNNotificationRequest(identifier: "TestNotification", content: content, trigger: trigger)
+        
+        // Schedule the request
+        let center = UNUserNotificationCenter.current()
+        center.add(request) { (error: Error?) in
+            if let theError = error {
+                print(theError.localizedDescription)
             }
         }
         
