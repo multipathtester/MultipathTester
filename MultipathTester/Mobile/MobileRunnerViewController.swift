@@ -143,7 +143,7 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
         if !stopping && ((connectivity.networkType != .WiFiCellular && connectivity.networkType != .CellularWifi) || connectivity.wifiBSSID != wifiBSSID) {
             self.stopTraffic(after: 2.0)
             DispatchQueue.main.async {
-                self.userLabel.text = "WiFi is lost."
+                self.userLabel.text = "WiFi is lost, the test will stop now."
             }
         }
     }

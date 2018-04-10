@@ -35,6 +35,7 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
     var stoppedIndex: Int = -1
     var testsDone: Int = 0
     var userInterrupted: Bool = false
+    var finalizing: Bool = false
     
     var internetReachability: Reachability = Reachability.forInternetConnection()
     var locationTracker: LocationTracker = LocationTracker.sharedTracker()
@@ -337,6 +338,7 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
     }
     
     func startTests() {
+        finalizing = false
         UIApplication.shared.isIdleTimerDisabled = true
         connectivities = [Connectivity]()
         let reachabilityStatus = internetReachability.currentReachabilityStatus()
@@ -353,7 +355,7 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
         print("Chart timer set")
         print("We start the tests")
         let resultLabelViewController = self.currentResultViewController as! ResultLabelViewController
-        resultLabelViewController.label.text = "Searching the nearest server..."
+        resultLabelViewController.label.text = "Searching for the nearest server..."
         
         DispatchQueue.global(qos: .userInteractive).async {
             self.testsDone = 0
@@ -387,6 +389,9 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
                 addedTests += self.mpquicTests
             }
             
+            // Shuffle QUIC tests
+            addedTests.shuffle()
+            
             // XXX MPTCP tests crashes on 11.2.6 when using only one interface...
             let os = ProcessInfo().operatingSystemVersion
             if (self.connectivities[0].networkType == .WiFiCellular || self.connectivities[0].networkType == .CellularWifi) || (os.majorVersion >= 11 && os.minorVersion >= 3) {
@@ -394,8 +399,7 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
                 addedTests += self.mptcpTests // Also add MPTCP tests
             }
             
-            // Shuffle QUIC and MPTCP tests
-            addedTests.shuffle()
+            // No more shuffle, put MPTCP tests at the end
             
             // Don't forget to provide the right test server to added tests
             for i in 0..<addedTests.count {
@@ -448,6 +452,7 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
                 }
             }
             self.stopTime = Date()
+            self.finalizing = true
             let wifiInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
             let cellInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
             let wifiBytesSent = wifiInfoEnd.bytesSent - wifiInfoStart.bytesSent
@@ -462,7 +467,7 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
                 self.cycleFromViewController(self.currentResultViewController!, toViewController: newViewController!)
                 self.currentResultViewController = newViewController
                 let resultLabelViewController = self.currentResultViewController as! ResultLabelViewController
-                resultLabelViewController.label.text = "Finalizing the test..."
+                resultLabelViewController.label.text = "Finalizing the test, this should take a few seconds..."
             }
             var testResults = [TestResult]()
             for i in 0..<self.testsDone {
@@ -588,6 +593,9 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
     
     @IBAction func stopTests(_ sender: UIBarButtonItem) {
         sender.isEnabled = false
+        if finalizing {
+            return
+        }
         self.userInterrupted = true
         for i in 0..<allTests.count {
             let test = allTests[i]
