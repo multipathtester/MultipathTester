@@ -75,30 +75,6 @@ class MobileMainViewController: UIViewController {
             }
         }
         
-        // Test of notification
-        let content = UNMutableNotificationContent()
-        content.title = "Test"
-        content.body = "This is a test notification coming from MobileMainViewController"
-        content.categoryIdentifier = "RESULT"
-        content.sound = UNNotificationSound.default()
-        
-        // Configure this for a trigger at 1.50 pm
-        var dateInfo = DateComponents()
-        dateInfo.hour = 13
-        dateInfo.minute = 55
-        let trigger = UNCalendarNotificationTrigger(dateMatching: dateInfo, repeats: false)
-        
-        // Create the request object
-        let request = UNNotificationRequest(identifier: "TestNotification", content: content, trigger: trigger)
-        
-        // Schedule the request
-        let center = UNUserNotificationCenter.current()
-        center.add(request) { (error: Error?) in
-            if let theError = error {
-                print(theError.localizedDescription)
-            }
-        }
-        
         timer = Timer(timeInterval: 0.5, target: self, selector: #selector(MobileMainViewController.probeCellular), userInfo: nil, repeats: true)
         RunLoop.current.add(timer!, forMode: .commonModes)
         determineClosestServer()
