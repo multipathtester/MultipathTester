@@ -65,13 +65,21 @@ class MobileMainViewController: UIViewController {
         
         // Get the current best result for WiFi distance
         DispatchQueue.global(qos: .background).async {
-            let maxWifiDistance = Utils.getMaxWifiDistance()
+            let (maxWifiDistance, wifiSwitches) = Utils.getMaxWifiDistanceAndSwitches()
             DispatchQueue.main.async {
-                self.descriptionLabel.text = String(format:"""
-                How far can you reach your WiFi?
-                
-                The record is %.1f m.
-                """, maxWifiDistance)
+                if wifiSwitches > 0 {
+                    self.descriptionLabel.text = String(format:"""
+                    How far can you reach your WiFi?
+                    
+                    The record is %.1f m by switching WiFi Access Point %d times.
+                    """, maxWifiDistance, wifiSwitches)
+                } else {
+                    self.descriptionLabel.text = String(format:"""
+                    How far can you reach your WiFi?
+                    
+                    The record is %.1f m.
+                    """, maxWifiDistance)
+                }
             }
         }
         

@@ -8,6 +8,13 @@
 
 import Foundation
 
+extension Array where Element: Comparable {
+    /// Returns true if both arrays contains the same elements
+    func containsSameElements(as other: [Element]) -> Bool {
+        return self.count == other.count && self.sorted() == other.sorted()
+    }
+}
+
 extension Array where Element: FloatingPoint {
     /// Returns the sum of all elements in the array
     func summed() -> Element {

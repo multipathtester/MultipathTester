@@ -92,7 +92,7 @@ class Utils {
         group.wait()
     }
     
-    static func getMaxWifiDistance() -> Double {
+    static func getMaxWifiDistanceAndSwitches() -> (Double, Int) {
         // Create GET request
         let url = URL(string: BaseResult.collectURLBase + "mptests/max_wifi_distance/")!
         var request = URLRequest(url: url)
@@ -101,6 +101,7 @@ class Utils {
         request.setValue("application/json", forHTTPHeaderField: "Accept")
         
         var result = 0.0
+        var switches = 0
         
         let group = DispatchGroup()
         group.enter()
@@ -122,6 +123,9 @@ class Utils {
                 if let maxWifiDistance = responseJSON["max_wifi_distance"] as? Double {
                     result = maxWifiDistance
                 }
+                if let wifiSwitches = responseJSON["wifi_bssid_switches"] as? Int {
+                    switches = wifiSwitches
+                }
             }
             group.leave()
         }
@@ -129,7 +133,7 @@ class Utils {
         task.resume()
         group.wait()
         
-        return result
+        return (result, switches)
     }
     
     static func sendBenchmarkToServer(benchmark: Benchmark) -> String? {

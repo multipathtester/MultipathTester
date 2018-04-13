@@ -29,6 +29,7 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
     var completed: Bool = false
     var stopping: Bool = false
     var userInterrupted: Bool = false
+    var stopNow: Bool = false
     
     // Reachability does not warn about the cellular state if WiFi is on...
     var wasCellularOn: Bool = false
@@ -59,6 +60,9 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
     var downMPTCPDelays: [ChartDataEntry] = [ChartDataEntry]()
     
     var wifiBSSID: String = ""
+    var wifiSSID: String = ""
+    var wifiIPs: [String] = []
+    var wifiBSSIDSwitches = 0
     
     // For debug
     //var debugCount = 0
@@ -113,6 +117,7 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
         computedWiFiSystemLostTime = Date()
         print("stooooop")
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + after) {
+            self.stopNow = true
             for t in self.streamTests {
                 t.stopTraffic()
             }
@@ -140,10 +145,24 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
         }
         let connectivity = Connectivity.getCurrentConnectivity(reachabilityStatus: reachabilityStatus)
         connectivities.append(connectivity)
-        if !stopping && ((connectivity.networkType != .WiFiCellular && connectivity.networkType != .CellularWifi) || connectivity.wifiBSSID != wifiBSSID) {
+        if !stopping && ((connectivity.networkType != .WiFiCellular && connectivity.networkType != .CellularWifi)) {
             self.stopTraffic(after: 2.0)
             DispatchQueue.main.async {
                 self.userLabel.text = "WiFi is lost, the test will stop now."
+            }
+        } else if !stopping && connectivity.wifiBSSID != wifiBSSID && connectivity.wifiNetworkName! == wifiSSID && connectivity.wifiAddresses!.containsSameElements(as: self.wifiIPs) {
+            // Same network, but different AP; continue the test, might be interesting...
+            wifiBSSIDSwitches += 1
+            wifiBSSID = connectivity.wifiBSSID!
+            DispatchQueue.main.async {
+                self.userLabel.text = "You keep WiFi connectivity after access point change! You got \(self.wifiBSSIDSwitches) WiFi access point switches so far. How far can you go while keeping the same WiFi network?"
+            }
+        } else if !stopping && (connectivity.wifiNetworkName! != wifiSSID || !connectivity.wifiAddresses!.containsSameElements(as: self.wifiIPs)) {
+            print(connectivity.wifiNetworkName!, wifiSSID)
+            print(connectivity.wifiAddresses!, self.wifiIPs)
+            self.stopTraffic(after: 2.0)
+            DispatchQueue.main.async {
+                self.userLabel.text = "The WiFi network changed, the test will stop now."
             }
         }
     }
@@ -184,7 +203,11 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
                     self.nextWiFiBytesDistance = meters
                     self.nextWiFiBytesLostTime = cl.timestamp
                     DispatchQueue.main.async {
-                        self.userLabel.text = "Please move away from your WiFi Access Point."
+                        if self.wifiBSSIDSwitches > 0 {
+                            self.userLabel.text = "You keep WiFi connectivity after access point change! You got \(self.wifiBSSIDSwitches) WiFi access point switches so far. How far can you go while keeping the same WiFi network?"
+                        } else {
+                            self.userLabel.text = "Please move away from your WiFi Access Point. The test will stop once the WiFi is lost."
+                        }
                     }
                     self.countNoWifi = 0
                 }
@@ -242,16 +265,19 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
     
     func startTests() {
         UIApplication.shared.isIdleTimerDisabled = true
+        stopNow = false
         backgrounded = false
         let reachabilityStatus = internetReachability.currentReachabilityStatus()
         wasCellularOn = UIDevice.current.hasCellularConnectivity
         let connectivity = Connectivity.getCurrentConnectivity(reachabilityStatus: reachabilityStatus)
         wifiBSSID = connectivity.wifiBSSID!
+        wifiSSID = connectivity.wifiNetworkName!
+        wifiIPs = connectivity.wifiAddresses!
         connectivities.append(connectivity)
         let wifiInfoStart = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)
         let cellInfoStart = InterfaceInfo.getInterfaceInfo(netInterface: .Cellular)
         startTime = Date()
-        self.userLabel.text = "Please move away from your WiFi Access Point."
+        self.userLabel.text = "Please move away from your WiFi Access Point. The test will stop once the WiFi is lost."
         self.navigationItem.hidesBackButton = true
         timer = Timer(timeInterval: 0.2, target: self, selector: #selector(MobileRunnerViewController.getDelays), userInfo: nil, repeats: true)
         RunLoop.current.add(timer!, forMode: .commonModes)
@@ -273,13 +299,34 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
                     group.leave()
                 }
             }
-            group.wait()
+            // To be sure we can escape if something goes wrong in runs
+            var res = group.wait(timeout: .now() + 1.0)
+            while res == .timedOut && !self.stopNow {
+                res = group.wait(timeout: .now() + 1.0)
+            }
             self.timer?.invalidate()
             self.timer = nil
-            print("Finished!")
             
             DispatchQueue.main.async {
-                self.userLabel.text = "Finalizing test, please wait..."
+                self.userLabel.text = "Terminating connections, please wait..."
+            }
+            
+            if res == .timedOut && self.stopNow {
+                // We give 7 seconds to close the connection
+                res = group.wait(timeout: .now() + 7.0)
+            }
+            
+            print("Finished!")
+            
+            if res == .timedOut {
+                print("Something went wrong...")
+                DispatchQueue.main.async {
+                    self.userLabel.text = "Forcing termination of connections and finalizing test, please wait..."
+                }
+            } else {
+                DispatchQueue.main.async {
+                    self.userLabel.text = "Finalizing test, please wait..."
+                }
             }
 
             var testResults = [TestResult]()
@@ -307,11 +354,18 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
                 benchmark.wifiBytesLostTime = Date()
                 benchmark.wifiSystemDistance = 0
                 benchmark.wifiSystemLostTime = Date()
+                benchmark.wifiBSSIDSwitches = self.wifiBSSIDSwitches
             } else {
                 benchmark.wifiBytesDistance = self.computedWiFiBytesDistance
                 benchmark.wifiBytesLostTime = self.computedWiFiBytesLostTime
                 benchmark.wifiSystemDistance = self.computedWiFiSystemDistance
                 benchmark.wifiSystemLostTime = self.computedWiFiSystemLostTime
+                // This is a sanity check
+                if self.computedWiFiBytesDistance > self.computedWiFiSystemDistance + 10.0 && self.computedWiFiBytesDistance > 11.0 {
+                    // This is very strange, probably an issue occurred, so set wifiBytesDistance to a lower value
+                    benchmark.wifiBytesDistance = self.computedWiFiBytesDistance - 11.0
+                }
+                benchmark.wifiBSSIDSwitches = self.wifiBSSIDSwitches
             }
             if self.userInterrupted {
                 benchmark.userInterrupted = true
@@ -333,7 +387,11 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
                         self.userLabel.text = String(format: "You stopped the test while your WiFi Access Point was fading out (after walking %.1f m) but your system still considered your WiFi usable %.1f m far away.", self.computedWiFiBytesDistance, self.computedWiFiSystemDistance)
                     }
                 } else {
-                    self.userLabel.text = String(format: "Test completed. You lost WiFi after walking %.1f m and your system detected it after you walked %.1f m.", self.computedWiFiBytesDistance, self.computedWiFiSystemDistance)
+                    if self.wifiBSSIDSwitches > 0 {
+                        self.userLabel.text = String(format: "Test completed. You lost WiFi after walking %.1f m (by switching WiFi Access Point \(self.wifiBSSIDSwitches) times) and your system detected it after you walked %.1f m.", self.computedWiFiBytesDistance, self.computedWiFiSystemDistance)
+                    } else {
+                        self.userLabel.text = String(format: "Test completed. You lost WiFi after walking %.1f m and your system detected it after you walked %.1f m.", self.computedWiFiBytesDistance, self.computedWiFiSystemDistance)
+                    }
                 }
                 self.navigationItem.hidesBackButton = false
             }

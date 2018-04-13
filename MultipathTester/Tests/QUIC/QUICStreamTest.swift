@@ -81,22 +81,29 @@ class QUICStreamTest: BaseStreamTest {
         let splitted_up_line = lines[1].components(separatedBy: " ")
         let up_count = Int(splitted_up_line[1])!
         if up_count > 0 {
+            var finalUpDelays = [DelayData]()
             for i in 2...up_count {
                 let splitted_line = lines[i].components(separatedBy: ",")
                 let ts = Double(splitted_line[0])! / 1000000000.0
                 let delayUs = UInt64(splitted_line[1])!
-                upDelays.append(DelayData(time: ts, delayUs: delayUs))
+                finalUpDelays.append(DelayData(time: ts, delayUs: delayUs))
             }
+            // Set upDelays now, as it could have been set with getProgressDelay
+            upDelays = finalUpDelays
         }
         let splitted_down_line = lines[up_count+2].components(separatedBy: " ")
         let down_count = Int(splitted_down_line[1])!
         if down_count > 0 {
+            // Reset downDelays, as it could have been set with getProgressDelay
+            var finalDownDelays = [DelayData]()
             for i in up_count+3...up_count+2+down_count {
                 let splitted_line = lines[i].components(separatedBy: ",")
                 let ts = Double(splitted_line[0])! / 1000000000.0
                 let delayUs = UInt64(splitted_line[1])!
-                downDelays.append(DelayData(time: ts, delayUs: delayUs))
+                finalDownDelays.append(DelayData(time: ts, delayUs: delayUs))
             }
+            // Set downDelays now, as it could have been set with getProgressDelay
+            downDelays = finalDownDelays
         }
         
         if errorMsg.contains("nil") || errorMsg.contains("deadline exceeded") || errorMsg.contains("PeerGoingAway") {
@@ -133,15 +140,37 @@ class QUICStreamTest: BaseStreamTest {
                 downNewDelays.append(DelayData(time: ts, delayUs: delayUs))
             }
         }
+        // This offers more resilence in case something goes wrong
+        upDelays += upNewDelays
+        downDelays += downNewDelays
+        
         return (upNewDelays, downNewDelays)
     }
     
     override func stopTraffic() {
-        QuictrafficStopStream(getNotifyID())
+        // Don't trust...
+        let group = DispatchGroup()
+        let queue = OperationQueue()
+        group.enter()
+        queue.addOperation {
+            QuictrafficStopStream(self.getNotifyID())
+            group.leave()
+        }
+        // Don't bother if we timeout in one second or not
+        _ = group.wait(timeout: .now() + 1.0)
     }
     
     override func notifyReachability() {
-        QuictrafficNotifyReachability(getNotifyID())
+        // Don't trust...
+        let group = DispatchGroup()
+        let queue = OperationQueue()
+        group.enter()
+        queue.addOperation {
+            QuictrafficNotifyReachability(self.getNotifyID())
+            group.leave()
+        }
+        // Don't bother if we timeout in 50 ms or not
+        _ = group.wait(timeout: .now() + 0.05)
     }
     
     override func getChartData() -> ChartEntries? {
