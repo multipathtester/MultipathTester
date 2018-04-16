@@ -120,7 +120,7 @@ class Utils {
             }
             let responseJSON = try? JSONSerialization.jsonObject(with: checkedData, options: [])
             if let responseJSON = responseJSON as? [String: Any] {
-                if let maxWifiDistance = responseJSON["max_wifi_distance"] as? Double {
+                if let maxWifiDistance = responseJSON["wifi_bytes_distance"] as? Double {
                     result = maxWifiDistance
                 }
                 if let wifiSwitches = responseJSON["wifi_bssid_switches"] as? Int {
