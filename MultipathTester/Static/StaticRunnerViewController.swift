@@ -25,6 +25,7 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
     var quicPingTests = [QUICConnectivityTest]()
     var quicV4Connectivity = QUICConnectivityTest(ipVer: .v4, port: 443)
     var quicV6Connectivity = QUICConnectivityTest(ipVer: .v6, port: 443)
+    var quic6121Connectivity = QUICConnectivityTest(ipVer: .any, port: 6121)
     var quicV4Tests = [Test]()
     var quicV6Tests = [Test]()
     var mpquicTests = [Test]()
@@ -76,7 +77,7 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
         pingTests.shuffle()
         
         quicPingTests = [
-            QUICConnectivityTest(ipVer: .any, port: 6121),
+            quic6121Connectivity,
             quicV4Connectivity,
             quicV6Connectivity,
         ]
@@ -101,11 +102,14 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
             QUICPerfTest(ipVer: .any, maxPathID: 255),
         ]
         
-        mptcpTests = [
-            TCPBulkDownloadTest(ipVer: .any, urlPath: "/10MB", multipath: true),
-            TCPStreamTest(ipVer: .any, runTime: 7, multipath: true),
-            TCPPerfTest(ipVer: .any, multipath: true),
-        ]
+        // Do not allow MPTCP tests if aggregate mode is on
+        if !aggregate {
+            mptcpTests = [
+                TCPBulkDownloadTest(ipVer: .any, urlPath: "/10MB", multipath: true),
+                TCPStreamTest(ipVer: .any, runTime: 7, multipath: true),
+                TCPPerfTest(ipVer: .any, multipath: true),
+            ]
+        }
         
         // Tests will be filled up during the tests
         tests = (pingTests as [Test]) + (quicPingTests as [Test])
@@ -274,6 +278,8 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
         }
         for i in 0..<self.pingTests.count {
             let test = self.pingTests[i]
+            // Close file descriptors
+            test.finish()
             let durations = test.durations
             if test.succeeded() && durations.count == pingCount {
                 let median = durations.median()
@@ -385,7 +391,7 @@ class StaticRunnerViewController: UIViewController, UITableViewDataSource, UITab
             }
             
             // If no QUIC test succeeded, there is no point in trying Multipath QUIC traffic...
-            if self.quicV4Connectivity.succeeded() || self.quicV6Connectivity.succeeded() {
+            if self.quicV4Connectivity.succeeded() || self.quicV6Connectivity.succeeded() || self.quic6121Connectivity.succeeded() {
                 addedTests += self.mpquicTests
             }
             

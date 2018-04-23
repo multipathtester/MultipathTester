@@ -153,4 +153,11 @@ class TCPConnectivityTest: BaseConnectivityTest {
         cellBytesSent += cellInfoEnd.bytesSent - cellInfoStartPing.bytesSent
         cellBytesReceived += cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived
     }
+    
+    // Finish the ping test
+    func finish() {
+        session?.reset {
+            self.session?.finishTasksAndInvalidate()
+        }
+    }
 }

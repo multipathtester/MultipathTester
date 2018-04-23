@@ -163,6 +163,8 @@ class MobileMainViewController: UIViewController {
             }
             for i in 0..<pingTests.count {
                 let test = pingTests[i]
+                // Close file descriptors
+                test.finish()
                 let durations = test.durations
                 if test.succeeded() && durations.count == pingCount {
                     let median = durations.median()

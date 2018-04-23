@@ -97,25 +97,25 @@ class TCPBulkDownloadTest: BaseBulkDownloadTest {
         
         let url = URL(string: getURL())!
         duration = Date().timeIntervalSince(startTime)
+        let task = session.dataTask(with: url) { (data, resp, error) in
+            guard error == nil && data != nil else {
+                self.errorMsg = "\(String(describing: error))"
+                print("\(String(describing: error))")
+                group.leave()
+                return
+            }
+            guard resp != nil else {
+                self.errorMsg = "received no response"
+                print("received no response")
+                group.leave()
+                return
+            }
+            self.duration = Date().timeIntervalSince(self.startTime)
+            self.success = true
+            group.leave()
+        }
         
         DispatchQueue.global(qos: .userInteractive).async {
-            let task = session.dataTask(with: url) { (data, resp, error) in
-                guard error == nil && data != nil else {
-                    self.errorMsg = "\(String(describing: error))"
-                    print("\(String(describing: error))")
-                    group.leave()
-                    return
-                }
-                guard resp != nil else {
-                    self.errorMsg = "received no response"
-                    print("received no response")
-                    group.leave()
-                    return
-                }
-                self.duration = Date().timeIntervalSince(self.startTime)
-                self.success = true
-                group.leave()
-            }
             task.resume()
         }
         
@@ -136,6 +136,11 @@ class TCPBulkDownloadTest: BaseBulkDownloadTest {
         // This will perform the wait on the group; once this call returns, the traffic is over
         if fd > 0 {
             tcpInfos = TCPLogger.logTCPInfosMain(group: group, fds: [fd], multipath: multipath, logPeriodMs: runCfg.logPeriodMsVar, test: self)
+        }
+        
+        // Close the connection!
+        session.reset {
+            session.invalidateAndCancel()
         }
         
         wifiInfoEnd = InterfaceInfo.getInterfaceInfo(netInterface: .WiFi)

@@ -396,6 +396,11 @@ class TCPStreamTest: BaseStreamTest {
         cellBytesSent = cellInfoEnd.bytesSent - cellInfoStart.bytesSent
         cellBytesReceived = cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived
         
+        // Close the connection!
+        session.reset {
+            session.invalidateAndCancel()
+        }
+        
         print(errorMsg)
         if errorMsg == "" || errorMsg == "Got EOF" || errorMsg.contains("Operation timed out") {
             success = true

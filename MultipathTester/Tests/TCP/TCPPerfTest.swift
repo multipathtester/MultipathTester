@@ -179,6 +179,11 @@ class TCPPerfTest: BasePerfTest {
         cellBytesSent = cellInfoEnd.bytesSent - cellInfoStart.bytesSent
         cellBytesReceived = cellInfoEnd.bytesReceived - cellInfoStart.bytesReceived
         
+        // Close the connection!
+        session.reset {
+            session.invalidateAndCancel()
+        }
+        
         var transferredLastSecond: UInt64 = 0
         var retransmittedLastSecond: UInt64 = 0
         var transferredNow: UInt64 = 0
