@@ -32,6 +32,7 @@ class Benchmark: NSObject, Codable {
     var wifiSystemDistance: Double?
     var wifiSystemLostTime: Date?
     var wifiBSSIDSwitches: Int?
+    var wifiMultipleSSID: Bool?
     
     // This is specific to mobile tests so far, but can be extended to other tests
     var userInterrupted: Bool
@@ -67,6 +68,7 @@ class Benchmark: NSObject, Codable {
         case wifiSystemDistance
         case wifiSystemLostTime
         case wifiBSSIDSwitches
+        case wifiMultipleSSID
         
         case userInterrupted
 
@@ -141,6 +143,7 @@ class Benchmark: NSObject, Codable {
         try container.encode(wifiSystemDistance, forKey: .wifiSystemDistance)
         try container.encode(wifiSystemLostTime, forKey: .wifiSystemLostTime)
         try container.encode(wifiBSSIDSwitches, forKey: .wifiBSSIDSwitches)
+        try container.encode(wifiMultipleSSID, forKey: .wifiMultipleSSID)
         
         try container.encode(userInterrupted, forKey: .userInterrupted)
         
@@ -177,6 +180,7 @@ class Benchmark: NSObject, Codable {
         wifiSystemDistance = try container.decode(Double?.self, forKey: .wifiSystemDistance)
         wifiSystemLostTime = try container.decode(Date?.self, forKey: .wifiSystemLostTime)
         wifiBSSIDSwitches = try container.decode(Int?.self, forKey: .wifiBSSIDSwitches)
+        wifiMultipleSSID = try container.decode(Bool?.self, forKey: .wifiMultipleSSID)
         
         do {
             userInterrupted = try container.decode(Bool.self, forKey: .userInterrupted)
@@ -237,6 +241,7 @@ class Benchmark: NSObject, Codable {
                 "wifi_system_distance": wifiSystemDistance!,
                 "wifi_system_lost_time": Utils.getDateFormatter().string(from: wifiSystemLostTime!),
                 "wifi_bssid_switches": wifiBSSIDSwitches!,
+                "wifi_multiple_ssid": wifiMultipleSSID!,
             ]
         }
         

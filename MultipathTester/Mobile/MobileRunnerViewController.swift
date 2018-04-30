@@ -392,6 +392,7 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
                     benchmark.wifiBytesDistance = self.computedWiFiBytesDistance - 11.0
                 }
                 benchmark.wifiBSSIDSwitches = self.wifiBSSIDSwitches
+                benchmark.wifiMultipleSSID = UserDefaults.standard.bool(forKey: "mobileMultipleSSID")
             }
             if self.userInterrupted {
                 benchmark.userInterrupted = true
