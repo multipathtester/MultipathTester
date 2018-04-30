@@ -143,6 +143,63 @@
             </objects>
             <point key="canvasLocation" x="-3623" y="-439"/>
         </scene>
+        <!--Mobile Settings Table View Controller-->
+        <scene sceneID="3SD-Kc-LRH">
+            <objects>
+                <tableViewController id="S5b-Xb-LM7" customClass="MobileSettingsTableViewController" customModule="MultipathTester" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="TSn-rZ-cpz">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="MobileSettingsTableViewCell" id="1KQ-IF-7C7" customClass="MobileSettingsTableViewCell" customModule="MultipathTester" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="1KQ-IF-7C7" id="hls-Lq-abZ">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7cw-p0-RQz">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rqI-Vc-fZ7">
+                                                    <rect key="frame" x="0.0" y="0.0" width="326" height="43"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="usF-6r-xoc">
+                                                    <rect key="frame" x="326" y="0.0" width="51" height="43"/>
+                                                    <connections>
+                                                        <action selector="toggleSwitch:" destination="1KQ-IF-7C7" eventType="valueChanged" id="Spo-Aa-RDa"/>
+                                                    </connections>
+                                                </switch>
+                                            </subviews>
+                                        </stackView>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="bottom" secondItem="7cw-p0-RQz" secondAttribute="bottom" id="Aut-B1-Pdt"/>
+                                        <constraint firstItem="7cw-p0-RQz" firstAttribute="leading" secondItem="hls-Lq-abZ" secondAttribute="leading" id="OFY-yL-tas"/>
+                                        <constraint firstItem="7cw-p0-RQz" firstAttribute="top" secondItem="hls-Lq-abZ" secondAttribute="top" id="TA9-hj-OsO"/>
+                                        <constraint firstAttribute="trailing" secondItem="7cw-p0-RQz" secondAttribute="trailing" id="whz-fK-9Z1"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="settingsLabel" destination="rqI-Vc-fZ7" id="y97-jh-DVy"/>
+                                    <outlet property="settingsSwitch" destination="usF-6r-xoc" id="HyV-fX-NaN"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="S5b-Xb-LM7" id="mQh-Am-AIL"/>
+                            <outlet property="delegate" destination="S5b-Xb-LM7" id="Mtx-Wz-mNh"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="oIh-xs-v85" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-326" y="375"/>
+        </scene>
         <!--Multipath Tests-->
         <scene sceneID="OzA-gN-vRj">
             <objects>
@@ -787,6 +844,11 @@
                         <viewLayoutGuide key="safeArea" id="Sl3-gD-MGB"/>
                     </view>
                     <navigationItem key="navigationItem" title="Mobile Tests" id="oU3-tW-uzW">
+                        <barButtonItem key="leftBarButtonItem" title="Settings" image="settings" id="kTV-BZ-SLu">
+                            <connections>
+                                <segue destination="S5b-Xb-LM7" kind="show" identifier="MobileSettings" id="Vw7-Qx-zOJ"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" image="map_info" id="cUi-bH-M8P">
                             <connections>
                                 <action selector="aboutTests:" destination="7Se-Oe-hML" id="02l-2i-hbN"/>
@@ -1632,6 +1694,7 @@
         <image name="no_location" width="128" height="128"/>
         <image name="no_wifi" width="128" height="128"/>
         <image name="ok" width="64" height="64"/>
+        <image name="settings" width="50" height="50"/>
         <image name="tab_history" width="25" height="25"/>
         <image name="uclouvain" width="427" height="590"/>
         <image name="walking" width="24" height="24"/>

@@ -188,7 +188,7 @@ class MobileMainViewController: UIViewController {
         let bundle = Bundle(for: type(of: self))
         var (wifi, cell) = (false, false)
         
-        if conn.networkType == .WiFi || conn.networkType == .WiFiCellular {
+        if conn.networkType == .WiFi || conn.networkType == .WiFiCellular || (conn.networkType == .CellularWifi && UserDefaults.standard.bool(forKey: "mobileMultipleSSID")) {
             if conn.wifiAddresses!.count > 0 {
                 let wifiIm = UIImage(named: "wifi", in: bundle, compatibleWith: self.traitCollection)
                 wifiImageView.image = wifiIm
@@ -314,6 +314,9 @@ class MobileMainViewController: UIViewController {
             mobileRunnerViewController.testServer = bestServer
             mobileRunnerViewController.medPing = bestMedPing
             mobileRunnerViewController.stdPing = bestStdPing
+        case "MobileSettings":
+            // Nothing to do here
+            break
         default:
             fatalError("Unexpected Segue Identifier; \(String(describing: segue.identifier))")
         }

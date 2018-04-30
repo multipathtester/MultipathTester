@@ -110,6 +110,8 @@
 		CEDAF2591F5FE8E000310153 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CEDAF2571F5FE8E000310153 /* LaunchScreen.storyboard */; };
 		CEDAF2641F5FE8E100310153 /* QUICTesterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDAF2631F5FE8E100310153 /* QUICTesterTests.swift */; };
 		CEDAF26F1F5FE8E100310153 /* QUICTesterUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDAF26E1F5FE8E100310153 /* QUICTesterUITests.swift */; };
+		CEF63EB4209321E10029B6EA /* MobileSettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF63EB3209321E10029B6EA /* MobileSettingsTableViewController.swift */; };
+		CEF63EB720933FA40029B6EA /* MobileSettingsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF63EB620933FA40029B6EA /* MobileSettingsTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -278,6 +280,8 @@
 		CEDAF26A1F5FE8E100310153 /* MultipathTesterUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MultipathTesterUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEDAF26E1F5FE8E100310153 /* QUICTesterUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QUICTesterUITests.swift; sourceTree = "<group>"; };
 		CEDAF2701F5FE8E100310153 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CEF63EB3209321E10029B6EA /* MobileSettingsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileSettingsTableViewController.swift; sourceTree = "<group>"; };
+		CEF63EB620933FA40029B6EA /* MobileSettingsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileSettingsTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -569,6 +573,8 @@
 			children = (
 				CEA702E72003D67100FDFB89 /* MobileRunnerViewController.swift */,
 				CE26852E20163FFD00462C6E /* MobileMainViewController.swift */,
+				CEF63EB3209321E10029B6EA /* MobileSettingsTableViewController.swift */,
+				CEF63EB620933FA40029B6EA /* MobileSettingsTableViewCell.swift */,
 			);
 			path = Mobile;
 			sourceTree = "<group>";
@@ -891,7 +897,9 @@
 				CEA703092005084C00FDFB89 /* UICircularProgressRingView.swift in Sources */,
 				CEA702E82003D67100FDFB89 /* MobileRunnerViewController.swift in Sources */,
 				CEA703072005084C00FDFB89 /* UICircularProgressRingStyle.swift in Sources */,
+				CEF63EB4209321E10029B6EA /* MobileSettingsTableViewController.swift in Sources */,
 				CE8980ED203AEC4400E64953 /* AboutViewController.swift in Sources */,
+				CEF63EB720933FA40029B6EA /* MobileSettingsTableViewCell.swift in Sources */,
 				CE58F4A11FD57C58009EA08F /* QUICBulkDownloadTest.swift in Sources */,
 				CEA4CF38207BAC2C00650DFF /* DownloadSessionDelegate.swift in Sources */,
 				CE1362AF20766705001E58B2 /* ResultLineChartViewController.swift in Sources */,

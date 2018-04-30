@@ -34,6 +34,7 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
     // Reachability does not warn about the cellular state if WiFi is on...
     var wasCellularOn: Bool = false
     var cellTimer: Timer?
+    var multiHopTimer: Timer?
     
     var internetReachability: Reachability = Reachability.forInternetConnection()
     var locationTracker: LocationTracker = LocationTracker.sharedTracker()
@@ -145,10 +146,22 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
         }
         let connectivity = Connectivity.getCurrentConnectivity(reachabilityStatus: reachabilityStatus)
         connectivities.append(connectivity)
-        if !stopping && ((connectivity.networkType != .WiFiCellular && connectivity.networkType != .CellularWifi)) {
+        let multiHop = UserDefaults.standard.bool(forKey: "mobileMultipleSSID")
+        if !stopping && !multiHop && ((connectivity.networkType != .WiFiCellular && connectivity.networkType != .CellularWifi)) {
             self.stopTraffic(after: 2.0)
             DispatchQueue.main.async {
                 self.userLabel.text = "WiFi is lost, the test will stop now."
+            }
+        } else if !stopping && multiHop && ((connectivity.networkType != .WiFiCellular && connectivity.networkType != .CellularWifi)) {
+            wifiSSID = ""
+            wifiBSSID = ""
+            wifiIPs = []
+            if multiHopTimer == nil {
+                multiHopTimer = Timer(timeInterval: 30.0, target: self, selector: #selector(MobileRunnerViewController.multiHopFired), userInfo: nil, repeats: false)
+                RunLoop.current.add(multiHopTimer!, forMode: .commonModes)
+            }
+            DispatchQueue.main.async {
+                self.userLabel.text = "WiFi is lost, if none is found in a few seconds, the test will stop."
             }
         } else if !stopping && connectivity.wifiBSSID != wifiBSSID && connectivity.wifiNetworkName! == wifiSSID && connectivity.wifiAddresses!.containsSameElements(as: self.wifiIPs) {
             // Same network, but different AP; continue the test, might be interesting...
@@ -157,12 +170,24 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
             DispatchQueue.main.async {
                 self.userLabel.text = "You keep WiFi connectivity after access point change! You got \(self.wifiBSSIDSwitches) WiFi access point switches so far. How far can you go while keeping the same WiFi network?"
             }
-        } else if !stopping && (connectivity.wifiNetworkName! != wifiSSID || !connectivity.wifiAddresses!.containsSameElements(as: self.wifiIPs)) {
+        } else if !stopping && !multiHop && (connectivity.wifiNetworkName! != wifiSSID || !connectivity.wifiAddresses!.containsSameElements(as: self.wifiIPs)) {
             print(connectivity.wifiNetworkName!, wifiSSID)
             print(connectivity.wifiAddresses!, self.wifiIPs)
             self.stopTraffic(after: 2.0)
             DispatchQueue.main.async {
                 self.userLabel.text = "The WiFi network changed, the test will stop now."
+            }
+        } else if !stopping && multiHop && (connectivity.wifiNetworkName! != wifiSSID || !connectivity.wifiAddresses!.containsSameElements(as: self.wifiIPs)) {
+            if multiHopTimer != nil {
+                multiHopTimer?.invalidate()
+                multiHopTimer = nil
+            }
+            wifiBSSIDSwitches += 1
+            wifiBSSID = connectivity.wifiBSSID!
+            wifiSSID = connectivity.wifiNetworkName!
+            wifiIPs = connectivity.wifiAddresses!
+            DispatchQueue.main.async {
+                self.userLabel.text = "The WiFi network changed, but you kept WiFi connectivity!"
             }
         }
     }
@@ -218,7 +243,7 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
                 self.computedWiFiBytesDistance = self.nextWiFiBytesDistance
                 self.computedWiFiBytesLostTime = self.nextWiFiBytesLostTime
                 self.countNoWifi += 1
-                if self.countNoWifi >= 3 {
+                if self.countNoWifi >= 3 && wifiSSID != "" {
                     DispatchQueue.main.async {
                         self.userLabel.text = "No more data seen on WiFi, but system did not yet consider WiFi lost... How far do you need to move in order to let the system noticing it?"
                     }
@@ -279,6 +304,7 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
         startTime = Date()
         self.userLabel.text = "Please move away from your WiFi Access Point. The test will stop once the WiFi is lost."
         self.navigationItem.hidesBackButton = true
+        multiHopTimer = nil
         timer = Timer(timeInterval: 0.2, target: self, selector: #selector(MobileRunnerViewController.getDelays), userInfo: nil, repeats: true)
         RunLoop.current.add(timer!, forMode: .commonModes)
         cellTimer = Timer(timeInterval: 0.5, target: self, selector: #selector(MobileRunnerViewController.probeCellular), userInfo: nil, repeats: true)
@@ -441,6 +467,14 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
             let reachabilityStatus = internetReachability.currentReachabilityStatus()
             let conn = Connectivity.getCurrentConnectivity(reachabilityStatus: reachabilityStatus)
             connectivities.append(conn)
+        }
+    }
+    
+    @objc
+    func multiHopFired() {
+        self.stopTraffic(after: 0.5)
+        DispatchQueue.main.async {
+            self.userLabel.text = "Did not found new WiFi in time, stopping the test now."
         }
     }
     

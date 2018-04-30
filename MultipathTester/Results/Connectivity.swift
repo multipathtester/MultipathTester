@@ -94,7 +94,7 @@ class Connectivity: Codable {
             "timestamp": Utils.getDateFormatter().string(from: timestamp),
         ]
         
-        if networkType == .WiFi || networkType == .WiFiCellular {
+        if networkType == .WiFi || networkType == .WiFiCellular || networkType == .CellularWifi {
             var wifiIPs = [[String: Any]]()
             for wa in wifiAddresses ?? [] {
                 wifiIPs.append(["ip": wa])
@@ -104,7 +104,7 @@ class Connectivity: Codable {
             connDict["wifi_bssid"] = wifiBSSID
         }
         
-        if networkType == .Cellular || networkType == .WiFiCellular {
+        if networkType == .Cellular || networkType == .WiFiCellular || networkType == .CellularWifi {
             var cellIPs = [[String: Any]]()
             for ca in cellularAddresses ?? [] {
                 cellIPs.append(["ip": ca])
