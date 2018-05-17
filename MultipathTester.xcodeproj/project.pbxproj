@@ -77,6 +77,9 @@
 		CE8E284B1F695450004F1558 /* TCPClientReqRes.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8E284A1F695450004F1558 /* TCPClientReqRes.swift */; };
 		CE8E284D1F696334004F1558 /* TCPClientBulk.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8E284C1F696334004F1558 /* TCPClientBulk.swift */; };
 		CE8E284F1F6966FC004F1558 /* TCPClientSiri.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8E284E1F6966FC004F1558 /* TCPClientSiri.swift */; };
+		CE9EBB7420ADB0AB008B9200 /* BaseUDPingTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9EBB7320ADB0AB008B9200 /* BaseUDPingTest.swift */; };
+		CE9EBB7820ADB24A008B9200 /* WifiUDPingTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9EBB7720ADB24A008B9200 /* WifiUDPingTest.swift */; };
+		CE9EBB7A20ADB258008B9200 /* CellUDPingTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9EBB7920ADB258008B9200 /* CellUDPingTest.swift */; };
 		CEA4CF38207BAC2C00650DFF /* DownloadSessionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA4CF37207BAC2C00650DFF /* DownloadSessionDelegate.swift */; };
 		CEA702E22003C6A000FDFB89 /* Charts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA702DF2003C66900FDFB89 /* Charts.framework */; };
 		CEA702E32003C6A000FDFB89 /* Charts.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CEA702DF2003C66900FDFB89 /* Charts.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -241,6 +244,9 @@
 		CE8E284A1F695450004F1558 /* TCPClientReqRes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClientReqRes.swift; sourceTree = "<group>"; };
 		CE8E284C1F696334004F1558 /* TCPClientBulk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClientBulk.swift; sourceTree = "<group>"; };
 		CE8E284E1F6966FC004F1558 /* TCPClientSiri.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPClientSiri.swift; sourceTree = "<group>"; };
+		CE9EBB7320ADB0AB008B9200 /* BaseUDPingTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseUDPingTest.swift; sourceTree = "<group>"; };
+		CE9EBB7720ADB24A008B9200 /* WifiUDPingTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WifiUDPingTest.swift; sourceTree = "<group>"; };
+		CE9EBB7920ADB258008B9200 /* CellUDPingTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellUDPingTest.swift; sourceTree = "<group>"; };
 		CEA4CF37207BAC2C00650DFF /* DownloadSessionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadSessionDelegate.swift; sourceTree = "<group>"; };
 		CEA702D92003C66800FDFB89 /* Charts.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Charts.xcodeproj; sourceTree = "<group>"; };
 		CEA702E72003D67100FDFB89 /* MobileRunnerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileRunnerViewController.swift; sourceTree = "<group>"; };
@@ -386,6 +392,7 @@
 			isa = PBXGroup;
 			children = (
 				CE82BD772042CC100067F3D8 /* BaseTraffic */,
+				CE9EBB7620ADB231008B9200 /* UDP */,
 				CE82BD70204198560067F3D8 /* TCP */,
 				CE82BD6E2041984C0067F3D8 /* QUIC */,
 				CE58F4961FD18E63009EA08F /* BaseTest.swift */,
@@ -475,6 +482,7 @@
 				CE82BD782042CC270067F3D8 /* BaseConnectivityTest.swift */,
 				CE82BD842046B3110067F3D8 /* BasePerfTest.swift */,
 				CE82BD7E204305780067F3D8 /* BaseStreamTest.swift */,
+				CE9EBB7320ADB0AB008B9200 /* BaseUDPingTest.swift */,
 			);
 			path = BaseTraffic;
 			sourceTree = "<group>";
@@ -485,6 +493,15 @@
 				CE8980EC203AEC4400E64953 /* AboutViewController.swift */,
 			);
 			path = About;
+			sourceTree = "<group>";
+		};
+		CE9EBB7620ADB231008B9200 /* UDP */ = {
+			isa = PBXGroup;
+			children = (
+				CE9EBB7920ADB258008B9200 /* CellUDPingTest.swift */,
+				CE9EBB7720ADB24A008B9200 /* WifiUDPingTest.swift */,
+			);
+			path = UDP;
 			sourceTree = "<group>";
 		};
 		CEA4CF36207BAC1400650DFF /* Delegate */ = {
@@ -849,6 +866,7 @@
 				CE29B9E51FD802FD0049A105 /* CWinData.swift in Sources */,
 				CEA703082005084C00FDFB89 /* UICircularProgressRingDelegate.swift in Sources */,
 				CEA702FF2005072000FDFB89 /* StaticMainViewController.swift in Sources */,
+				CE9EBB7820ADB24A008B9200 /* WifiUDPingTest.swift in Sources */,
 				CEA7030A2005084C00FDFB89 /* UICircularProgressRingGradientPosition.swift in Sources */,
 				CE82BD742042C8AB0067F3D8 /* MutableCollection.swift in Sources */,
 				CEA7031820067A4900FDFB89 /* BenchmarkSummaryTableViewController.swift in Sources */,
@@ -866,6 +884,7 @@
 				CE2685032008A50100462C6E /* TestResultInstancesTableViewCell.swift in Sources */,
 				CEA7031C200777C300FDFB89 /* BenchmarkDetailTableViewCell.swift in Sources */,
 				CE58F4911FD168D8009EA08F /* TestResult.swift in Sources */,
+				CE9EBB7420ADB0AB008B9200 /* BaseUDPingTest.swift in Sources */,
 				CE58F4871FCEBCD3009EA08F /* RunConfig.swift in Sources */,
 				CE58F4A31FD57FD7009EA08F /* BulkDownloadResult.swift in Sources */,
 				CE188F0A204FD615009B1E18 /* AtomicBoolean.swift in Sources */,
@@ -917,6 +936,7 @@
 				CE4B90472018711100E71C5E /* StreamResult.swift in Sources */,
 				CE2685162008E9E700462C6E /* MultiLineChartEntries.swift in Sources */,
 				CE58F4971FD18E64009EA08F /* BaseTest.swift in Sources */,
+				CE9EBB7A20ADB258008B9200 /* CellUDPingTest.swift in Sources */,
 				CE82BD8120430A070067F3D8 /* TCPStreamTest.swift in Sources */,
 				CE188F07204D5A7D009B1E18 /* TCPLogger.swift in Sources */,
 				CEDAF24F1F5FE8E000310153 /* AppDelegate.swift in Sources */,

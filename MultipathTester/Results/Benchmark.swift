@@ -33,6 +33,8 @@ class Benchmark: NSObject, Codable {
     var wifiSystemLostTime: Date?
     var wifiBSSIDSwitches: Int?
     var wifiMultipleSSID: Bool?
+    var wifiUDPingDelays: [DelayData]?
+    var cellUDPingDelays: [DelayData]?
     
     // This is specific to mobile tests so far, but can be extended to other tests
     var userInterrupted: Bool
@@ -69,6 +71,8 @@ class Benchmark: NSObject, Codable {
         case wifiSystemLostTime
         case wifiBSSIDSwitches
         case wifiMultipleSSID
+        case wifiUDPingDelays
+        case cellUDPingDelays
         
         case userInterrupted
 
@@ -144,6 +148,8 @@ class Benchmark: NSObject, Codable {
         try container.encode(wifiSystemLostTime, forKey: .wifiSystemLostTime)
         try container.encode(wifiBSSIDSwitches, forKey: .wifiBSSIDSwitches)
         try container.encode(wifiMultipleSSID, forKey: .wifiMultipleSSID)
+        try container.encode(wifiUDPingDelays, forKey: .wifiUDPingDelays)
+        try container.encode(cellUDPingDelays, forKey: .cellUDPingDelays)
         
         try container.encode(userInterrupted, forKey: .userInterrupted)
         
@@ -181,6 +187,8 @@ class Benchmark: NSObject, Codable {
         wifiSystemLostTime = try container.decode(Date?.self, forKey: .wifiSystemLostTime)
         wifiBSSIDSwitches = try container.decode(Int?.self, forKey: .wifiBSSIDSwitches)
         wifiMultipleSSID = try container.decode(Bool?.self, forKey: .wifiMultipleSSID)
+        wifiUDPingDelays = try container.decode([DelayData]?.self, forKey: .wifiUDPingDelays)
+        cellUDPingDelays = try container.decode([DelayData]?.self, forKey: .cellUDPingDelays)
         
         do {
             userInterrupted = try container.decode(Bool.self, forKey: .userInterrupted)
@@ -243,6 +251,18 @@ class Benchmark: NSObject, Codable {
                 "wifi_bssid_switches": wifiBSSIDSwitches!,
                 "wifi_multiple_ssid": wifiMultipleSSID!,
             ]
+            json["wifi_probes"] = wifiUDPingDelays!.map { (dd) -> [String: Any] in
+                return [
+                    "time": Utils.getDateFormatter().string(for: Date(timeIntervalSince1970: dd.time))!,
+                    "delay": Double(dd.delayUs) / 1000000.0,
+                    ]
+            }
+            json["cell_probes"] = cellUDPingDelays!.map { (dd) -> [String: Any] in
+                return [
+                    "time": Utils.getDateFormatter().string(for: Date(timeIntervalSince1970: dd.time))!,
+                    "delay": Double(dd.delayUs) / 1000000.0,
+                    ]
+            }
         }
         
         return json

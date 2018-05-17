@@ -23,6 +23,8 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
     var stdPing: Double?
     
     var streamTests = [BaseStreamTest]()
+    var wifiUDPingTest = WifiUDPingTest(testServer: .fr)
+    var cellUDPingTest = CellUDPingTest(testServer: .fr)
     var startTime: Date = Date()
     var stopTime: Date = Date()
     var timer: Timer?
@@ -314,10 +316,24 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
         downQUICDelays = []
         upMPTCPDelays = []
         downMPTCPDelays = []
+        cellUDPingTest = CellUDPingTest(testServer: testServer!)
+        wifiUDPingTest = WifiUDPingTest(testServer: testServer!)
         
         DispatchQueue.global(qos: .userInteractive).async {
             let queue = OperationQueue()
             let group = DispatchGroup()
+            let udpGroup = DispatchGroup()
+            // First start UDP pings
+            udpGroup.enter()
+            queue.addOperation {
+                self.cellUDPingTest.run()
+                udpGroup.leave()
+            }
+            udpGroup.enter()
+            queue.addOperation {
+                self.wifiUDPingTest.run()
+                udpGroup.leave()
+            }
             for t in self.streamTests {
                 group.enter()
                 queue.addOperation {
@@ -332,6 +348,10 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
             }
             self.timer?.invalidate()
             self.timer = nil
+            
+            self.cellUDPingTest.stop()
+            self.wifiUDPingTest.stop()
+            udpGroup.wait()
             
             DispatchQueue.main.async {
                 self.userLabel.text = "Terminating connections, please wait..."
@@ -397,6 +417,8 @@ class MobileRunnerViewController: UIViewController, ChartViewDelegate {
             if self.userInterrupted {
                 benchmark.userInterrupted = true
             }
+            benchmark.wifiUDPingDelays = self.wifiUDPingTest.delays
+            benchmark.cellUDPingDelays = self.cellUDPingTest.delays
             Utils.sendToServer(benchmark: benchmark, tests: self.streamTests)
             benchmark.save()
             self.cellTimer?.invalidate()

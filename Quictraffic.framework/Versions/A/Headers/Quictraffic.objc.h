@@ -27,6 +27,7 @@
 - (long)runTime;
 - (NSString*)traffic;
 - (NSString*)url;
+- (BOOL)wifiProbe;
 @end
 
 FOUNDATION_EXPORT NSString* QuictrafficGetQPerfResults(NSString* notifyID);
@@ -51,6 +52,8 @@ FOUNDATION_EXPORT NSString* QuictrafficRun(id<QuictrafficRunConfig> runcfg);
  */
 FOUNDATION_EXPORT void QuictrafficStopStream(NSString* notifyID);
 
+FOUNDATION_EXPORT void QuictrafficStopUdping(NSString* notifyID);
+
 @class QuictrafficRunConfig;
 
 /**
@@ -74,6 +77,7 @@ FOUNDATION_EXPORT void QuictrafficStopStream(NSString* notifyID);
 - (long)runTime;
 - (NSString*)traffic;
 - (NSString*)url;
+- (BOOL)wifiProbe;
 @end
 
 #endif

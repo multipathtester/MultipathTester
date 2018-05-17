@@ -30,6 +30,7 @@ class RunConfig: NSObject, QuictrafficRunConfigProtocol {
     var printBodyVar: Bool = false
     var runTimeVar: Int = 30
     var urlVar: String = ""
+    var wifiProbeVar: Bool = false
     
     init(traffic: String) {
         self.trafficVar = traffic
@@ -85,5 +86,9 @@ class RunConfig: NSObject, QuictrafficRunConfigProtocol {
     
     func url() -> String! {
         return urlVar
+    }
+    
+    func wifiProbe() -> Bool {
+        return wifiProbeVar
     }
 }
