@@ -54,8 +54,11 @@ struct conninfo_multipathtcp cim;
     
     // We need two iotcls: one to get the size of the IP addresses, the other to fetch the info
     creqsf->scir_aux_data = &tcpi;
+    creqsf->scir_src = (struct sockaddr *)&srcv6;
+    creqsf->scir_dst = (struct sockaddr *)&dstv6;
     creqsf->scir_cid = cid;
     creqsf->scir_aux_len = 0; // Don't take info now
+    creqsf->scir_aux_data = &tcpi;
     creqsf->scir_src_len = 0; // What is the version of source IP?
     creqsf->scir_dst_len = 0; // What is the version of destination IP?
     
@@ -77,7 +80,7 @@ struct conninfo_multipathtcp cim;
         printf("Unknown size for source IP: %d\n", creqsf->scir_src_len);
         return nil;
     }
-    
+
     if (creqsf->scir_dst_len == sizeof(struct sockaddr_in)) {
         creqsf->scir_dst = (struct sockaddr *)&dstv4;
     } else if (creqsf->scir_dst_len == sizeof(struct sockaddr_in6)) {

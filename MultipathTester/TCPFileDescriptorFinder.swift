@@ -61,9 +61,10 @@ func findTCPFileDescriptor(expectedIPs: [String], expectedPort: Int16, exclude: 
                 if err6 == 0 {
                     print("Oooh... 6")
                     var hostBuffer = [CChar](repeating: 0, count: Int(NI_MAXHOST))
+                    let saddr_len_6 = saddr_in6.sin6_len
                     let gnInfo = withUnsafeMutablePointer(to: &saddr_in6) {
                         $0.withMemoryRebound(to: sockaddr.self, capacity: 1) {
-                            getnameinfo($0, socklen_t(saddr_in6.sin6_len), &hostBuffer, socklen_t(hostBuffer.count), nil, 0, NI_NUMERICHOST)
+                            getnameinfo($0, socklen_t(saddr_len_6), &hostBuffer, socklen_t(hostBuffer.count), nil, 0, NI_NUMERICHOST)
                         }
                     }
                     if gnInfo == 0 {

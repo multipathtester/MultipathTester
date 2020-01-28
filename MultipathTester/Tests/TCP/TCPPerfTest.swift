@@ -210,14 +210,14 @@ class TCPPerfTest: BasePerfTest {
                     if cwinData[label] == nil {
                         cwinData[label] = [CWinData]()
                     }
-                    cwinData[label]!.append(CWinData(time: timeInfo, cwin: UInt64(subflowInfo["tcpi_snd_cwnd"] as! UInt32)))
+                    cwinData[label]!.append(CWinData(time: timeInfo, cwin: UInt64(subflowInfo["tcpi_snd_cwnd"] as? UInt32 ?? 0)))
                 }
             } else {
                 if cwinData["Congestion Window"] == nil {
                     cwinData["Congestion Window"] = [CWinData]()
                 }
                 let tcpInfoFd = tcpInfo["0"] as! [String: Any]
-                cwinData["Congestion Window"]!.append(CWinData(time: timeInfo, cwin: UInt64(tcpInfoFd["tcpi_snd_cwnd"] as! UInt32)))
+                cwinData["Congestion Window"]!.append(CWinData(time: timeInfo, cwin: UInt64(tcpInfoFd["tcpi_snd_cwnd"] as? UInt32 ?? 0)))
             }
             if timeInfo - lastInterval > (1.0 - TimeInterval(runCfg.logPeriodMsVar) / 1000.0) {
                 if multipath {
@@ -227,13 +227,13 @@ class TCPPerfTest: BasePerfTest {
                     retransmittedNow = 0
                     for sfID in subflowsInfo.keys {
                         let subflowInfo = subflowsInfo[sfID] as! [String: Any]
-                        let retransmittedSf = subflowInfo["tcpi_txretransmitbytes"] as! UInt64
+                        let retransmittedSf = subflowInfo["tcpi_txretransmitbytes"] as? UInt64 ?? 0
                         retransmittedNow += retransmittedSf
                     }
                 } else {
                     let tcpInfoFd = tcpInfo["0"] as! [String: Any]
                     transferredNow = tcpInfoFd["tcpi_txbytes"] as! UInt64
-                    retransmittedNow = tcpInfoFd["tcpi_txretransmitbytes"] as! UInt64
+                    retransmittedNow = tcpInfoFd["tcpi_txretransmitbytes"] as? UInt64 ?? 0
                 }
                 let nxtCounter = counter + 1
                 let interval = IntervalData(interval: "\(counter)-\(nxtCounter)", transferredLastSecond: max(transferredNow - transferredLastSecond, 0), globalBandwidth: transferredNow / UInt64(nxtCounter), retransmittedLastSecond: max(retransmittedNow - retransmittedLastSecond, 0))
@@ -255,7 +255,7 @@ class TCPPerfTest: BasePerfTest {
             } else {
                 let tcpInfoFd = tcpInfo["0"] as! [String: Any]
                 totalSent = tcpInfoFd["tcpi_txbytes"] as! UInt64
-                totalRetrans = tcpInfoFd["tcpi_txretransmitbytes"] as! UInt64
+                totalRetrans = tcpInfoFd["tcpi_txretransmitbytes"] as? UInt64 ?? 0
             }
         }
         
@@ -286,13 +286,13 @@ class TCPPerfTest: BasePerfTest {
                     retransmittedNow = 0
                     for sfID in subflowsInfo.keys {
                         let subflowInfo = subflowsInfo[sfID] as! [String: Any]
-                        let retransmittedSf = subflowInfo["tcpi_txretransmitbytes"] as! UInt64
+                        let retransmittedSf = subflowInfo["tcpi_txretransmitbytes"] as? UInt64 ?? 0
                         retransmittedNow += retransmittedSf
                     }
                 } else {
                     let tcpInfoFd = tcpInfo["0"] as! [String: Any]
                     transferredNow = tcpInfoFd["tcpi_txbytes"] as! UInt64
-                    retransmittedNow = tcpInfoFd["tcpi_txretransmitbytes"] as! UInt64
+                    retransmittedNow = tcpInfoFd["tcpi_txretransmitbytes"] as? UInt64 ?? 0
                 }
                 let nxtCounter = counter + 1
                 let interval = IntervalData(interval: "\(counter)-\(nxtCounter)", transferredLastSecond: max(transferredNow - transferredLastSecond, 0), globalBandwidth: transferredNow / UInt64(nxtCounter), retransmittedLastSecond: max(retransmittedNow - retransmittedLastSecond, 0))
