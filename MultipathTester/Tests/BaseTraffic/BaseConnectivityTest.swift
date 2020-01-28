@@ -17,11 +17,18 @@ class BaseConnectivityTest: BaseTest, Test {
     var durations: [Double] = []
     
     
-    init(ipVer: IPVersion, port: UInt16, testServer: TestServer, pingCount: Int, pingWaitMs: Int, filePrefix: String) {
+    init(ipVer: IPVersion, port: UInt16, testServer: TestServer, pingCount: Int, pingWaitMs: Int, filePrefix: String, random: Bool) {
         self.pingCount = pingCount
         self.pingWaitMs = pingWaitMs
-        
-        super.init(traffic: "bulk", ipVer: ipVer, port: port, urlPath: "/connectivityTest", filePrefix: filePrefix, waitTime: 0.0)
+        let urlPath: String
+        if random {
+            // Keeping connectivityTest makes CDN messing up and answering instead of our servers...
+            let random = Int.random(in: 0..<1000000)
+            urlPath = "/connectivityTest\(random)"
+        } else {
+            urlPath = "/connectivityTest"
+        };
+        super.init(traffic: "bulk", ipVer: ipVer, port: port, urlPath: urlPath, filePrefix: filePrefix, waitTime: 0.0)
         setTestServer(testServer: testServer)
         
         // Prepare the run configuration
@@ -32,7 +39,7 @@ class BaseConnectivityTest: BaseTest, Test {
     
     convenience init(ipVer: IPVersion, port: UInt16, testServer: TestServer, pingCount: Int, pingWaitMs: Int) {
         let filePrefix = "base_connectivity_" + String(port) + "_" + ipVer.rawValue
-        self.init(ipVer: ipVer, port: port, testServer: testServer, pingCount: pingCount, pingWaitMs: pingWaitMs, filePrefix: filePrefix)
+        self.init(ipVer: ipVer, port: port, testServer: testServer, pingCount: pingCount, pingWaitMs: pingWaitMs, filePrefix: filePrefix, random: false)
     }
     
     convenience init(ipVer: IPVersion, port: UInt16, testServer: TestServer) {

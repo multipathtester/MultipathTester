@@ -12,7 +12,7 @@ import Quictraffic
 class QUICConnectivityTest: BaseConnectivityTest {
     convenience init(ipVer: IPVersion, port: UInt16, testServer: TestServer, pingCount: Int, pingWaitMs: Int) {
         let filePrefix = "quictraffic_connectivity_" + String(port) + "_" + ipVer.rawValue
-        self.init(ipVer: ipVer, port: port, testServer: testServer, pingCount: pingCount, pingWaitMs: pingWaitMs, filePrefix: filePrefix)
+        self.init(ipVer: ipVer, port: port, testServer: testServer, pingCount: pingCount, pingWaitMs: pingWaitMs, filePrefix: filePrefix, random: false)
     }
     
     override func getProtocol() -> NetProtocol {
